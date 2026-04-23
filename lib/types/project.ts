@@ -99,6 +99,21 @@ export interface TextConfig {
   opacity?: number;
 }
 
+export interface LanguageLayoutSettings {
+  headlineSize: number;
+  subheadlineSize: number;
+  position: "top" | "bottom";
+  verticalOffset: number;
+  lineHeight: number;
+}
+
+export interface ScreenshotTextBundle {
+  headline: TextConfig;
+  subheadline: TextConfig;
+  perLanguageLayout: boolean;
+  languageLayouts: Partial<Record<Locale, LanguageLayoutSettings>>;
+}
+
 export type Layer = "behindScreenshot" | "aboveScreenshot" | "aboveText";
 
 interface ElementBase {
@@ -245,4 +260,11 @@ export const defaultText = (
   align: "center",
   fontSize: isHeadline ? 56 : 28,
   opacity: isHeadline ? undefined : 70,
+});
+
+export const defaultScreenshotTextBundle = (): ScreenshotTextBundle => ({
+  headline: defaultText("top", true),
+  subheadline: { ...defaultText("top", false), enabled: false },
+  perLanguageLayout: false,
+  languageLayouts: {},
 });

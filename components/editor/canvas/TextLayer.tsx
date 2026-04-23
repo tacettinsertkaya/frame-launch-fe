@@ -1,6 +1,7 @@
 "use client";
 
 import type { Locale, TextConfig } from "@/lib/types/project";
+import { resolveTextFontCss } from "@/lib/fonts/fontCatalog";
 
 interface Props {
   config: TextConfig;
@@ -29,12 +30,18 @@ export function TextLayer({ config, locale, canvasWidth, canvasHeight }: Props) 
   const verticalPx = (canvasHeight * config.verticalOffset) / 100;
   const isTop = config.position === "top";
 
+  const deco: string[] = [];
+  if (config.underline) deco.push("underline");
+  if (config.strikethrough) deco.push("line-through");
+
   const style: React.CSSProperties = {
     position: "absolute",
     left: padX,
     right: padX,
-    fontFamily: `${config.font}, var(--font-sans)`,
+    fontFamily: resolveTextFontCss(config.font),
     fontWeight: WEIGHT_MAP[config.weight] ?? 600,
+    fontStyle: config.italic ? "italic" : "normal",
+    textDecoration: deco.length ? deco.join(" ") : undefined,
     fontSize: (canvasWidth * config.fontSize) / 1000,
     lineHeight: config.lineHeight / 100,
     color: config.color,

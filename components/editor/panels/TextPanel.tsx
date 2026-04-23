@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect } from "react";
+import { Italic, Strikethrough, Underline } from "lucide-react";
 import type { Project, Screenshot, TextConfig, TextWeight } from "@/lib/types/project";
 import { useProjectsStore } from "@/store/projectsStore";
 import { useEditorStore } from "@/store/editorStore";
@@ -8,14 +10,19 @@ import { Slider } from "@/components/ui/slider";
 import { ColorInput } from "@/components/ui/color-input";
 import { Segment } from "@/components/ui/segment";
 import { TextArea } from "@/components/ui/text-input";
+import { FontPicker } from "./FontPicker";
+import { isSystemFontName } from "@/lib/fonts/fontCatalog";
+import { ensureGoogleFontLoaded } from "@/lib/fonts/loadGoogleFont";
+import { cn } from "@/lib/utils";
 
 interface Props {
   project: Project;
   screenshot: Screenshot;
 }
 
-const FONTS = ["Inter", "Helvetica", "Arial", "Georgia", "Times New Roman", "Courier New"];
 const WEIGHTS: TextWeight[] = ["Light", "Regular", "Medium", "Semibold", "Bold", "Heavy", "Black"];
+
+const WEIGHT_NUMS = [300, 400, 500, 600, 700, 800, 900] as const;
 
 export function TextPanel({ project, screenshot }: Props) {
   const updateScreenshot = useProjectsStore((s) => s.updateScreenshot);
@@ -23,6 +30,14 @@ export function TextPanel({ project, screenshot }: Props) {
 
   const update = (mut: (s: Screenshot) => void) =>
     updateScreenshot(project.id, screenshot.id, mut);
+
+  useEffect(() => {
+    const warm = (font: string) => {
+      if (!isSystemFontName(font)) void ensureGoogleFontLoaded(font, [...WEIGHT_NUMS]);
+    };
+    warm(screenshot.text.headline.font);
+    warm(screenshot.text.subheadline.font);
+  }, [screenshot.text.headline.font, screenshot.text.subheadline.font]);
 
   const renderTextEditor = (
     label: "Headline" | "Subheadline",
@@ -87,38 +102,64 @@ export function TextPanel({ project, screenshot }: Props) {
               })
             }
           />
-          <div className="grid grid-cols-2 gap-2">
-            <select
-              value={config.font}
-              onChange={(e) =>
-                apply((c) => {
-                  c.font = e.target.value;
-                })
-              }
-              className="rounded-[var(--radius-md)] border border-[var(--color-surface-2)] bg-white px-2 py-1.5 text-xs"
-            >
-              {FONTS.map((f) => (
-                <option key={f} value={f}>
-                  {f}
-                </option>
-              ))}
-            </select>
-            <select
-              value={config.weight}
-              onChange={(e) =>
-                apply((c) => {
-                  c.weight = e.target.value as TextWeight;
-                })
-              }
-              className="rounded-[var(--radius-md)] border border-[var(--color-surface-2)] bg-white px-2 py-1.5 text-xs"
-            >
-              {WEIGHTS.map((w) => (
-                <option key={w} value={w}>
-                  {w}
-                </option>
-              ))}
-            </select>
+          <label className="text-[10px] font-medium uppercase tracking-wide text-[var(--color-ink-muted)]">
+            Font
+          </label>
+          <FontPicker
+            value={config.font}
+            onChange={(font) =>
+              apply((c) => {
+                c.font = font;
+              })
+            }
+            weightsToLoad={[...WEIGHT_NUMS]}
+          />
+          <div className="flex gap-1 pt-1">
+            {(
+              [
+                ["italic", Italic, config.italic] as const,
+                ["underline", Underline, config.underline] as const,
+                ["strikethrough", Strikethrough, config.strikethrough] as const,
+              ]
+            ).map(([key, Icon, on]) => (
+              <button
+                key={key}
+                type="button"
+                aria-pressed={on}
+                onClick={() =>
+                  apply((c) => {
+                    if (key === "italic") c.italic = !c.italic;
+                    if (key === "underline") c.underline = !c.underline;
+                    if (key === "strikethrough") c.strikethrough = !c.strikethrough;
+                  })
+                }
+                className={cn(
+                  "inline-flex h-8 flex-1 items-center justify-center rounded-[var(--radius-sm)] border border-[var(--color-surface-2)] text-[var(--color-ink-body)] transition-colors",
+                  on ? "bg-[var(--color-surface-1)] ring-1 ring-[var(--color-ink-muted)]" : "bg-white hover:bg-[var(--color-surface-1)]",
+                )}
+              >
+                <Icon className="h-3.5 w-3.5" />
+              </button>
+            ))}
           </div>
+          <label className="text-[10px] font-medium uppercase tracking-wide text-[var(--color-ink-muted)]">
+            Kalınlık
+          </label>
+          <select
+            value={config.weight}
+            onChange={(e) =>
+              apply((c) => {
+                c.weight = e.target.value as TextWeight;
+              })
+            }
+            className="w-full rounded-[var(--radius-md)] border border-[var(--color-surface-2)] bg-white px-2 py-1.5 text-xs"
+          >
+            {WEIGHTS.map((w) => (
+              <option key={w} value={w}>
+                {w}
+              </option>
+            ))}
+          </select>
           <Slider
             label="Boyut"
             value={config.fontSize}

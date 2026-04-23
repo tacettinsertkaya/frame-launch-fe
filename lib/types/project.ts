@@ -205,9 +205,12 @@ export interface Project {
   name: string;
   createdAt: string;
   updatedAt: string;
-  schemaVersion: 2;
+  schemaVersion: 3;
   defaultLocale: Locale;
   activeLocales: Locale[];
+  currentLocale: Locale;
+  defaultDeviceSizeId: DeviceSizeId;
+  defaultCustomDimensions?: { width: number; height: number };
   screenshots: Screenshot[];
   lastStyleSource?: string;
 }

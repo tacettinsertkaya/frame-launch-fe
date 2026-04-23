@@ -38,9 +38,11 @@ function makeProject(name: string, screenshots: Screenshot[]): Project {
     name,
     createdAt: nowIso(),
     updatedAt: nowIso(),
-    schemaVersion: 2,
+    schemaVersion: 3,
     defaultLocale: "tr",
     activeLocales: ["tr", "en"],
+    currentLocale: "tr",
+    defaultDeviceSizeId: "iphone-69",
     screenshots,
   };
 }

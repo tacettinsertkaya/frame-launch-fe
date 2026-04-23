@@ -140,9 +140,11 @@ export function makeBlankProject(name: string): Project {
     name,
     createdAt: now,
     updatedAt: now,
-    schemaVersion: 2,
+    schemaVersion: 3,
     defaultLocale: "tr",
     activeLocales: ["tr"],
+    currentLocale: "tr",
+    defaultDeviceSizeId: "iphone-69",
     screenshots: [makeBlankScreenshot("Ekran 1")],
   };
 }

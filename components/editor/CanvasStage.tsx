@@ -6,6 +6,7 @@ import type { Project } from "@/lib/types/project";
 import { getEffectiveDimensions } from "@/lib/devices/registry";
 import { useEditorStore } from "@/store/editorStore";
 import { Canvas } from "./Canvas";
+import { SidePreviewStrip } from "./canvas/SidePreviewStrip";
 
 interface Props {
   project: Project;
@@ -50,33 +51,40 @@ export function CanvasStage({ project }: Props) {
   }, [active?.deviceSizeId]);
 
   return (
-    <div className="relative flex h-full flex-1 flex-col bg-[var(--color-surface-1)]">
+    <div className="relative flex h-full min-h-0 flex-1 flex-col bg-[var(--color-surface-1)]">
       <div
         ref={containerRef}
-        className="relative flex flex-1 items-center justify-center overflow-auto p-10"
+        className="relative flex min-h-0 flex-1 flex-col overflow-hidden"
       >
-        {/* Hidden render canvases for export */}
         <div
-          aria-hidden
-          style={{
-            position: "absolute",
-            left: -99999,
-            top: -99999,
-            pointerEvents: "none",
-          }}
+          className="relative flex min-h-0 flex-1 items-stretch justify-center overflow-auto p-10"
         >
-          {project.screenshots.map((s) => (
-            <div key={s.id} data-screenshot-id={s.id}>
-              <Canvas screenshot={s} locale={activeLocale} scale={1} />
-            </div>
-          ))}
-        </div>
-
-        {active && (
-          <div className="rounded-[var(--radius-lg)] bg-white shadow-[var(--shadow-xl)]">
-            <Canvas screenshot={active} locale={activeLocale} scale={zoom} />
+          {/* Export için gizli tam çözünürlük kopyaları */}
+          <div
+            aria-hidden
+            style={{
+              position: "absolute",
+              left: -99999,
+              top: -99999,
+              pointerEvents: "none",
+            }}
+          >
+            {project.screenshots.map((s) => (
+              <div key={s.id} data-screenshot-id={s.id}>
+                <Canvas screenshot={s} locale={activeLocale} scale={1} />
+              </div>
+            ))}
           </div>
-        )}
+
+          {active && (
+            <SidePreviewStrip
+              project={project}
+              active={active}
+              activeLocale={activeLocale}
+              zoom={zoom}
+            />
+          )}
+        </div>
       </div>
 
       <div className="absolute bottom-4 right-4 flex items-center gap-1 rounded-full bg-white/95 px-2 py-1.5 shadow-[var(--shadow-md)] backdrop-blur-md">

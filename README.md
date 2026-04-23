@@ -20,6 +20,7 @@
   IndexedDB'de. Hiçbir veri sunucuya gitmez.
 - **5 hazır şablon** — SaaS Dashboard, E-commerce, Fitness, AI Tool, Marketing OG.
 
+
 ## Teknoloji
 
 - [Next.js 15](https://nextjs.org/) (App Router, React 19) + TypeScript

@@ -155,8 +155,15 @@ export type SceneElement =
       frame: TextFrame;
       frameColor: Hex;
       frameScale: number;
+      frameOffsetY: number;
     })
-  | (ElementBase & { kind: "graphic"; blobId: string; flipH: boolean; flipV: boolean });
+  | (ElementBase & {
+      kind: "graphic";
+      blobId: string;
+      flipH: boolean;
+      flipV: boolean;
+      tint?: Hex;
+    });
 
 export interface Popout {
   id: string;

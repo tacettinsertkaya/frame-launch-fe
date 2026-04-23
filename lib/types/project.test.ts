@@ -4,6 +4,7 @@ import {
   defaultScreenshotTextBundle,
   defaultDevice,
 } from "./project";
+import type { SceneElement } from "./project";
 
 describe("defaultText", () => {
   it("default headline includes italic/underline/strikethrough flags as false", () => {
@@ -48,5 +49,47 @@ describe("defaultDevice extensions", () => {
   it("has no frameColorPresetId by default", () => {
     const d = defaultDevice();
     expect(d.frameColorPresetId).toBeUndefined();
+  });
+});
+
+describe("SceneElement extensions", () => {
+  it("text element accepts frameOffsetY", () => {
+    const el: SceneElement = {
+      id: "e1",
+      layer: "aboveScreenshot",
+      positionX: 0,
+      positionY: 0,
+      size: 1,
+      rotation: 0,
+      opacity: 100,
+      kind: "text",
+      text: { tr: "x" },
+      font: "Inter",
+      weight: "Bold",
+      color: "#000",
+      frame: "none",
+      frameColor: "#000",
+      frameScale: 1,
+      frameOffsetY: 5,
+    };
+    expect(el.kind === "text" ? el.frameOffsetY : 0).toBe(5);
+  });
+
+  it("graphic element accepts optional tint", () => {
+    const el: SceneElement = {
+      id: "e2",
+      layer: "aboveScreenshot",
+      positionX: 0,
+      positionY: 0,
+      size: 1,
+      rotation: 0,
+      opacity: 100,
+      kind: "graphic",
+      blobId: "b",
+      flipH: false,
+      flipV: false,
+      tint: "#ff0000",
+    };
+    expect(el.kind === "graphic" ? el.tint : undefined).toBe("#ff0000");
   });
 });

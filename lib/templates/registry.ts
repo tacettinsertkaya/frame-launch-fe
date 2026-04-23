@@ -1,12 +1,27 @@
-import type { Project, Screenshot } from "@/lib/types/project";
+import type { Project, Screenshot, ScreenshotTextBundle } from "@/lib/types/project";
 import {
   defaultBackground,
   defaultBorder,
   defaultDevice,
+  defaultScreenshotTextBundle,
   defaultShadow,
   defaultText,
 } from "@/lib/types/project";
 import { uid, nowIso } from "@/lib/utils";
+
+function bundleFromPartial(partial?: {
+  headline?: Partial<ScreenshotTextBundle["headline"]>;
+  subheadline?: Partial<ScreenshotTextBundle["subheadline"]>;
+}): ScreenshotTextBundle {
+  const base = defaultScreenshotTextBundle();
+  return {
+    ...base,
+    headline: partial?.headline ? { ...base.headline, ...partial.headline } : base.headline,
+    subheadline: partial?.subheadline
+      ? { ...base.subheadline, ...partial.subheadline }
+      : base.subheadline,
+  };
+}
 
 export interface TemplateMeta {
   id: string;
@@ -30,7 +45,15 @@ function makeProject(name: string, screenshots: Screenshot[]): Project {
   };
 }
 
-function screenshot(partial: Partial<Screenshot>): Screenshot {
+function screenshot(
+  partial: Omit<Partial<Screenshot>, "text"> & {
+    text?: {
+      headline?: Partial<ScreenshotTextBundle["headline"]>;
+      subheadline?: Partial<ScreenshotTextBundle["subheadline"]>;
+    };
+  },
+): Screenshot {
+  const { text, ...rest } = partial;
   return {
     id: uid("s_"),
     name: "Ekran",
@@ -38,13 +61,10 @@ function screenshot(partial: Partial<Screenshot>): Screenshot {
     uploads: {},
     background: defaultBackground(),
     device: defaultDevice(),
-    text: {
-      headline: defaultText("top", true),
-      subheadline: { ...defaultText("top", false), enabled: false },
-    },
+    text: bundleFromPartial(text),
     elements: [],
     popouts: [],
-    ...partial,
+    ...rest,
   };
 }
 

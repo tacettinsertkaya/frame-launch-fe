@@ -4,7 +4,7 @@ import {
   defaultScreenshotTextBundle,
   defaultDevice,
 } from "./project";
-import type { SceneElement } from "./project";
+import type { SceneElement, Screenshot, UploadMeta } from "./project";
 
 describe("defaultText", () => {
   it("default headline includes italic/underline/strikethrough flags as false", () => {
@@ -91,5 +91,17 @@ describe("SceneElement extensions", () => {
       tint: "#ff0000",
     };
     expect(el.kind === "graphic" ? el.tint : undefined).toBe("#ff0000");
+  });
+});
+
+describe("Screenshot.uploadMeta", () => {
+  it("accepts optional uploadMeta keyed by locale", () => {
+    const meta: UploadMeta = {
+      filename: "x_de.png",
+      baseFilename: "x",
+      uploadedAt: "2026-01-01",
+    };
+    const s: Partial<Screenshot> = { uploadMeta: { de: meta } };
+    expect(s.uploadMeta?.de?.filename).toBe("x_de.png");
   });
 });

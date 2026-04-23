@@ -180,15 +180,22 @@ export interface Popout {
   border: BorderConfig;
 }
 
+export interface UploadMeta {
+  filename: string;
+  baseFilename: string;
+  uploadedAt: string;
+}
+
 export interface Screenshot {
   id: string;
   name: string;
   deviceSizeId: DeviceSizeId;
   customDimensions?: { width: number; height: number };
   uploads: Partial<Record<Locale, string>>;
+  uploadMeta?: Partial<Record<Locale, UploadMeta>>;
   background: BackgroundConfig;
   device: DeviceConfig;
-  text: { headline: TextConfig; subheadline: TextConfig };
+  text: ScreenshotTextBundle;
   elements: SceneElement[];
   popouts: Popout[];
 }

@@ -5,7 +5,7 @@ import type { Project, Screenshot } from "@/lib/types/project";
 import {
   defaultBackground,
   defaultDevice,
-  defaultText,
+  defaultScreenshotTextBundle,
 } from "@/lib/types/project";
 import {
   loadProjects,
@@ -155,10 +155,7 @@ export function makeBlankScreenshot(name: string): Screenshot {
     uploads: {},
     background: defaultBackground(),
     device: defaultDevice(),
-    text: {
-      headline: defaultText("top", true),
-      subheadline: { ...defaultText("top", false), enabled: false },
-    },
+    text: defaultScreenshotTextBundle(),
     elements: [],
     popouts: [],
   };

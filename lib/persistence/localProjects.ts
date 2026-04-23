@@ -1,5 +1,6 @@
 import { compressToUTF16, decompressFromUTF16 } from "lz-string";
 import type { Project } from "@/lib/types/project";
+import { migrateLegacyProject } from "./migrate";
 
 const KEY_PROJECTS = "framelaunch:projects:v2";
 const KEY_ACTIVE = "framelaunch:activeProjectId";
@@ -13,8 +14,21 @@ export function loadProjects(): Project[] {
     if (!raw) return [];
     const decompressed = decompressFromUTF16(raw);
     if (!decompressed) return [];
-    const parsed = JSON.parse(decompressed) as Project[];
-    return Array.isArray(parsed) ? parsed : [];
+    const parsed = JSON.parse(decompressed) as unknown[];
+    if (!Array.isArray(parsed)) return [];
+    const out: Project[] = [];
+    for (const item of parsed) {
+      if (typeof item !== "object" || item === null) {
+        console.warn("loadProjects: skipping non-object entry");
+        continue;
+      }
+      try {
+        out.push(migrateLegacyProject(item));
+      } catch (err) {
+        console.warn("loadProjects: skipping corrupted project", err);
+      }
+    }
+    return out;
   } catch (err) {
     console.warn("loadProjects failed", err);
     return [];

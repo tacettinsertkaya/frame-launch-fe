@@ -12,6 +12,7 @@ import { ExportModal } from "./ExportModal";
 import { DuplicateUploadModal } from "./modals/DuplicateUploadModal";
 import { LanguagesModal } from "./modals/LanguagesModal";
 import { ScreenshotTranslationsModal } from "./modals/ScreenshotTranslationsModal";
+import { ApplyStyleModal } from "./modals/ApplyStyleModal";
 
 export function EditorShell() {
   const hydrated = useProjectsStore((s) => s.hydrated);
@@ -79,6 +80,7 @@ export function EditorShell() {
       <DuplicateUploadModal />
       <LanguagesModal project={project} />
       <ScreenshotTranslationsModal project={project} />
+      <ApplyStyleModal project={project} />
     </div>
   );
 }

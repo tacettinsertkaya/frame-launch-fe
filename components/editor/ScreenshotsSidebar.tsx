@@ -1,6 +1,15 @@
 "use client";
 
-import { Plus, Trash2, Copy, GripVertical, Languages } from "lucide-react";
+import {
+  Plus,
+  Trash2,
+  Copy,
+  GripVertical,
+  Languages,
+  ArrowRightLeft,
+  Layers,
+} from "lucide-react";
+import { toast } from "sonner";
 import {
   DndContext,
   PointerSensor,
@@ -22,6 +31,7 @@ import { useProjectsStore, makeBlankScreenshot } from "@/store/projectsStore";
 import { useEditorStore } from "@/store/editorStore";
 import { Canvas } from "./Canvas";
 import { cn, uid } from "@/lib/utils";
+import { copyScreenshotStyleFromTo } from "@/lib/editor/styleTransfer";
 
 interface Props {
   project: Project;
@@ -37,6 +47,10 @@ export function ScreenshotsSidebar({ project }: Props) {
   const openScreenshotTranslationsModal = useEditorStore(
     (s) => s.openScreenshotTranslationsModal,
   );
+  const transferTarget = useEditorStore((s) => s.transferTarget);
+  const setTransferTarget = useEditorStore((s) => s.setTransferTarget);
+  const openApplyStyleModal = useEditorStore((s) => s.openApplyStyleModal);
+  const updateScreenshot = useProjectsStore((s) => s.updateScreenshot);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -92,6 +106,33 @@ export function ScreenshotsSidebar({ project }: Props) {
 
   const items = project.screenshots.map((s) => s.id);
 
+  const handleThumbnailClick = (clickedId: string) => {
+    if (transferTarget) {
+      if (clickedId === transferTarget) {
+        setTransferTarget(null);
+        toast.info("Stil aktarımı iptal edildi");
+        return;
+      }
+      const src = project.screenshots.find((s) => s.id === clickedId);
+      const tgt = project.screenshots.find((s) => s.id === transferTarget);
+      if (!src || !tgt) {
+        setTransferTarget(null);
+        return;
+      }
+      updateScreenshot(project.id, transferTarget, (draft) => {
+        copyScreenshotStyleFromTo(src, draft);
+      });
+      updateProject(project.id, (p) => {
+        p.lastStyleSource = clickedId;
+      });
+      setTransferTarget(null);
+      toast.success("Stil kopyalandı");
+      setActive(clickedId);
+      return;
+    }
+    setActive(clickedId);
+  };
+
   return (
     <aside className="flex h-full w-[200px] flex-col border-r border-[var(--color-surface-2)] bg-[var(--color-surface-1)]">
       <div className="flex items-center justify-between px-3 py-3">
@@ -106,6 +147,21 @@ export function ScreenshotsSidebar({ project }: Props) {
           <Plus size={14} />
         </button>
       </div>
+      {transferTarget && (
+        <div className="mx-2 mb-2 flex items-center justify-between gap-1 rounded-[var(--radius-md)] border border-amber-200 bg-amber-50 px-2 py-1.5 text-[10px] leading-tight text-amber-950">
+          <span>Kaynak ekrana tıklayın</span>
+          <button
+            type="button"
+            className="shrink-0 font-medium underline"
+            onClick={() => {
+              setTransferTarget(null);
+              toast.info("İptal");
+            }}
+          >
+            İptal
+          </button>
+        </div>
+      )}
       <div className="flex-1 overflow-y-auto px-3 pb-3">
         <DndContext
           sensors={sensors}
@@ -121,10 +177,16 @@ export function ScreenshotsSidebar({ project }: Props) {
                   index={i}
                   active={s.id === activeId}
                   locale={activeLocale}
-                  onSelect={() => setActive(s.id)}
+                  isStyleRecipient={s.id === transferTarget}
+                  onThumbnailClick={() => handleThumbnailClick(s.id)}
                   onDuplicate={() => duplicate(s.id)}
                   onRemove={() => remove(s.id)}
                   onTranslations={() => openScreenshotTranslationsModal(s.id)}
+                  onMarkStyleRecipient={() => {
+                    setTransferTarget(s.id);
+                    toast.info("Şimdi stilin alınacağı kaynak ekrana tıklayın");
+                  }}
+                  onApplyStyleToAll={() => openApplyStyleModal(s.id)}
                 />
               ))}
             </div>
@@ -140,10 +202,13 @@ interface SortableRowProps {
   index: number;
   active: boolean;
   locale: Locale;
-  onSelect: () => void;
+  isStyleRecipient: boolean;
+  onThumbnailClick: () => void;
   onDuplicate: () => void;
   onRemove: () => void;
   onTranslations: () => void;
+  onMarkStyleRecipient: () => void;
+  onApplyStyleToAll: () => void;
 }
 
 function SortableRow({
@@ -151,10 +216,13 @@ function SortableRow({
   index,
   active,
   locale,
-  onSelect,
+  isStyleRecipient,
+  onThumbnailClick,
   onDuplicate,
   onRemove,
   onTranslations,
+  onMarkStyleRecipient,
+  onApplyStyleToAll,
 }: SortableRowProps) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
     useSortable({ id: screenshot.id });
@@ -181,12 +249,14 @@ function SortableRow({
         <GripVertical size={12} />
       </button>
       <button
-        onClick={onSelect}
+        type="button"
+        onClick={onThumbnailClick}
         className={cn(
           "block w-full overflow-hidden rounded-[var(--radius-md)] border-2 transition-all",
           active
             ? "border-[var(--color-brand-primary)] shadow-[var(--shadow-md)]"
             : "border-transparent hover:border-[var(--color-surface-2)]",
+          isStyleRecipient && "ring-2 ring-amber-400 ring-offset-1",
         )}
       >
         <div className="pointer-events-none">
@@ -198,6 +268,30 @@ function SortableRow({
           {String(index + 1).padStart(2, "0")} · {screenshot.name}
         </span>
         <div className="flex items-center gap-0.5 opacity-0 transition-opacity group-hover:opacity-100">
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onMarkStyleRecipient();
+            }}
+            className="grid h-6 w-6 place-items-center rounded text-[var(--color-ink-muted)] hover:bg-white hover:text-[var(--color-ink-strong)]"
+            aria-label="Stil buraya kopyalansın"
+            title="Önce bu hedefi seçin, sonra kaynak ekrana tıklayın"
+          >
+            <ArrowRightLeft size={11} />
+          </button>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onApplyStyleToAll();
+            }}
+            className="grid h-6 w-6 place-items-center rounded text-[var(--color-ink-muted)] hover:bg-white hover:text-[var(--color-ink-strong)]"
+            aria-label="Stili tüm ekranlara uygula"
+            title="Bu ekranın stilini diğer tüm ekranlara uygula"
+          >
+            <Layers size={11} />
+          </button>
           <button
             type="button"
             onClick={(e) => {

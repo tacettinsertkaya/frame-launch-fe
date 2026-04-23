@@ -20,6 +20,7 @@ function reset() {
     magicalTitlesModalOpen: false,
     languagesModalOpen: false,
     applyStyleModalOpen: false,
+    applyStyleSourceScreenshotId: null,
     translateModalState: null,
     duplicateUploadDialog: null,
     screenshotTranslationsModalId: null,

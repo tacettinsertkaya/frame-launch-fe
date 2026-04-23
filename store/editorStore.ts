@@ -51,6 +51,8 @@ interface EditorState {
   magicalTitlesModalOpen: boolean;
   languagesModalOpen: boolean;
   applyStyleModalOpen: boolean;
+  /** "Tümüne uygula" kaynak ekran id */
+  applyStyleSourceScreenshotId: string | null;
   exportLanguageDialogOpen: boolean;
 
   translateModalState: TranslateModalState | null;
@@ -78,7 +80,7 @@ interface EditorState {
   closeMagicalTitlesModal: () => void;
   openLanguagesModal: () => void;
   closeLanguagesModal: () => void;
-  openApplyStyleModal: () => void;
+  openApplyStyleModal: (screenshotId: string) => void;
   closeApplyStyleModal: () => void;
   setExportLanguageDialogOpen: (open: boolean) => void;
 
@@ -110,6 +112,7 @@ export const useEditorStore = create<EditorState>((set) => ({
   magicalTitlesModalOpen: false,
   languagesModalOpen: false,
   applyStyleModalOpen: false,
+  applyStyleSourceScreenshotId: null,
   exportLanguageDialogOpen: false,
 
   translateModalState: null,
@@ -137,8 +140,10 @@ export const useEditorStore = create<EditorState>((set) => ({
   closeMagicalTitlesModal: () => set({ magicalTitlesModalOpen: false }),
   openLanguagesModal: () => set({ languagesModalOpen: true }),
   closeLanguagesModal: () => set({ languagesModalOpen: false }),
-  openApplyStyleModal: () => set({ applyStyleModalOpen: true }),
-  closeApplyStyleModal: () => set({ applyStyleModalOpen: false }),
+  openApplyStyleModal: (screenshotId) =>
+    set({ applyStyleModalOpen: true, applyStyleSourceScreenshotId: screenshotId }),
+  closeApplyStyleModal: () =>
+    set({ applyStyleModalOpen: false, applyStyleSourceScreenshotId: null }),
   setExportLanguageDialogOpen: (open) => set({ exportLanguageDialogOpen: open }),
 
   openTranslateModal: ({ field, elementId }) =>

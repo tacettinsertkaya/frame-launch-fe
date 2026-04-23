@@ -3,6 +3,7 @@
 import { useEffect, useMemo } from "react";
 import { useProjectsStore } from "@/store/projectsStore";
 import { useEditorStore } from "@/store/editorStore";
+import { useSettingsStore } from "@/store/settingsStore";
 import { Topbar } from "./Topbar";
 import { ScreenshotsSidebar } from "./ScreenshotsSidebar";
 import { RightPanel } from "./RightPanel";
@@ -19,6 +20,7 @@ export function EditorShell() {
 
   useEffect(() => {
     hydrate();
+    useSettingsStore.getState().hydrate();
   }, [hydrate]);
 
   const project = useMemo(

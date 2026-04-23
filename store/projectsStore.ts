@@ -1,7 +1,7 @@
 "use client";
 
 import { create } from "zustand";
-import type { Project, Screenshot } from "@/lib/types/project";
+import type { Project, Screenshot, Locale } from "@/lib/types/project";
 import {
   defaultBackground,
   defaultDevice,
@@ -33,6 +33,11 @@ interface ProjectsState {
     screenshotId: string,
     updater: (s: Screenshot) => void,
   ) => void;
+  duplicateProject: (id: string, name?: string) => Project | null;
+  reorderScreenshots: (projectId: string, fromIdx: number, toIdx: number) => void;
+  addLocale: (projectId: string, locale: Locale) => void;
+  removeLocale: (projectId: string, locale: Locale) => void;
+  setCurrentLocale: (projectId: string, locale: Locale) => void;
 }
 
 function persist(projects: Project[]): void {
@@ -128,6 +133,66 @@ export const useProjectsStore = create<ProjectsState>((set, get) => ({
       const next = structuredClone(p.screenshots[idx]);
       updater(next);
       p.screenshots[idx] = next;
+    });
+  },
+
+  duplicateProject: (id, name) => {
+    const src = get().projects.find((p) => p.id === id);
+    if (!src) return null;
+    const cloned = structuredClone(src);
+    cloned.id = uid("p_");
+    cloned.name = name ?? `${src.name} (kopya)`;
+    cloned.createdAt = nowIso();
+    cloned.updatedAt = nowIso();
+    for (const s of cloned.screenshots) {
+      s.id = uid("s_");
+    }
+    const projects = [...get().projects, cloned];
+    persist(projects);
+    saveActiveProjectId(cloned.id);
+    set({ projects, activeProjectId: cloned.id });
+    return cloned;
+  },
+
+  reorderScreenshots: (projectId, fromIdx, toIdx) => {
+    get().updateProject(projectId, (p) => {
+      if (
+        fromIdx < 0 ||
+        fromIdx >= p.screenshots.length ||
+        toIdx < 0 ||
+        toIdx >= p.screenshots.length ||
+        fromIdx === toIdx
+      ) {
+        return;
+      }
+      const [moved] = p.screenshots.splice(fromIdx, 1);
+      p.screenshots.splice(toIdx, 0, moved);
+    });
+  },
+
+  addLocale: (projectId, locale) => {
+    get().updateProject(projectId, (p) => {
+      if (!p.activeLocales.includes(locale)) {
+        p.activeLocales = [...p.activeLocales, locale];
+      }
+    });
+  },
+
+  removeLocale: (projectId, locale) => {
+    get().updateProject(projectId, (p) => {
+      if (p.activeLocales.length <= 1) return;
+      p.activeLocales = p.activeLocales.filter((l) => l !== locale);
+      if (p.currentLocale === locale) {
+        p.currentLocale = p.activeLocales[0];
+      }
+    });
+  },
+
+  setCurrentLocale: (projectId, locale) => {
+    get().updateProject(projectId, (p) => {
+      if (p.activeLocales.includes(locale)) {
+        p.currentLocale = locale;
+      }
     });
   },
 }));

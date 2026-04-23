@@ -121,3 +121,23 @@ export function isPhoneOrTablet(id: DeviceSizeId): boolean {
   const d = getDeviceSize(id);
   return d.category === "iOS" || d.category === "Android";
 }
+
+const LEGACY_DEVICE_SIZE_ALIASES: Record<string, DeviceSizeId> = {
+  "iphone-6.9": "iphone-69",
+  "iphone-6.7": "iphone-67",
+  "iphone-6.5": "iphone-65",
+  "iphone-5.5": "iphone-55",
+  "ipad-12.9": "ipad-129",
+  "web-og": "og",
+  "web-twitter": "twitter-card",
+};
+
+export function resolveDeviceSizeId(rawId: string): DeviceSizeId {
+  if (LEGACY_DEVICE_SIZE_ALIASES[rawId]) {
+    return LEGACY_DEVICE_SIZE_ALIASES[rawId];
+  }
+  if (DEVICE_SIZES.find((d) => d.id === rawId)) {
+    return rawId as DeviceSizeId;
+  }
+  return "custom";
+}

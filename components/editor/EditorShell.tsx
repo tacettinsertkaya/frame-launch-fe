@@ -3,7 +3,6 @@
 import { useEffect, useMemo } from "react";
 import { useProjectsStore } from "@/store/projectsStore";
 import { useEditorStore } from "@/store/editorStore";
-import { useSettingsStore } from "@/store/settingsStore";
 import { Topbar } from "./Topbar";
 import { ScreenshotsSidebar } from "./ScreenshotsSidebar";
 import { RightPanel } from "./RightPanel";
@@ -13,6 +12,8 @@ import { DuplicateUploadModal } from "./modals/DuplicateUploadModal";
 import { LanguagesModal } from "./modals/LanguagesModal";
 import { ScreenshotTranslationsModal } from "./modals/ScreenshotTranslationsModal";
 import { ApplyStyleModal } from "./modals/ApplyStyleModal";
+import { SettingsModal } from "./modals/SettingsModal";
+import { AboutModal } from "./modals/AboutModal";
 
 export function EditorShell() {
   const hydrated = useProjectsStore((s) => s.hydrated);
@@ -25,7 +26,6 @@ export function EditorShell() {
 
   useEffect(() => {
     hydrate();
-    useSettingsStore.getState().hydrate();
   }, [hydrate]);
 
   const project = useMemo(
@@ -67,7 +67,7 @@ export function EditorShell() {
     project.screenshots.find((s) => s.id === activeScreenshotId) ?? project.screenshots[0];
 
   return (
-    <div className="flex h-screen flex-col overflow-hidden bg-white">
+    <div className="flex h-screen flex-col overflow-hidden bg-[var(--color-surface-0)]">
       <Topbar project={project} />
       <div className="flex flex-1 overflow-hidden">
         <ScreenshotsSidebar project={project} />
@@ -81,6 +81,8 @@ export function EditorShell() {
       <LanguagesModal project={project} />
       <ScreenshotTranslationsModal project={project} />
       <ApplyStyleModal project={project} />
+      <SettingsModal />
+      <AboutModal />
     </div>
   );
 }

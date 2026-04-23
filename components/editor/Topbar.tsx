@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Download, Home, Languages, Pencil, Plus, Trash2 } from "lucide-react";
+import { Download, Home, Info, Languages, Pencil, Plus, Settings, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import type { Locale, Project } from "@/lib/types/project";
 import { useEditorStore } from "@/store/editorStore";
@@ -28,6 +28,8 @@ interface Props {
 
 export function Topbar({ project }: Props) {
   const setExportOpen = useEditorStore((s) => s.setExportModalOpen);
+  const openSettingsModal = useEditorStore((s) => s.openSettingsModal);
+  const openAboutModal = useEditorStore((s) => s.openAboutModal);
   const activeLocale = useEditorStore((s) => s.activeLocale);
   const setActiveLocale = useEditorStore((s) => s.setActiveLocale);
   const openLanguagesModal = useEditorStore((s) => s.openLanguagesModal);
@@ -48,7 +50,7 @@ export function Topbar({ project }: Props) {
 
   return (
     <>
-      <header className="flex h-14 items-center justify-between border-b border-[var(--color-surface-2)] bg-white px-4">
+      <header className="flex h-14 items-center justify-between border-b border-[var(--color-surface-2)] bg-[var(--color-surface-0)] px-4">
         <div className="flex min-w-0 items-center gap-3">
           <Link
             href="/"
@@ -82,6 +84,12 @@ export function Topbar({ project }: Props) {
         </div>
 
         <div className="flex shrink-0 items-center gap-2">
+          <IconBtn label="Ayarlar" onClick={() => openSettingsModal()}>
+            <Settings size={14} />
+          </IconBtn>
+          <IconBtn label="Hakkında" onClick={() => openAboutModal()}>
+            <Info size={14} />
+          </IconBtn>
           {project && (
             <>
               <button

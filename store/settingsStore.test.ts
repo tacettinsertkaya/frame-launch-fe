@@ -15,6 +15,7 @@ describe("settingsStore", () => {
         openai: "gpt-5-mini-2025-08-07",
         google: "gemini-2.5-flash",
       },
+      googleFontsApiKey: "",
       hasSeenMagicalTitlesTooltip: false,
     });
   });
@@ -47,6 +48,14 @@ describe("settingsStore", () => {
     useSettingsStore.getState().hydrate();
     useSettingsStore.getState().setApiKey("anthropic", "sk-ant-x");
     expect(window.localStorage.getItem("claudeApiKey")).toBe("sk-ant-x");
+  });
+
+  it("hydrate and setGoogleFontsApiKey persist googleFontsApiKey", () => {
+    window.localStorage.setItem("googleFontsApiKey", "AIza_test_fonts");
+    useSettingsStore.getState().hydrate();
+    expect(useSettingsStore.getState().googleFontsApiKey).toBe("AIza_test_fonts");
+    useSettingsStore.getState().setGoogleFontsApiKey("key2");
+    expect(window.localStorage.getItem("googleFontsApiKey")).toBe("key2");
   });
 
   it("setSelectedModel persists", () => {

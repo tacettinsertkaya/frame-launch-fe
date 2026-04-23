@@ -24,7 +24,7 @@ export function RightPanel({ project, screenshot }: Props) {
   const setTab = useEditorStore((s) => s.setRightPanelTab);
 
   return (
-    <aside className="flex h-full w-[320px] flex-col border-l border-[var(--color-surface-2)] bg-white">
+    <aside className="flex h-full w-[320px] flex-col border-l border-[var(--color-surface-2)] bg-[var(--color-surface-0)]">
       <div className="flex border-b border-[var(--color-surface-2)]">
         {TABS.map((t) => {
           const active = t.id === tab;

@@ -121,3 +121,23 @@ input[type="range"]::-moz-range-thumb {
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(0, 0, 0, 0.35);
 }
+
+/* Dark theme — toggled by ThemeSync (`html.framelaunch-dark`) */
+html.framelaunch-dark {
+  color-scheme: dark;
+  --color-surface-0: #0a0a0a;
+  --color-surface-1: #121212;
+  --color-surface-2: #1c1c1c;
+  --color-surface-3: #2a2a2a;
+  --color-ink-strong: #fafafa;
+  --color-ink-body: #e4e4e4;
+  --color-ink-muted: #a3a3a3;
+  --color-ink-subtle: #737373;
+}
+
+html.framelaunch-dark ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+}
+html.framelaunch-dark ::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.28);
+}

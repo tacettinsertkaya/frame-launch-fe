@@ -65,7 +65,9 @@ export interface DeviceConfig {
   scale: number;
   verticalPos: number;
   horizontalPos: number;
+  perspective: number;
   frameColor: Hex;
+  frameColorPresetId?: string;
   cornerRadius: number;
   tiltRotation: number;
   shadow: ShadowConfig;
@@ -234,6 +236,7 @@ export const defaultDevice = (): DeviceConfig => ({
   scale: 70,
   verticalPos: 55,
   horizontalPos: 50,
+  perspective: 0,
   frameColor: "#000000",
   cornerRadius: 24,
   tiltRotation: 0,

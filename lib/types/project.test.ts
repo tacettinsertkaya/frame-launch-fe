@@ -1,5 +1,9 @@
 import { describe, it, expect } from "vitest";
-import { defaultText, defaultScreenshotTextBundle } from "./project";
+import {
+  defaultText,
+  defaultScreenshotTextBundle,
+  defaultDevice,
+} from "./project";
 
 describe("defaultText", () => {
   it("default headline includes italic/underline/strikethrough flags as false", () => {
@@ -32,5 +36,17 @@ describe("ScreenshotTextBundle", () => {
     const bundle = defaultScreenshotTextBundle();
     expect(bundle.headline.enabled).toBe(true);
     expect(bundle.subheadline.enabled).toBe(false);
+  });
+});
+
+describe("defaultDevice extensions", () => {
+  it("has perspective 0 by default", () => {
+    const d = defaultDevice();
+    expect(d.perspective).toBe(0);
+  });
+
+  it("has no frameColorPresetId by default", () => {
+    const d = defaultDevice();
+    expect(d.frameColorPresetId).toBeUndefined();
   });
 });

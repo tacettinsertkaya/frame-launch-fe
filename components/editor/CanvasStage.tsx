@@ -51,13 +51,13 @@ export function CanvasStage({ project }: Props) {
   }, [active?.deviceSizeId]);
 
   return (
-    <div className="relative flex h-full min-h-0 flex-1 flex-col bg-[var(--color-surface-1)]">
+    <div className="relative flex h-full min-h-0 min-w-0 flex-1 flex-col bg-[var(--color-surface-1)]">
       <div
         ref={containerRef}
-        className="relative flex min-h-0 flex-1 flex-col overflow-hidden"
+        className="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden"
       >
         <div
-          className="relative flex min-h-0 flex-1 items-stretch justify-center overflow-auto p-10"
+          className="relative flex min-h-0 flex-1 items-stretch justify-center overflow-auto p-4 sm:p-8 md:p-10"
         >
           {/* Export için gizli tam çözünürlük kopyaları */}
           <div
@@ -87,30 +87,37 @@ export function CanvasStage({ project }: Props) {
         </div>
       </div>
 
-      <div className="absolute bottom-4 right-4 flex items-center gap-1 rounded-full bg-white/95 px-2 py-1.5 shadow-[var(--shadow-md)] backdrop-blur-md">
+      <div
+        role="toolbar"
+        aria-label="Yakınlaştırma"
+        className="pointer-events-auto absolute bottom-4 right-4 z-30 flex items-center gap-1 rounded-full border border-black/5 bg-white/95 px-2 py-1.5 shadow-[var(--shadow-md)] backdrop-blur-md"
+      >
         <button
+          type="button"
           onClick={() => setZoom(zoom - 0.05)}
-          className="grid h-7 w-7 place-items-center rounded-full text-[var(--color-ink-body)] hover:bg-[var(--color-surface-1)]"
+          className="grid h-7 w-7 place-items-center rounded-full text-[var(--color-ink-body)] transition-colors hover:bg-[var(--color-surface-1)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)]"
           aria-label="Uzaklaştır"
         >
-          <ZoomOut size={14} />
+          <ZoomOut size={14} aria-hidden />
         </button>
-        <span className="min-w-12 text-center text-xs font-medium tabular-nums">
+        <span className="min-w-12 text-center text-xs font-medium tabular-nums" aria-live="polite">
           {Math.round(zoom * 100)}%
         </span>
         <button
+          type="button"
           onClick={() => setZoom(zoom + 0.05)}
-          className="grid h-7 w-7 place-items-center rounded-full text-[var(--color-ink-body)] hover:bg-[var(--color-surface-1)]"
+          className="grid h-7 w-7 place-items-center rounded-full text-[var(--color-ink-body)] transition-colors hover:bg-[var(--color-surface-1)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)]"
           aria-label="Yakınlaştır"
         >
-          <ZoomIn size={14} />
+          <ZoomIn size={14} aria-hidden />
         </button>
         <button
+          type="button"
           onClick={fitZoom}
-          className="grid h-7 w-7 place-items-center rounded-full text-[var(--color-ink-body)] hover:bg-[var(--color-surface-1)]"
+          className="grid h-7 w-7 place-items-center rounded-full text-[var(--color-ink-body)] transition-colors hover:bg-[var(--color-surface-1)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)]"
           aria-label="Ekrana sığdır"
         >
-          <Maximize2 size={14} />
+          <Maximize2 size={14} aria-hidden />
         </button>
       </div>
     </div>

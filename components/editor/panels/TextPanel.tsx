@@ -227,7 +227,7 @@ export function TextPanel({ project, screenshot }: Props) {
   );
 
   return (
-    <div className="overflow-y-auto">
+    <div className="h-full overflow-y-auto pb-4">
       {renderTextEditor("Headline", "headline", screenshot.text.headline, (m) =>
         update((s) => m(s.text.headline)),
       )}

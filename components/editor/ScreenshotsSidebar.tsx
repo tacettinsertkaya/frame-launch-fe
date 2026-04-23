@@ -84,7 +84,7 @@ export function ScreenshotsSidebar({ project }: Props) {
 
   const remove = (id: string) => {
     if (project.screenshots.length === 1) {
-      alert("En az bir ekran kalmalı.");
+      toast.info("En az bir ekran kalmalı.");
       return;
     }
     const idx = project.screenshots.findIndex((s) => s.id === id);
@@ -134,25 +134,32 @@ export function ScreenshotsSidebar({ project }: Props) {
   };
 
   return (
-    <aside className="flex h-full w-[200px] flex-col border-r border-[var(--color-surface-2)] bg-[var(--color-surface-1)]">
-      <div className="flex items-center justify-between px-3 py-3">
+    <aside
+      className="flex h-full w-[200px] shrink-0 flex-col border-r border-[var(--color-surface-2)] bg-[var(--color-surface-1)]"
+      aria-label="Ekran listesi"
+    >
+      <div className="flex shrink-0 items-center justify-between px-3 py-3">
         <h2 className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--color-ink-muted)]">
           Ekranlar
         </h2>
         <button
+          type="button"
           onClick={addScreenshot}
-          className="grid h-7 w-7 place-items-center rounded-[var(--radius-sm)] bg-black text-white shadow-[var(--shadow-sm)] hover:bg-[var(--color-dark-surface-2)]"
-          aria-label="Yeni ekran"
+          className="grid h-7 w-7 place-items-center rounded-[var(--radius-sm)] bg-black text-white shadow-[var(--shadow-sm)] transition-colors hover:bg-[var(--color-dark-surface-2)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-surface-1)]"
+          aria-label="Yeni ekran ekle"
         >
-          <Plus size={14} />
+          <Plus size={14} aria-hidden />
         </button>
       </div>
       {transferTarget && (
-        <div className="mx-2 mb-2 flex items-center justify-between gap-1 rounded-[var(--radius-md)] border border-amber-200 bg-amber-50 px-2 py-1.5 text-[10px] leading-tight text-amber-950">
-          <span>Kaynak ekrana tıklayın</span>
+        <div
+          role="status"
+          className="mx-2 mb-2 flex shrink-0 items-center justify-between gap-1 rounded-[var(--radius-md)] border border-amber-200 bg-amber-50 px-2 py-1.5 text-[10px] leading-tight text-amber-950"
+        >
+          <span className="min-w-0 flex-1 truncate">Kaynak ekrana tıklayın</span>
           <button
             type="button"
-            className="shrink-0 font-medium underline"
+            className="shrink-0 rounded font-medium underline transition-colors hover:text-amber-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
             onClick={() => {
               setTransferTarget(null);
               toast.info("İptal");
@@ -194,6 +201,37 @@ export function ScreenshotsSidebar({ project }: Props) {
         </DndContext>
       </div>
     </aside>
+  );
+}
+
+interface RowActionProps {
+  onClick: () => void;
+  label: string;
+  title: string;
+  danger?: boolean;
+  children: React.ReactNode;
+}
+
+function RowAction({ onClick, label, title, danger, children }: RowActionProps) {
+  return (
+    <button
+      type="button"
+      onClick={(e) => {
+        e.stopPropagation();
+        onClick();
+      }}
+      aria-label={label}
+      title={title}
+      className={cn(
+        "grid h-6 w-6 place-items-center rounded text-[var(--color-ink-muted)] transition-colors",
+        "focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-1 focus-visible:ring-offset-[var(--color-surface-1)]",
+        danger
+          ? "hover:bg-red-50 hover:text-red-500 focus-visible:ring-red-400"
+          : "hover:bg-white hover:text-[var(--color-ink-strong)]",
+      )}
+    >
+      {children}
+    </button>
   );
 }
 
@@ -241,18 +279,21 @@ function SortableRow({
     >
       <button
         type="button"
-        aria-label="Sürükle"
+        aria-label={`"${screenshot.name}" ekranını sürükle`}
         {...attributes}
         {...listeners}
-        className="absolute left-1 top-1 z-10 grid h-6 w-5 cursor-grab place-items-center rounded text-[var(--color-ink-muted)] opacity-0 transition-opacity group-hover:opacity-100 active:cursor-grabbing"
+        className="absolute left-1 top-1 z-10 grid h-6 w-5 cursor-grab place-items-center rounded text-[var(--color-ink-muted)] opacity-0 transition-opacity hover:bg-white/70 focus:opacity-100 group-hover:opacity-100 group-focus-within:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] active:cursor-grabbing"
       >
-        <GripVertical size={12} />
+        <GripVertical size={12} aria-hidden />
       </button>
       <button
         type="button"
         onClick={onThumbnailClick}
+        aria-label={`${screenshot.name} ekranını seç`}
+        aria-pressed={active}
         className={cn(
           "block w-full overflow-hidden rounded-[var(--radius-md)] border-2 transition-all",
+          "focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-surface-1)]",
           active
             ? "border-[var(--color-brand-primary)] shadow-[var(--shadow-md)]"
             : "border-transparent hover:border-[var(--color-surface-2)]",
@@ -264,62 +305,25 @@ function SortableRow({
         </div>
       </button>
       <div className="mt-1 flex items-center justify-between gap-1">
-        <span className="truncate text-[11px] text-[var(--color-ink-body)]">
+        <span className="min-w-0 flex-1 truncate text-[11px] text-[var(--color-ink-body)]">
           {String(index + 1).padStart(2, "0")} · {screenshot.name}
         </span>
-        <div className="flex items-center gap-0.5 opacity-0 transition-opacity group-hover:opacity-100">
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              onMarkStyleRecipient();
-            }}
-            className="grid h-6 w-6 place-items-center rounded text-[var(--color-ink-muted)] hover:bg-white hover:text-[var(--color-ink-strong)]"
-            aria-label="Stil buraya kopyalansın"
-            title="Önce bu hedefi seçin, sonra kaynak ekrana tıklayın"
-          >
-            <ArrowRightLeft size={11} />
-          </button>
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              onApplyStyleToAll();
-            }}
-            className="grid h-6 w-6 place-items-center rounded text-[var(--color-ink-muted)] hover:bg-white hover:text-[var(--color-ink-strong)]"
-            aria-label="Stili tüm ekranlara uygula"
-            title="Bu ekranın stilini diğer tüm ekranlara uygula"
-          >
-            <Layers size={11} />
-          </button>
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              onTranslations();
-            }}
-            className="grid h-6 w-6 place-items-center rounded text-[var(--color-ink-muted)] hover:bg-white hover:text-[var(--color-ink-strong)]"
-            aria-label="Çeviriler"
-            title="Çeviriler"
-          >
-            <Languages size={11} />
-          </button>
-          <button
-            type="button"
-            onClick={onDuplicate}
-            className="grid h-6 w-6 place-items-center rounded text-[var(--color-ink-muted)] hover:bg-white hover:text-[var(--color-ink-strong)]"
-            aria-label="Çoğalt"
-          >
-            <Copy size={11} />
-          </button>
-          <button
-            type="button"
-            onClick={onRemove}
-            className="grid h-6 w-6 place-items-center rounded text-[var(--color-ink-muted)] hover:bg-red-50 hover:text-red-500"
-            aria-label="Sil"
-          >
-            <Trash2 size={11} />
-          </button>
+        <div className="flex shrink-0 items-center gap-0.5 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
+          <RowAction onClick={onMarkStyleRecipient} label="Stil buraya kopyalansın" title="Önce bu hedefi seçin, sonra kaynak ekrana tıklayın">
+            <ArrowRightLeft size={11} aria-hidden />
+          </RowAction>
+          <RowAction onClick={onApplyStyleToAll} label="Stili tüm ekranlara uygula" title="Bu ekranın stilini diğer tüm ekranlara uygula">
+            <Layers size={11} aria-hidden />
+          </RowAction>
+          <RowAction onClick={onTranslations} label="Çevirileri yönet" title="Çeviriler">
+            <Languages size={11} aria-hidden />
+          </RowAction>
+          <RowAction onClick={onDuplicate} label="Ekranı çoğalt" title="Çoğalt">
+            <Copy size={11} aria-hidden />
+          </RowAction>
+          <RowAction onClick={onRemove} label="Ekranı sil" title="Sil" danger>
+            <Trash2 size={11} aria-hidden />
+          </RowAction>
         </div>
       </div>
     </div>

@@ -87,6 +87,7 @@ export function ScreenshotTranslationsModal({ project }: Props) {
       open={open}
       onClose={close}
       title={screenshot ? `Çeviriler — ${screenshot.name}` : "Çeviriler"}
+      description="Bu ekran için dile özel görselleri yönet"
       maxWidth="520px"
     >
       <input
@@ -95,9 +96,10 @@ export function ScreenshotTranslationsModal({ project }: Props) {
         accept="image/*"
         hidden
         onChange={onFile}
+        aria-label="Görsel seç"
       />
       {!screenshot ? null : (
-        <ul className="space-y-3">
+        <ul className="space-y-3" role="list">
           {project.activeLocales.map((loc) => {
             const has = Boolean(screenshot.uploads[loc]);
             return (
@@ -108,17 +110,31 @@ export function ScreenshotTranslationsModal({ project }: Props) {
                 <div className="flex h-16 w-10 shrink-0 items-center justify-center overflow-hidden rounded bg-[var(--color-surface-1)]">
                   {thumb[loc] ? (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={thumb[loc]!} alt="" className="max-h-full max-w-full object-contain" />
+                    <img
+                      src={thumb[loc]!}
+                      alt={`${LABELS[loc]} önizlemesi`}
+                      className="max-h-full max-w-full object-contain"
+                    />
                   ) : (
-                    <span className="text-[10px] text-[var(--color-ink-muted)]">—</span>
+                    <span className="text-[10px] text-[var(--color-ink-muted)]" aria-hidden>
+                      —
+                    </span>
                   )}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <div className="text-sm font-medium">{LABELS[loc]}</div>
+                  <div className="truncate text-sm font-medium text-[var(--color-ink-strong)]">
+                    {LABELS[loc]}
+                  </div>
                   <div className="text-xs text-[var(--color-ink-muted)]">{loc}</div>
                 </div>
                 <div className="flex shrink-0 gap-1">
-                  <Button type="button" size="sm" variant="outline" onClick={() => onPick(loc)}>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    onClick={() => onPick(loc)}
+                    aria-label={`${LABELS[loc]} için görsel ${has ? "değiştir" : "yükle"}`}
+                  >
                     {has ? "Değiştir" : "Yükle"}
                   </Button>
                   {has && (
@@ -126,8 +142,9 @@ export function ScreenshotTranslationsModal({ project }: Props) {
                       type="button"
                       size="sm"
                       variant="ghost"
-                      className="text-red-600"
+                      className="text-red-600 hover:bg-red-50 hover:text-red-700"
                       onClick={() => remove(loc)}
+                      aria-label={`${LABELS[loc]} görselini kaldır`}
                     >
                       Kaldır
                     </Button>

@@ -58,7 +58,7 @@ export function DevicePanel({ project, screenshot }: Props) {
   };
 
   return (
-    <div className="overflow-y-auto">
+    <div className="h-full overflow-y-auto pb-4">
       <PanelSection title="Boyut" description="Marketler için doğru çıktı çözünürlüğü.">
         <select
           value={screenshot.deviceSizeId}

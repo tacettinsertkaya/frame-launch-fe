@@ -46,14 +46,15 @@ export function ApplyStyleModal({ project }: Props) {
       open={open}
       onClose={close}
       title="Tümüne stil uygula?"
+      description="Bu ekranın stilini diğer tüm ekranlara uygular."
       maxWidth="440px"
     >
-      <p className="text-sm text-[var(--color-ink-muted)]">
+      <p className="text-sm text-[var(--color-ink-body)]">
         Bu işlem, bu ekranın <strong>arka plan</strong>, <strong>cihaz</strong> ve{" "}
         <strong>metin stili</strong> ayarlarını diğer tüm ekranlara kopyalar. Her ekranın
         yazı <em>içeriği</em> (diller) aynı kalır. Geri alınamaz.
       </p>
-      <div className="mt-6 flex justify-end gap-2">
+      <div className="mt-6 flex flex-col-reverse justify-end gap-2 sm:flex-row">
         <Button type="button" variant="outline" onClick={close}>
           Vazgeç
         </Button>

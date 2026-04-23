@@ -13,10 +13,7 @@ import { LanguagesModal } from "./modals/LanguagesModal";
 import { ScreenshotTranslationsModal } from "./modals/ScreenshotTranslationsModal";
 import { ApplyStyleModal } from "./modals/ApplyStyleModal";
 import { SettingsModal } from "./modals/SettingsModal";
-import { AboutModal } from "./modals/AboutModal";
 import { TranslateModal } from "./modals/TranslateModal";
-import { MagicalTitlesModal } from "./modals/MagicalTitlesModal";
-
 export function EditorShell() {
   const hydrated = useProjectsStore((s) => s.hydrated);
   const hydrate = useProjectsStore((s) => s.hydrate);
@@ -69,9 +66,15 @@ export function EditorShell() {
     project.screenshots.find((s) => s.id === activeScreenshotId) ?? project.screenshots[0];
 
   return (
-    <div className="flex h-screen flex-col overflow-hidden bg-[var(--color-surface-0)]">
+    <div className="flex h-[100dvh] flex-col overflow-hidden bg-[var(--color-surface-0)]">
+      <div
+        className="hidden border-b border-amber-200 bg-amber-50 px-4 py-2 text-center text-xs text-amber-900 max-md:block"
+        role="note"
+      >
+        Editör daha geniş bir ekranda çalışmak üzere tasarlandı. Daha iyi deneyim için tablet veya masaüstü kullanın.
+      </div>
       <Topbar project={project} />
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex min-h-0 flex-1 overflow-hidden">
         <ScreenshotsSidebar project={project} />
         <CanvasStage project={project} />
         {activeScreenshot && (
@@ -84,9 +87,7 @@ export function EditorShell() {
       <ScreenshotTranslationsModal project={project} />
       <ApplyStyleModal project={project} />
       <SettingsModal />
-      <AboutModal />
       <TranslateModal />
-      <MagicalTitlesModal />
     </div>
   );
 }

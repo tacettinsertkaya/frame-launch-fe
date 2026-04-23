@@ -63,14 +63,15 @@ export function DuplicateUploadModal() {
       open={d.open}
       onClose={() => finish("ignore")}
       title="Aynı isimde görsel"
+      description="Yüklenen dosya mevcut bir ekranla çakışıyor."
       maxWidth="520px"
     >
-      <p className="text-sm text-[var(--color-ink-muted)]">
+      <p className="text-sm text-[var(--color-ink-body)]">
         Bu dosya, projede zaten yüklenmiş bir ekranın (
-        <strong>{d.baseFilename}</strong>) <strong>{d.locale.toUpperCase()}</strong>{" "}
-        sürümüyle çakışıyor.
+        <strong className="break-words">{d.baseFilename}</strong>){" "}
+        <strong>{d.locale.toUpperCase()}</strong> sürümüyle çakışıyor.
       </p>
-      <div className="mt-4 grid grid-cols-2 gap-4">
+      <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div>
           <p className="mb-2 text-xs font-medium text-[var(--color-ink-muted)]">
             Mevcut
@@ -78,7 +79,11 @@ export function DuplicateUploadModal() {
           <div className="flex h-40 items-center justify-center overflow-hidden rounded-lg border border-[var(--color-surface-2)] bg-[var(--color-surface-1)]">
             {existingUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={existingUrl} alt="" className="max-h-full max-w-full object-contain" />
+              <img
+                src={existingUrl}
+                alt="Mevcut ekran önizlemesi"
+                className="max-h-full max-w-full object-contain"
+              />
             ) : (
               <span className="text-xs text-[var(--color-ink-muted)]">Önizleme yok</span>
             )}
@@ -89,12 +94,16 @@ export function DuplicateUploadModal() {
           <div className="flex h-40 items-center justify-center overflow-hidden rounded-lg border border-[var(--color-surface-2)] bg-[var(--color-surface-1)]">
             {newUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={newUrl} alt="" className="max-h-full max-w-full object-contain" />
+              <img
+                src={newUrl}
+                alt="Yeni ekran önizlemesi"
+                className="max-h-full max-w-full object-contain"
+              />
             ) : null}
           </div>
         </div>
       </div>
-      <div className="mt-6 flex flex-wrap justify-end gap-2">
+      <div className="mt-6 flex flex-col-reverse flex-wrap justify-end gap-2 sm:flex-row">
         <Button type="button" variant="outline" onClick={() => finish("ignore")}>
           Yoksay
         </Button>

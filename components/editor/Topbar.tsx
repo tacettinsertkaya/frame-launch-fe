@@ -1,14 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { Download, Home, Info, Languages, Pencil, Plus, Settings, Sparkles, Trash2 } from "lucide-react";
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { Download, Home, Languages, Pencil, Plus, Settings, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import type { Locale, Project } from "@/lib/types/project";
 import { LOCALE_LABELS } from "@/lib/i18n/localeLabels";
 import { useEditorStore } from "@/store/editorStore";
 import { useProjectsStore } from "@/store/projectsStore";
-import { useSettingsStore } from "@/store/settingsStore";
 import { Button } from "@/components/ui/button";
 import { ProjectSelector } from "./project/ProjectSelector";
 import { ProjectNameModal } from "./project/ProjectNameModal";
@@ -21,51 +21,15 @@ interface Props {
 export function Topbar({ project }: Props) {
   const setExportOpen = useEditorStore((s) => s.setExportModalOpen);
   const openSettingsModal = useEditorStore((s) => s.openSettingsModal);
-  const openAboutModal = useEditorStore((s) => s.openAboutModal);
   const activeLocale = useEditorStore((s) => s.activeLocale);
   const setActiveLocale = useEditorStore((s) => s.setActiveLocale);
   const openLanguagesModal = useEditorStore((s) => s.openLanguagesModal);
-  const openMagicalTitlesModal = useEditorStore((s) => s.openMagicalTitlesModal);
   const setCurrentLocale = useProjectsStore((s) => s.setCurrentLocale);
   const projects = useProjectsStore((s) => s.projects);
-
-  const aiProvider = useSettingsStore((s) => s.aiProvider);
-  const apiKeyForProvider = useSettingsStore((s) => s.apiKeys[s.aiProvider]);
-  const hasSeenMagicalTooltip = useSettingsStore((s) => s.hasSeenMagicalTitlesTooltip);
-  const markMagicalTooltipSeen = useSettingsStore((s) => s.markMagicalTitlesTooltipSeen);
 
   const [newOpen, setNewOpen] = useState(false);
   const [renameOpen, setRenameOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
-  const [magicalTip, setMagicalTip] = useState(false);
-
-  useEffect(() => {
-    if (!project) {
-      setMagicalTip(false);
-      return;
-    }
-    if (project.screenshots.length === 0) return;
-    if (hasSeenMagicalTooltip) return;
-    if (!apiKeyForProvider?.trim()) return;
-    setMagicalTip(true);
-    const t = window.setTimeout(() => {
-      setMagicalTip(false);
-      markMagicalTooltipSeen();
-    }, 8000);
-    return () => window.clearTimeout(t);
-  }, [
-    project?.id,
-    project?.screenshots.length,
-    hasSeenMagicalTooltip,
-    apiKeyForProvider,
-    markMagicalTooltipSeen,
-  ]);
-
-  const openMagicalTitles = () => {
-    setMagicalTip(false);
-    markMagicalTooltipSeen();
-    openMagicalTitlesModal();
-  };
 
   const handleDeleteClick = () => {
     if (projects.length <= 1) {
@@ -77,13 +41,25 @@ export function Topbar({ project }: Props) {
 
   return (
     <>
-      <header className="flex h-14 items-center justify-between border-b border-[var(--color-surface-2)] bg-[var(--color-surface-0)] px-4">
+      <motion.header
+        initial={{ y: -16, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+        className="sticky top-0 z-40 flex h-14 items-center justify-between border-b border-black/5 bg-[color-mix(in_srgb,var(--color-surface-0)_72%,transparent)] px-4 backdrop-blur-xl backdrop-saturate-150"
+      >
         <div className="flex min-w-0 items-center gap-3">
           <Link
             href="/"
-            className="flex shrink-0 items-center gap-2 text-sm font-bold text-black hover:opacity-70"
+            aria-label="Ana sayfaya dön"
+            className="group relative flex shrink-0 items-center gap-2 rounded-[var(--radius-sm)] text-sm font-bold text-black focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-2"
           >
-            <Home size={16} />
+            <motion.span
+              whileHover={{ rotate: -10, scale: 1.1 }}
+              transition={{ type: "spring", stiffness: 400, damping: 16 }}
+              className="grid h-7 w-7 place-items-center rounded-[var(--radius-sm)] bg-gradient-to-br from-[var(--color-brand-primary)] to-[#fff066] text-black shadow-[0_4px_14px_rgba(232,198,16,0.35)]"
+            >
+              <Home size={14} />
+            </motion.span>
             <span className="hidden sm:inline">
               Frame<span className="text-[var(--color-brand-primary)]">launch</span>
             </span>
@@ -114,33 +90,31 @@ export function Topbar({ project }: Props) {
           <IconBtn label="Ayarlar" onClick={() => openSettingsModal()}>
             <Settings size={14} />
           </IconBtn>
-          <IconBtn label="Hakkında" onClick={() => openAboutModal()}>
-            <Info size={14} />
-          </IconBtn>
           {project && (
             <>
               <button
                 type="button"
                 onClick={() => openLanguagesModal()}
-                className="grid h-8 w-8 place-items-center rounded-[var(--radius-md)] bg-[var(--color-surface-1)] text-[var(--color-ink-muted)] hover:text-[var(--color-ink-strong)]"
+                className="grid h-8 w-8 shrink-0 place-items-center rounded-[var(--radius-md)] bg-[var(--color-surface-1)] text-[var(--color-ink-muted)] transition-colors hover:text-[var(--color-ink-strong)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-1"
                 aria-label="Dilleri yönet"
                 title="Dilleri yönet"
               >
-                <Languages size={16} />
+                <Languages size={16} aria-hidden />
               </button>
               {project.activeLocales.length > 1 && (
-                <div className="flex items-center gap-1.5 rounded-[var(--radius-md)] bg-[var(--color-surface-1)] px-2 py-1.5">
+                <div className="hidden items-center gap-1.5 rounded-[var(--radius-md)] bg-[var(--color-surface-1)] px-2 py-1.5 sm:flex">
                   <span className="text-[10px] font-medium uppercase tracking-wide text-[var(--color-ink-muted)]">
                     Dil
                   </span>
                   <select
                     value={activeLocale}
+                    aria-label="Aktif dil"
                     onChange={(e) => {
                       const loc = e.target.value as Locale;
                       setCurrentLocale(project.id, loc);
                       setActiveLocale(loc);
                     }}
-                    className="max-w-[120px] bg-transparent text-xs font-medium text-[var(--color-ink-strong)] focus:outline-none"
+                    className="max-w-[120px] cursor-pointer bg-transparent text-xs font-medium text-[var(--color-ink-strong)] focus:outline-none"
                   >
                     {project.activeLocales.map((l) => (
                       <option key={l} value={l}>
@@ -150,35 +124,20 @@ export function Topbar({ project }: Props) {
                   </select>
                 </div>
               )}
-              <div className="relative">
-                <IconBtn label="Sihirli başlıklar (AI)" onClick={openMagicalTitles}>
-                  <Sparkles size={14} />
-                </IconBtn>
-                {magicalTip && (
-                  <div className="absolute right-0 top-full z-50 mt-1 w-48 rounded-[var(--radius-md)] border border-[var(--color-surface-2)] bg-[var(--color-surface-0)] p-2 text-[10px] leading-snug text-[var(--color-ink-body)] shadow-[var(--shadow-lg)]">
-                    <button
-                      type="button"
-                      className="float-right text-[var(--color-ink-muted)] hover:text-[var(--color-ink-strong)]"
-                      aria-label="Kapat"
-                      onClick={() => {
-                        setMagicalTip(false);
-                        markMagicalTooltipSeen();
-                      }}
-                    >
-                      ×
-                    </button>
-                    AI ile tüm ekranlar için kısa başlıklar deneyin.
-                  </div>
-                )}
-              </div>
             </>
           )}
-          <Button size="sm" onClick={() => setExportOpen(true)}>
-            <Download size={14} />
-            Dışa aktar
-          </Button>
+          <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}>
+            <Button
+              size="sm"
+              onClick={() => setExportOpen(true)}
+              className="btn-shimmer rounded-full shadow-[0_4px_18px_rgba(232,198,16,0.4)]"
+            >
+              <Download size={14} />
+              Dışa aktar
+            </Button>
+          </motion.div>
         </div>
-      </header>
+      </motion.header>
 
       <ProjectNameModal
         mode="new"
@@ -213,18 +172,21 @@ interface IconBtnProps {
 
 function IconBtn({ children, onClick, label, danger }: IconBtnProps) {
   return (
-    <button
+    <motion.button
       type="button"
       onClick={onClick}
       aria-label={label}
       title={label}
-      className={`grid h-7 w-7 place-items-center rounded-[var(--radius-sm)] text-[var(--color-ink-muted)] transition-colors ${
+      whileHover={{ scale: 1.12, y: -1 }}
+      whileTap={{ scale: 0.92 }}
+      transition={{ type: "spring", stiffness: 380, damping: 20 }}
+      className={`grid h-8 w-8 shrink-0 place-items-center rounded-[var(--radius-sm)] text-[var(--color-ink-muted)] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-1 ${
         danger
-          ? "hover:bg-red-50 hover:text-red-600"
+          ? "hover:bg-red-50 hover:text-red-600 focus-visible:ring-red-400"
           : "hover:bg-[var(--color-surface-1)] hover:text-[var(--color-ink-strong)]"
       }`}
     >
       {children}
-    </button>
+    </motion.button>
   );
 }

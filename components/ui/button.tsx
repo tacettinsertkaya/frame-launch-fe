@@ -30,12 +30,13 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ variant = "primary", size = "md", className, children, ...props }, ref) => {
+  ({ variant = "primary", size = "md", className, children, type, ...props }, ref) => {
     return (
       <button
         ref={ref}
+        type={type ?? "button"}
         className={cn(
-          "inline-flex items-center justify-center font-medium transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+          "inline-flex shrink-0 select-none items-center justify-center whitespace-nowrap font-medium transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
           VARIANT[variant],
           SIZE[size],
           className,

@@ -1,3 +1,6 @@
+"use client";
+
+import { motion, useReducedMotion, type Variants } from "framer-motion";
 import {
   Smartphone,
   Palette,
@@ -8,13 +11,20 @@ import {
   Lock,
   Zap,
   LayoutTemplate,
+  type LucideIcon,
 } from "lucide-react";
 
-const FEATURES = [
+interface Feature {
+  icon: LucideIcon;
+  title: string;
+  desc: string;
+}
+
+const FEATURES: Feature[] = [
   {
     icon: Smartphone,
-    title: "14+ cihaz ve marketing boyutu",
-    desc: "iPhone 6.5\"–6.9\", iPad, Android telefon/tablet, OG, Twitter Card, Website Hero ve fazlası.",
+    title: '14+ cihaz ve marketing boyutu',
+    desc: 'iPhone 6.5"–6.9", iPad, Android telefon/tablet, OG, Twitter Card, Website Hero ve fazlası.',
   },
   {
     icon: Palette,
@@ -58,41 +68,115 @@ const FEATURES = [
   },
 ];
 
+const grid: Variants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.06 } },
+};
+const card: Variants = {
+  hidden: { opacity: 0, y: 24, filter: "blur(6px)" },
+  visible: {
+    opacity: 1,
+    y: 0,
+    filter: "blur(0px)",
+    transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] },
+  },
+};
+
 export function Features() {
+  const reduce = useReducedMotion();
+
   return (
-    <section id="features" className="bg-[var(--color-surface-1)] py-24">
-      <div className="container mx-auto max-w-6xl px-4">
-        <div className="mx-auto max-w-2xl text-center">
-          <span className="inline-block rounded-full bg-[var(--color-brand-primary)] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-black">
+    <section
+      id="features"
+      className="relative isolate overflow-hidden bg-[var(--color-surface-1)] py-28"
+    >
+      {/* Soft ambient color wash */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_15%_10%,rgba(232,198,16,0.08),transparent_45%),radial-gradient(circle_at_85%_90%,rgba(232,198,16,0.06),transparent_45%)]"
+      />
+
+      <div className="container relative mx-auto max-w-6xl px-4">
+        <motion.div
+          initial={reduce ? false : { opacity: 0, y: 18 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-10% 0px" }}
+          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+          className="mx-auto max-w-2xl text-center"
+        >
+          <span className="inline-block rounded-full bg-[var(--color-brand-primary)] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-black shadow-[0_4px_18px_rgba(232,198,16,0.35)]">
             Neler sunuyor
           </span>
-          <h2 className="mt-3 text-3xl font-bold tracking-tight text-[var(--color-ink-strong)] sm:text-4xl md:text-5xl">
-            Profesyonel screenshot için ihtiyacınız olan her şey
+          <h2 className="mt-4 text-balance text-[1.75rem] font-bold tracking-tight text-[var(--color-ink-strong)] sm:text-4xl md:text-5xl">
+            Profesyonel screenshot için ihtiyacınız olan{" "}
+            <span className="bg-gradient-to-br from-black via-[#3a3a3a] to-black bg-clip-text text-transparent">
+              her şey
+            </span>
           </h2>
-          <p className="mt-4 text-base text-[var(--color-ink-body)]">
-            Tasarımcı olmadan, kod yazmadan, hesap açmadan. Tüm araçlar bir tıkla erişiminizde.
+          <p className="mt-4 text-balance text-base text-[var(--color-ink-body)]">
+            Tasarımcı olmadan, kod yazmadan, hesap açmadan. Tüm araçlar bir
+            tıkla erişiminizde.
           </p>
-        </div>
+        </motion.div>
 
-        <div className="mt-16 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {FEATURES.map((f) => (
-            <div
-              key={f.title}
-              className="group rounded-[var(--radius-xl)] border border-[var(--color-surface-2)] bg-white p-6 shadow-[var(--shadow-sm)] transition-all hover:-translate-y-1 hover:border-[var(--color-brand-primary)] hover:shadow-[var(--shadow-lg)]"
-            >
-              <div className="grid h-11 w-11 place-items-center rounded-[var(--radius-md)] bg-[var(--color-brand-primary)] text-black">
-                <f.icon size={20} />
-              </div>
-              <h3 className="mt-5 text-lg font-semibold text-[var(--color-ink-strong)]">
-                {f.title}
-              </h3>
-              <p className="mt-2 text-sm leading-relaxed text-[var(--color-ink-body)]">
-                {f.desc}
-              </p>
-            </div>
+        <motion.div
+          variants={grid}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-10% 0px" }}
+          className="mt-16 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"
+        >
+          {FEATURES.map((f, i) => (
+            <FeatureCard key={f.title} feature={f} index={i} />
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
+  );
+}
+
+function FeatureCard({ feature, index }: { feature: Feature; index: number }) {
+  const Icon = feature.icon;
+  const reduce = useReducedMotion();
+  return (
+    <motion.div
+      variants={card}
+      whileHover={reduce ? undefined : { y: -6 }}
+      transition={{ type: "spring", stiffness: 320, damping: 24 }}
+      className="gradient-border group relative overflow-hidden rounded-[var(--radius-xl)] border border-black/5 bg-white p-6 shadow-[0_2px_10px_rgba(0,0,0,0.04)] transition-shadow duration-500 hover:shadow-[0_24px_50px_-20px_rgba(0,0,0,0.18)]"
+    >
+      {/* Gradient hover wash */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_var(--mx,0%)_var(--my,0%),rgba(232,198,16,0.10),transparent_55%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+      />
+
+      <motion.div
+        whileHover={reduce ? undefined : { rotate: -8, scale: 1.08 }}
+        transition={{ type: "spring", stiffness: 360, damping: 16 }}
+        className="relative grid h-12 w-12 place-items-center rounded-[var(--radius-md)] bg-gradient-to-br from-[var(--color-brand-primary)] to-[#fff066] text-black shadow-[0_8px_22px_rgba(232,198,16,0.35)]"
+      >
+        <Icon size={20} aria-hidden />
+        <span
+          aria-hidden
+          className="absolute inset-0 rounded-[var(--radius-md)] bg-white opacity-0 mix-blend-overlay transition-opacity duration-300 group-hover:opacity-30"
+        />
+      </motion.div>
+
+      <h3 className="mt-5 text-lg font-semibold text-[var(--color-ink-strong)]">
+        {feature.title}
+      </h3>
+      <p className="mt-2 text-sm leading-relaxed text-[var(--color-ink-body)]">
+        {feature.desc}
+      </p>
+
+      {/* Subtle index marker */}
+      <span
+        aria-hidden
+        className="absolute right-5 top-5 text-[10px] font-mono font-medium tracking-wider text-black/20 transition-colors group-hover:text-black/40"
+      >
+        {String(index + 1).padStart(2, "0")}
+      </span>
+    </motion.div>
   );
 }

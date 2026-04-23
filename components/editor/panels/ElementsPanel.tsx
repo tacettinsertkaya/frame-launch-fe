@@ -96,7 +96,7 @@ export function ElementsPanel({ project, screenshot }: Props) {
   };
 
   return (
-    <div className="overflow-y-auto">
+    <div className="h-full overflow-y-auto pb-4">
       <PanelSection title="Ekle" description="Emoji, metin, PNG/SVG veya ikon yerleştir.">
         <input
           ref={graphicInputRef}

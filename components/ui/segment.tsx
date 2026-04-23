@@ -35,9 +35,12 @@ export function Segment<T extends string>({
         return (
           <button
             key={opt.value}
+            type="button"
             onClick={() => onChange(opt.value)}
+            aria-pressed={active}
             className={cn(
-              "flex-1 inline-flex items-center justify-center gap-1.5 rounded-[var(--radius-sm)] font-medium transition-all",
+              "flex-1 inline-flex min-w-0 items-center justify-center gap-1.5 rounded-[var(--radius-sm)] font-medium transition-all",
+              "focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-1",
               size === "sm" ? "h-7 px-2.5 text-xs" : "h-9 px-3 text-sm",
               active
                 ? "bg-white text-[var(--color-ink-strong)] shadow-[var(--shadow-sm)]"
@@ -45,7 +48,7 @@ export function Segment<T extends string>({
             )}
           >
             {opt.icon}
-            <span>{opt.label}</span>
+            <span className="truncate">{opt.label}</span>
           </button>
         );
       })}

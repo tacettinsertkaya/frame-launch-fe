@@ -84,9 +84,10 @@ export function PositionPresetGrid({ active, onApply }: Props) {
             aria-pressed={isActive}
             className={[
               "flex flex-col items-center gap-1 rounded-[var(--radius-md)] border bg-white px-1.5 py-2 transition",
-              "hover:scale-[1.03] hover:border-[var(--color-accent)] hover:bg-[var(--color-accent-soft)]",
+              "hover:-translate-y-0.5 hover:border-[var(--color-brand-primary)] hover:bg-[var(--color-brand-primary-soft)]",
+              "focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-1",
               isActive
-                ? "border-[var(--color-accent)] ring-1 ring-[var(--color-accent)]"
+                ? "border-[var(--color-brand-primary)] ring-1 ring-[var(--color-brand-primary)]"
                 : "border-[var(--color-surface-2)]",
             ].join(" ")}
           >

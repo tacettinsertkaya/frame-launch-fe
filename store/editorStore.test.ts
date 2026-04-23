@@ -16,8 +16,6 @@ function reset() {
     isSliding: false,
     slidingDirection: null,
     settingsModalOpen: false,
-    aboutModalOpen: false,
-    magicalTitlesModalOpen: false,
     languagesModalOpen: false,
     applyStyleModalOpen: false,
     applyStyleSourceScreenshotId: null,

@@ -53,7 +53,8 @@ export function ProjectSelector({ activeProject, projects }: Props) {
         onClick={() => setOpen((v) => !v)}
         aria-haspopup="listbox"
         aria-expanded={open}
-        className="flex items-center gap-2 rounded-[var(--radius-sm)] px-2.5 py-1.5 text-left hover:bg-[var(--color-surface-1)]"
+        aria-label={`Aktif proje: ${activeProject.name}. Projeyi değiştir`}
+        className="flex max-w-[60vw] items-center gap-2 rounded-[var(--radius-sm)] px-2.5 py-1.5 text-left transition-colors hover:bg-[var(--color-surface-1)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-1 sm:max-w-[260px]"
       >
         <div className="min-w-0 max-w-[180px]">
           <div className="truncate text-sm font-medium text-[var(--color-ink-strong)]">
@@ -65,6 +66,7 @@ export function ProjectSelector({ activeProject, projects }: Props) {
         </div>
         <ChevronDown
           size={14}
+          aria-hidden
           className={cn(
             "shrink-0 text-[var(--color-ink-muted)] transition-transform",
             open && "rotate-180",
@@ -73,7 +75,7 @@ export function ProjectSelector({ activeProject, projects }: Props) {
       </button>
 
       {open && (
-        <div className="absolute left-0 top-full z-30 mt-1 w-72 overflow-hidden rounded-[var(--radius-md)] border border-[var(--color-surface-2)] bg-white shadow-[var(--shadow-md)]">
+        <div className="absolute left-0 top-full z-40 mt-1 w-72 max-w-[calc(100vw-1rem)] overflow-hidden rounded-[var(--radius-md)] border border-[var(--color-surface-2)] bg-[var(--color-surface-0)] shadow-[var(--shadow-lg)]">
           <ul role="listbox" className="max-h-80 overflow-y-auto py-1">
             {projects.map((p) => {
               const active = p.id === activeProject.id;
@@ -95,11 +97,12 @@ export function ProjectSelector({ activeProject, projects }: Props) {
                       setActive(p.id);
                       setOpen(false);
                     }}
-                    className="flex min-w-0 flex-1 items-center gap-2 rounded-[var(--radius-sm)] px-2 py-1 text-left"
+                    className="flex min-w-0 flex-1 items-center gap-2 rounded-[var(--radius-sm)] px-2 py-1 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)]"
                   >
                     {active ? (
                       <Check
                         size={14}
+                        aria-hidden
                         className="shrink-0 text-[var(--color-brand-primary)]"
                       />
                     ) : (
@@ -117,9 +120,9 @@ export function ProjectSelector({ activeProject, projects }: Props) {
                     onClick={() => handleDuplicate(p.id, p.name)}
                     aria-label={`"${p.name}" projesini çoğalt`}
                     title="Çoğalt"
-                    className="grid h-7 w-7 shrink-0 place-items-center rounded-[var(--radius-sm)] text-[var(--color-ink-muted)] opacity-0 hover:bg-[var(--color-surface-2)] hover:text-[var(--color-ink-strong)] focus:opacity-100 group-hover:opacity-100"
+                    className="grid h-7 w-7 shrink-0 place-items-center rounded-[var(--radius-sm)] text-[var(--color-ink-muted)] opacity-0 transition-colors hover:bg-[var(--color-surface-2)] hover:text-[var(--color-ink-strong)] focus:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] group-hover:opacity-100"
                   >
-                    <Copy size={12} />
+                    <Copy size={12} aria-hidden />
                   </button>
                 </li>
               );

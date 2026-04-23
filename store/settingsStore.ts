@@ -19,7 +19,6 @@ interface SettingsState {
   selectedModels: Record<AiProvider, string>;
   /** Google Web Fonts API (optional; higher quota for font catalog). */
   googleFontsApiKey: string;
-  hasSeenMagicalTitlesTooltip: boolean;
 
   hydrate(): void;
   setTheme(t: Theme): void;
@@ -27,7 +26,6 @@ interface SettingsState {
   setApiKey(provider: AiProvider, key: string): void;
   setSelectedModel(provider: AiProvider, modelId: string): void;
   setGoogleFontsApiKey(key: string): void;
-  markMagicalTitlesTooltipSeen(): void;
   validateKey(provider: AiProvider, key: string): boolean;
 }
 
@@ -54,7 +52,6 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
     google: AI_PROVIDERS.google.defaultModel,
   },
   googleFontsApiKey: "",
-  hasSeenMagicalTitlesTooltip: false,
 
   hydrate: () => {
     if (get().hydrated) return;
@@ -74,7 +71,6 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
       google: readLs(AI_PROVIDERS.google.modelStorageKey, AI_PROVIDERS.google.defaultModel),
     };
     const googleFontsApiKey = readLs(GOOGLE_FONTS_API_STORAGE_KEY);
-    const hasSeenMagicalTitlesTooltip = readLs("magicalTitlesTooltipDismissed") === "1";
     set({
       hydrated: true,
       theme,
@@ -82,7 +78,6 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
       apiKeys,
       selectedModels,
       googleFontsApiKey,
-      hasSeenMagicalTitlesTooltip,
     });
   },
 
@@ -109,11 +104,6 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
   setGoogleFontsApiKey: (key) => {
     writeLs(GOOGLE_FONTS_API_STORAGE_KEY, key);
     set({ googleFontsApiKey: key });
-  },
-
-  markMagicalTitlesTooltipSeen: () => {
-    writeLs("magicalTitlesTooltipDismissed", "1");
-    set({ hasSeenMagicalTitlesTooltip: true });
   },
 
   validateKey: (provider, key) => validateKeyFormat(provider, key),

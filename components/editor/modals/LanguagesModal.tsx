@@ -47,18 +47,24 @@ export function LanguagesModal({ project }: Props) {
   };
 
   return (
-    <Dialog open={open} onClose={close} title="Diller" maxWidth="440px">
+    <Dialog
+      open={open}
+      onClose={close}
+      title="Diller"
+      description="Projedeki dilleri yönet"
+      maxWidth="440px"
+    >
       <p className="text-sm text-[var(--color-ink-muted)]">
         Projede hangi dillerin kullanılacağını yönetin. En az bir dil kalmalıdır.
       </p>
-      <ul className="mt-4 space-y-2">
+      <ul className="mt-4 space-y-2" role="list">
         {project.activeLocales.map((loc) => (
           <li
             key={loc}
-            className="flex items-center justify-between rounded-[var(--radius-md)] border border-[var(--color-surface-2)] px-3 py-2 text-sm"
+            className="flex items-center justify-between gap-3 rounded-[var(--radius-md)] border border-[var(--color-surface-2)] px-3 py-2 text-sm"
           >
-            <span>
-              <strong>{LABELS[loc]}</strong>{" "}
+            <span className="min-w-0 truncate">
+              <strong className="text-[var(--color-ink-strong)]">{LABELS[loc]}</strong>{" "}
               <span className="text-[var(--color-ink-muted)]">({loc})</span>
             </span>
             <Button
@@ -85,12 +91,12 @@ export function LanguagesModal({ project }: Props) {
       </ul>
       {addable.length > 0 && (
         <div className="mt-4 flex flex-wrap items-end gap-2 border-t border-[var(--color-surface-2)] pt-4">
-          <label className="flex flex-col gap-1 text-xs font-medium text-[var(--color-ink-body)]">
+          <label className="flex min-w-0 flex-1 flex-col gap-1 text-xs font-medium text-[var(--color-ink-body)] sm:flex-none">
             Dil ekle
             <select
               value={pick}
               onChange={(e) => setPick(e.target.value as Locale | "")}
-              className="rounded-[var(--radius-md)] border border-[var(--color-surface-2)] bg-white px-2 py-1.5 text-sm"
+              className="w-full rounded-[var(--radius-md)] border border-[var(--color-surface-2)] bg-white px-2 py-1.5 text-sm sm:w-auto"
             >
               <option value="">Seçin…</option>
               {addable.map((l) => (

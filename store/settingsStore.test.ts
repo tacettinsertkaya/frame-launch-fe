@@ -16,7 +16,6 @@ describe("settingsStore", () => {
         google: "gemini-2.5-flash",
       },
       googleFontsApiKey: "",
-      hasSeenMagicalTitlesTooltip: false,
     });
   });
 
@@ -62,13 +61,6 @@ describe("settingsStore", () => {
     useSettingsStore.getState().hydrate();
     useSettingsStore.getState().setSelectedModel("openai", "gpt-5-nano-2025-08-07");
     expect(window.localStorage.getItem("openaiModel")).toBe("gpt-5-nano-2025-08-07");
-  });
-
-  it("markMagicalTitlesTooltipSeen persists", () => {
-    useSettingsStore.getState().hydrate();
-    useSettingsStore.getState().markMagicalTitlesTooltipSeen();
-    expect(window.localStorage.getItem("magicalTitlesTooltipDismissed")).toBe("1");
-    expect(useSettingsStore.getState().hasSeenMagicalTitlesTooltip).toBe(true);
   });
 
   it("hydrate is idempotent", () => {

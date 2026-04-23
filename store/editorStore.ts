@@ -48,8 +48,6 @@ interface EditorState {
   slidingDirection: "left" | "right" | null;
 
   settingsModalOpen: boolean;
-  aboutModalOpen: boolean;
-  magicalTitlesModalOpen: boolean;
   languagesModalOpen: boolean;
   applyStyleModalOpen: boolean;
   /** "Tümüne uygula" kaynak ekran id */
@@ -75,10 +73,6 @@ interface EditorState {
 
   openSettingsModal: () => void;
   closeSettingsModal: () => void;
-  openAboutModal: () => void;
-  closeAboutModal: () => void;
-  openMagicalTitlesModal: () => void;
-  closeMagicalTitlesModal: () => void;
   openLanguagesModal: () => void;
   closeLanguagesModal: () => void;
   openApplyStyleModal: (screenshotId: string) => void;
@@ -113,8 +107,6 @@ export const useEditorStore = create<EditorState>((set) => ({
   slidingDirection: null,
 
   settingsModalOpen: false,
-  aboutModalOpen: false,
-  magicalTitlesModalOpen: false,
   languagesModalOpen: false,
   applyStyleModalOpen: false,
   applyStyleSourceScreenshotId: null,
@@ -144,10 +136,6 @@ export const useEditorStore = create<EditorState>((set) => ({
 
   openSettingsModal: () => set({ settingsModalOpen: true }),
   closeSettingsModal: () => set({ settingsModalOpen: false }),
-  openAboutModal: () => set({ aboutModalOpen: true }),
-  closeAboutModal: () => set({ aboutModalOpen: false }),
-  openMagicalTitlesModal: () => set({ magicalTitlesModalOpen: true }),
-  closeMagicalTitlesModal: () => set({ magicalTitlesModalOpen: false }),
   openLanguagesModal: () => set({ languagesModalOpen: true }),
   closeLanguagesModal: () => set({ languagesModalOpen: false }),
   openApplyStyleModal: (screenshotId) =>

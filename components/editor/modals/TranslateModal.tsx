@@ -153,7 +153,13 @@ export function TranslateModal() {
 
   if (state.field === "element") {
     return (
-      <Dialog open onClose={close} title="Çeviri" maxWidth="440px">
+      <Dialog
+        open
+        onClose={close}
+        title="Çeviri"
+        description="Öğe çevirisi"
+        maxWidth="440px"
+      >
         <div className="space-y-4 text-sm text-[var(--color-ink-body)]">
           <p>Öğe metni çevirisi henüz bu sürümde yok (elements katmanı #11).</p>
           <div className="flex justify-end">
@@ -168,7 +174,13 @@ export function TranslateModal() {
 
   if (project.activeLocales.length < 2) {
     return (
-      <Dialog open onClose={close} title="Çeviri" maxWidth="440px">
+      <Dialog
+        open
+        onClose={close}
+        title="Çeviri"
+        description="Önce projeye ek dil ekleyin"
+        maxWidth="440px"
+      >
         <div className="space-y-4 text-sm text-[var(--color-ink-body)]">
           <p>AI çevirisi için projede en az iki dil olmalı. Dilleri yönet panelinden ekleyin.</p>
           <div className="flex justify-end">
@@ -182,7 +194,13 @@ export function TranslateModal() {
   }
 
   return (
-    <Dialog open onClose={() => !busy && close()} title={`${fieldLabel} — çoklu dil`} maxWidth="560px">
+    <Dialog
+      open
+      onClose={() => !busy && close()}
+      title={`${fieldLabel} — çoklu dil`}
+      description="Tüm diller için metin yönetimi"
+      maxWidth="560px"
+    >
       <div className="space-y-4 text-sm text-[var(--color-ink-body)]">
         <p className="text-xs text-[var(--color-ink-muted)]">
           Kaynak metni seçin; hedef dilleri düzenleyin veya AI ile doldurun. Kaydet deyince bu ekranın{" "}

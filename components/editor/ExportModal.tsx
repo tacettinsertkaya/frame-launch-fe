@@ -193,16 +193,21 @@ export function ExportModal({ project }: Props) {
   if (!project) return null;
 
   return (
-    <Dialog open={open} onClose={() => !busy && setOpen(false)} title="Dışa aktar">
+    <Dialog
+      open={open}
+      onClose={() => !busy && setOpen(false)}
+      title="Dışa aktar"
+      description="Aktif ekranı veya tüm ekranları PNG/ZIP olarak indirin."
+    >
       {flow === "scope" ? (
         <div className="space-y-4">
           <button
             type="button"
             disabled={busy}
             onClick={() => setFlow("menu")}
-            className="inline-flex items-center gap-1 text-xs font-medium text-[var(--color-ink-muted)] hover:text-[var(--color-ink-strong)]"
+            className="inline-flex items-center gap-1 rounded text-xs font-medium text-[var(--color-ink-muted)] transition-colors hover:text-[var(--color-ink-strong)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-1 disabled:opacity-50"
           >
-            <ArrowLeft size={14} />
+            <ArrowLeft size={14} aria-hidden />
             Geri
           </button>
           <p className="text-sm text-[var(--color-ink-body)]">
@@ -217,9 +222,9 @@ export function ExportModal({ project }: Props) {
                 setFlow("menu");
                 void runZipSingleLanguage(activeLocale);
               }}
-              className="flex flex-col items-start gap-1 rounded-[var(--radius-lg)] border border-[var(--color-surface-2)] bg-white p-4 text-left transition-all hover:border-[var(--color-brand-primary)] hover:shadow-[var(--shadow-md)] disabled:opacity-40"
+              className="flex flex-col items-start gap-1 rounded-[var(--radius-lg)] border border-[var(--color-surface-2)] bg-white p-4 text-left transition-all hover:border-[var(--color-brand-primary)] hover:shadow-[var(--shadow-md)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-[var(--color-surface-2)] disabled:hover:shadow-none"
             >
-              <Languages size={18} className="text-[var(--color-brand-primary)]" />
+              <Languages size={18} aria-hidden className="text-[var(--color-brand-primary)]" />
               <span className="text-sm font-semibold text-[var(--color-ink-strong)]">
                 Yalnızca aktif dil
               </span>
@@ -235,9 +240,9 @@ export function ExportModal({ project }: Props) {
                 setFlow("menu");
                 void runZipAllLanguages();
               }}
-              className="flex flex-col items-start gap-1 rounded-[var(--radius-lg)] border-2 border-black bg-[var(--color-brand-primary)] p-4 text-left text-black shadow-[0_4px_16px_rgba(232,198,16,0.35)] transition-transform hover:-translate-y-0.5 disabled:opacity-40"
+              className="flex flex-col items-start gap-1 rounded-[var(--radius-lg)] border-2 border-black bg-[var(--color-brand-primary)] p-4 text-left text-black shadow-[0_4px_16px_rgba(232,198,16,0.35)] transition-transform hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0"
             >
-              <Package size={18} />
+              <Package size={18} aria-hidden />
               <span className="text-sm font-semibold">Tüm diller</span>
               <span className="text-xs text-black/70">
                 Her dil için alt klasör ({project.activeLocales.join(", ")}) — aynı ZIP
@@ -254,11 +259,12 @@ export function ExportModal({ project }: Props) {
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <button
+              type="button"
               disabled={busy || !activeScreenshotId}
               onClick={exportActive}
-              className="group flex flex-col items-start gap-1.5 rounded-[var(--radius-lg)] border border-[var(--color-surface-2)] bg-white p-4 text-left transition-all hover:-translate-y-0.5 hover:border-[var(--color-brand-primary)] hover:shadow-[var(--shadow-md)] disabled:opacity-40"
+              className="group flex flex-col items-start gap-1.5 rounded-[var(--radius-lg)] border border-[var(--color-surface-2)] bg-white p-4 text-left transition-all hover:-translate-y-0.5 hover:border-[var(--color-brand-primary)] hover:shadow-[var(--shadow-md)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0 disabled:hover:border-[var(--color-surface-2)] disabled:hover:shadow-none"
             >
-              <Download size={18} className="text-[var(--color-brand-primary)]" />
+              <Download size={18} aria-hidden className="text-[var(--color-brand-primary)]" />
               <span className="text-sm font-semibold text-[var(--color-ink-strong)]">
                 Aktif ekranı indir
               </span>
@@ -268,11 +274,12 @@ export function ExportModal({ project }: Props) {
             </button>
 
             <button
+              type="button"
               disabled={busy || project.screenshots.length === 0}
               onClick={onExportAllClick}
-              className="group flex flex-col items-start gap-1.5 rounded-[var(--radius-lg)] border-2 border-black bg-[var(--color-brand-primary)] p-4 text-left text-black shadow-[0_4px_16px_rgba(232,198,16,0.35)] transition-transform hover:-translate-y-0.5 disabled:opacity-40"
+              className="group flex flex-col items-start gap-1.5 rounded-[var(--radius-lg)] border-2 border-black bg-[var(--color-brand-primary)] p-4 text-left text-black shadow-[0_4px_16px_rgba(232,198,16,0.35)] transition-transform hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0"
             >
-              <Package size={18} />
+              <Package size={18} aria-hidden />
               <span className="text-sm font-semibold">Tüm ekranları ZIP indir</span>
               <span className="text-xs text-black/70">
                 {project.screenshots.length} ekran
@@ -286,34 +293,47 @@ export function ExportModal({ project }: Props) {
       )}
 
       {progress && (
-        <div className="mt-4 rounded-[var(--radius-md)] bg-[var(--color-surface-1)] px-3 py-2 text-xs text-[var(--color-ink-body)]">
+        <div
+          className="mt-4 rounded-[var(--radius-md)] bg-[var(--color-surface-1)] px-3 py-2 text-xs text-[var(--color-ink-body)]"
+          role="status"
+          aria-live="polite"
+        >
           <div className="mb-1 flex justify-between gap-2">
-            <span>
+            <span className="tabular-nums">
               {progress.done}/{progress.total}
             </span>
             {progress.label && (
-              <span className="truncate text-[var(--color-ink-muted)]">{progress.label}</span>
+              <span className="min-w-0 truncate text-[var(--color-ink-muted)]">{progress.label}</span>
             )}
           </div>
-          <div className="h-1.5 overflow-hidden rounded-full bg-[var(--color-surface-2)]">
+          <div
+            role="progressbar"
+            aria-valuemin={0}
+            aria-valuemax={progress.total}
+            aria-valuenow={progress.done}
+            aria-label="Dışa aktarım ilerlemesi"
+            className="h-1.5 overflow-hidden rounded-full bg-[var(--color-surface-2)]"
+          >
             <div
               className="h-full bg-[var(--color-brand-primary)] transition-[width] duration-150"
-              style={{ width: `${Math.min(100, Math.round((100 * progress.done) / progress.total))}%` }}
+              style={{
+                width: `${Math.min(100, Math.round((100 * progress.done) / progress.total))}%`,
+              }}
             />
           </div>
         </div>
       )}
 
-      <div className="mt-5 flex items-center justify-end gap-2">
-        <Button variant="ghost" size="sm" onClick={() => !busy && setOpen(false)}>
-          Kapat
-        </Button>
+      <div className="mt-5 flex flex-wrap items-center justify-end gap-2">
         {busy && (
-          <span className="inline-flex items-center gap-1.5 text-xs text-[var(--color-ink-muted)]">
-            <Loader2 size={14} className="animate-spin" />
+          <span className="mr-auto inline-flex items-center gap-1.5 text-xs text-[var(--color-ink-muted)]">
+            <Loader2 size={14} aria-hidden className="animate-spin" />
             İşleniyor…
           </span>
         )}
+        <Button variant="ghost" size="sm" onClick={() => !busy && setOpen(false)} disabled={busy}>
+          Kapat
+        </Button>
       </div>
     </Dialog>
   );

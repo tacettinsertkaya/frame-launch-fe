@@ -43,7 +43,7 @@ export function BackgroundPanel({ project, screenshot }: Props) {
   };
 
   return (
-    <div className="overflow-y-auto">
+    <div className="h-full overflow-y-auto pb-4">
       <PanelSection title="Tip" description="Arka plan stilini seç.">
         <Segment
           value={bg.type}

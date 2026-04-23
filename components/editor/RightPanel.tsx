@@ -28,30 +28,48 @@ export function RightPanel({ project, screenshot }: Props) {
   const setTab = useEditorStore((s) => s.setRightPanelTab);
 
   return (
-    <aside className="flex h-full w-[320px] flex-col border-l border-[var(--color-surface-2)] bg-[var(--color-surface-0)]">
-      <div className="flex border-b border-[var(--color-surface-2)]">
+    <aside
+      className="flex h-full w-[320px] shrink-0 flex-col border-l border-[var(--color-surface-2)] bg-[var(--color-surface-0)]"
+      aria-label="Düzenleyici paneli"
+    >
+      <div
+        role="tablist"
+        aria-label="Düzenleyici sekmeleri"
+        className="flex border-b border-[var(--color-surface-2)]"
+      >
         {TABS.map((t) => {
           const active = t.id === tab;
           const Icon = t.icon;
           return (
             <button
               key={t.id}
+              role="tab"
+              type="button"
+              aria-selected={active}
+              aria-controls={`panel-${t.id}`}
+              id={`tab-${t.id}`}
               onClick={() => setTab(t.id)}
               className={cn(
-                "flex-1 inline-flex flex-col items-center gap-1 py-3 text-[11px] font-medium transition-colors",
+                "flex-1 inline-flex min-w-0 flex-col items-center gap-1 py-3 text-[11px] font-medium transition-colors",
+                "focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--color-brand-primary)]",
                 active
                   ? "border-b-2 border-black text-black"
-                  : "border-b-2 border-transparent text-[var(--color-ink-muted)] hover:text-black",
+                  : "border-b-2 border-transparent text-[var(--color-ink-muted)] hover:bg-[var(--color-surface-1)] hover:text-black",
               )}
             >
-              <Icon size={16} />
-              {t.label}
+              <Icon size={16} aria-hidden />
+              <span className="truncate">{t.label}</span>
             </button>
           );
         })}
       </div>
 
-      <div className="flex-1 overflow-hidden">
+      <div
+        role="tabpanel"
+        id={`panel-${tab}`}
+        aria-labelledby={`tab-${tab}`}
+        className="flex min-h-0 flex-1 flex-col overflow-hidden"
+      >
         {tab === "background" && <BackgroundPanel project={project} screenshot={screenshot} />}
         {tab === "device" && <DevicePanel project={project} screenshot={screenshot} />}
         {tab === "text" && <TextPanel project={project} screenshot={screenshot} />}

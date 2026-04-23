@@ -35,8 +35,19 @@ export function SettingsModal() {
   }, [open]);
 
   return (
-    <Dialog open={open} onClose={close} title="Ayarlar" maxWidth="560px">
-      <div className="flex gap-1 border-b border-[var(--color-surface-2)] px-5 pb-3">
+    <Dialog
+      open={open}
+      onClose={close}
+      title="Ayarlar"
+      description="Görünüm ve yapay zeka sağlayıcı tercihleri"
+      maxWidth="560px"
+      bodyPadding={false}
+    >
+      <div
+        role="tablist"
+        aria-label="Ayar sekmeleri"
+        className="flex shrink-0 gap-1 border-b border-[var(--color-surface-2)] px-5 py-3"
+      >
         {(
           [
             ["general", "Genel"],
@@ -45,9 +56,11 @@ export function SettingsModal() {
         ).map(([id, label]) => (
           <button
             key={id}
+            role="tab"
             type="button"
+            aria-selected={tab === id}
             onClick={() => setTab(id)}
-            className={`rounded-[var(--radius-sm)] px-3 py-1.5 text-xs font-medium transition-colors ${
+            className={`rounded-[var(--radius-sm)] px-3 py-1.5 text-xs font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-1 ${
               tab === id
                 ? "bg-[var(--color-ink-strong)] text-[var(--color-ink-inverse)]"
                 : "text-[var(--color-ink-muted)] hover:bg-[var(--color-surface-1)] hover:text-[var(--color-ink-strong)]"
@@ -58,7 +71,7 @@ export function SettingsModal() {
         ))}
       </div>
 
-      <div className="max-h-[min(70vh,520px)] overflow-y-auto px-5 py-4">
+      <div className="min-h-0 flex-1 overflow-y-auto px-5 py-4">
         {tab === "general" ? (
           <div className="space-y-5 text-sm">
             <div>
@@ -172,7 +185,7 @@ export function SettingsModal() {
         )}
       </div>
 
-      <div className="flex justify-end border-t border-[var(--color-surface-2)] px-5 py-3">
+      <div className="flex shrink-0 justify-end border-t border-[var(--color-surface-2)] px-5 py-3">
         <Button size="sm" onClick={close}>
           Kapat
         </Button>

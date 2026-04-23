@@ -71,7 +71,7 @@ export function CanvasStage({ project }: Props) {
           >
             {project.screenshots.map((s) => (
               <div key={s.id} data-screenshot-id={s.id}>
-                <Canvas screenshot={s} locale={activeLocale} scale={1} />
+                <Canvas screenshot={s} locale={activeLocale} scale={1} selectedElementId={null} />
               </div>
             ))}
           </div>

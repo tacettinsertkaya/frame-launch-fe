@@ -62,4 +62,17 @@ describe("editorStore extensions", () => {
     expect(useEditorStore.getState().isSliding).toBe(true);
     expect(useEditorStore.getState().slidingDirection).toBe("left");
   });
+
+  it("setActiveScreenshot clears selectedElementId when switching screenshot", () => {
+    useEditorStore.setState({ activeScreenshotId: "a", selectedElementId: "el_1" });
+    useEditorStore.getState().setActiveScreenshot("b");
+    expect(useEditorStore.getState().activeScreenshotId).toBe("b");
+    expect(useEditorStore.getState().selectedElementId).toBeNull();
+  });
+
+  it("setActiveScreenshot keeps selectedElementId when same screenshot", () => {
+    useEditorStore.setState({ activeScreenshotId: "a", selectedElementId: "el_1" });
+    useEditorStore.getState().setActiveScreenshot("a");
+    expect(useEditorStore.getState().selectedElementId).toBe("el_1");
+  });
 });

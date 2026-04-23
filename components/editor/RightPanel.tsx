@@ -1,17 +1,21 @@
 "use client";
 
-import { Image, Smartphone, Type } from "lucide-react";
+import { Image, Layers, PictureInPicture, Smartphone, Type } from "lucide-react";
 import type { Project, Screenshot } from "@/lib/types/project";
 import { useEditorStore, type RightPanelTab } from "@/store/editorStore";
 import { BackgroundPanel } from "./panels/BackgroundPanel";
 import { DevicePanel } from "./panels/DevicePanel";
 import { TextPanel } from "./panels/TextPanel";
+import { ElementsPanel } from "./panels/ElementsPanel";
+import { PopoutsPanel } from "./panels/PopoutsPanel";
 import { cn } from "@/lib/utils";
 
 const TABS: { id: RightPanelTab; label: string; icon: typeof Image }[] = [
   { id: "background", label: "Arka plan", icon: Image },
   { id: "device", label: "Cihaz", icon: Smartphone },
   { id: "text", label: "Metin", icon: Type },
+  { id: "elements", label: "Öğeler", icon: Layers },
+  { id: "popouts", label: "Popout", icon: PictureInPicture },
 ];
 
 interface Props {
@@ -51,6 +55,8 @@ export function RightPanel({ project, screenshot }: Props) {
         {tab === "background" && <BackgroundPanel project={project} screenshot={screenshot} />}
         {tab === "device" && <DevicePanel project={project} screenshot={screenshot} />}
         {tab === "text" && <TextPanel project={project} screenshot={screenshot} />}
+        {tab === "elements" && <ElementsPanel project={project} screenshot={screenshot} />}
+        {tab === "popouts" && <PopoutsPanel />}
       </div>
     </aside>
   );

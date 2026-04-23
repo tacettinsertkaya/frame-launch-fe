@@ -77,6 +77,7 @@ export function SidePreviewStrip({ project, active, activeLocale, zoom }: Props)
   const isSliding = useEditorStore((s) => s.isSliding);
   const setSliding = useEditorStore((s) => s.setSliding);
   const setActive = useEditorStore((s) => s.setActiveScreenshot);
+  const selectedElementId = useEditorStore((s) => s.selectedElementId);
 
   const mainRef = useRef<HTMLDivElement | null>(null);
   const [mainWidth, setMainWidth] = useState(0);
@@ -186,7 +187,12 @@ export function SidePreviewStrip({ project, active, activeLocale, zoom }: Props)
           ref={mainRef}
           className="relative z-20 rounded-[var(--radius-lg)] bg-white shadow-[var(--shadow-xl)]"
         >
-          <Canvas screenshot={active} locale={activeLocale} scale={zoom} />
+          <Canvas
+            screenshot={active}
+            locale={activeLocale}
+            scale={zoom}
+            selectedElementId={selectedElementId}
+          />
         </div>
 
         {slots.right !== null && list[slots.right!] && (

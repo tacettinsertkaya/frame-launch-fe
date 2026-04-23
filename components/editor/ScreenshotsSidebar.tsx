@@ -260,7 +260,7 @@ function SortableRow({
         )}
       >
         <div className="pointer-events-none">
-          <Canvas screenshot={screenshot} locale={locale} scale={thumbScale} />
+          <Canvas screenshot={screenshot} locale={locale} scale={thumbScale} selectedElementId={null} />
         </div>
       </button>
       <div className="mt-1 flex items-center justify-between gap-1">

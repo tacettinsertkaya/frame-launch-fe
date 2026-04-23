@@ -8,6 +8,8 @@ interface Props {
   locale: Locale;
   canvasWidth: number;
   canvasHeight: number;
+  /** Canvas içi stacking (elements üstü metin). */
+  zIndex?: number;
 }
 
 const WEIGHT_MAP: Record<string, number> = {
@@ -20,7 +22,7 @@ const WEIGHT_MAP: Record<string, number> = {
   Black: 900,
 };
 
-export function TextLayer({ config, locale, canvasWidth, canvasHeight }: Props) {
+export function TextLayer({ config, locale, canvasWidth, canvasHeight, zIndex = 5 }: Props) {
   if (!config.enabled) return null;
 
   const text = config.text[locale] ?? config.text["en"] ?? "";
@@ -50,6 +52,7 @@ export function TextLayer({ config, locale, canvasWidth, canvasHeight }: Props) 
     whiteSpace: "pre-wrap",
     wordBreak: "break-word",
     pointerEvents: "none",
+    zIndex,
   };
   if (isTop) style.top = verticalPx;
   else style.bottom = verticalPx;

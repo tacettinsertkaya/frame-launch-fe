@@ -48,7 +48,7 @@ export function TemplatePickerGrid({ selectedId, onSelect }: Props) {
               style={{ height: thumbHeight }}
             >
               <div className="pointer-events-none">
-                <Canvas screenshot={first} locale="tr" scale={scale} />
+                <Canvas screenshot={first} locale="tr" scale={scale} selectedElementId={null} />
               </div>
             </div>
             <div className="border-t border-[var(--color-surface-2)] px-2 py-1.5">

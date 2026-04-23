@@ -90,6 +90,7 @@ export function DeviceLayer({
         transformStyle: persp > 0 ? "preserve-3d" : undefined,
         filter: shadowFilter,
         pointerEvents: "none",
+        zIndex: 3,
       }}
     >
       <div

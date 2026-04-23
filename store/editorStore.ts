@@ -124,7 +124,12 @@ export const useEditorStore = create<EditorState>((set) => ({
   duplicateUploadDialog: null,
   screenshotTranslationsModalId: null,
 
-  setActiveScreenshot: (id) => set({ activeScreenshotId: id }),
+  setActiveScreenshot: (id) =>
+    set((s) => ({
+      activeScreenshotId: id,
+      selectedElementId:
+        id === null || s.activeScreenshotId !== id ? null : s.selectedElementId,
+    })),
   setActiveLocale: (locale) => set({ activeLocale: locale }),
   setRightPanelTab: (tab) => set({ rightPanelTab: tab }),
   setZoom: (zoom) => set({ zoom: Math.max(0.05, Math.min(1.5, zoom)) }),

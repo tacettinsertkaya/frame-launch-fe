@@ -5,8 +5,14 @@ import type { Project, Screenshot } from "@/lib/types/project";
 import { useProjectsStore } from "@/store/projectsStore";
 import { useEditorStore } from "@/store/editorStore";
 import { saveBlob } from "@/lib/persistence/blobStore";
-import { DEVICE_SIZES } from "@/lib/devices/registry";
+import { DEVICE_SIZES, getDeviceSize } from "@/lib/devices/registry";
+import {
+  applyPositionPreset,
+  type DevicePositionPresetId,
+} from "@/lib/devices/positionPresets";
 import { PanelSection } from "./PanelSection";
+import { CustomSizeInputs } from "./CustomSizeInputs";
+import { PositionPresetGrid } from "./PositionPresetGrid";
 import { Slider } from "@/components/ui/slider";
 import { ColorInput } from "@/components/ui/color-input";
 import { Button } from "@/components/ui/button";
@@ -41,6 +47,19 @@ export function DevicePanel({ project, screenshot }: Props) {
     {},
   );
 
+  const customDims =
+    screenshot.customDimensions ??
+    (() => {
+      const d = getDeviceSize("custom");
+      return { width: d.width, height: d.height };
+    })();
+
+  const handlePreset = (id: DevicePositionPresetId) => {
+    update((s) => {
+      s.device = applyPositionPreset(id, s.device);
+    });
+  };
+
   return (
     <div className="overflow-y-auto">
       <PanelSection title="Boyut" description="Marketler için doğru çıktı çözünürlüğü.">
@@ -48,7 +67,12 @@ export function DevicePanel({ project, screenshot }: Props) {
           value={screenshot.deviceSizeId}
           onChange={(e) =>
             update((s) => {
-              s.deviceSizeId = e.target.value as Screenshot["deviceSizeId"];
+              const nextId = e.target.value as Screenshot["deviceSizeId"];
+              s.deviceSizeId = nextId;
+              if (nextId === "custom" && !s.customDimensions) {
+                const d = getDeviceSize("custom");
+                s.customDimensions = { width: d.width, height: d.height };
+              }
             })
           }
           className="w-full rounded-[var(--radius-md)] border border-[var(--color-surface-2)] bg-white px-3 py-2 text-sm"
@@ -63,6 +87,27 @@ export function DevicePanel({ project, screenshot }: Props) {
             </optgroup>
           ))}
         </select>
+        {screenshot.deviceSizeId === "custom" && (
+          <CustomSizeInputs
+            width={customDims.width}
+            height={customDims.height}
+            onChange={(next) =>
+              update((s) => {
+                s.customDimensions = next;
+              })
+            }
+          />
+        )}
+      </PanelSection>
+
+      <PanelSection
+        title="Pozisyon Presetleri"
+        description="Tek tıkla hazır kompozisyonlar."
+      >
+        <PositionPresetGrid
+          active={dev.positionPreset}
+          onApply={handlePreset}
+        />
       </PanelSection>
 
       <PanelSection title="Görsel" description={`Aktif dil: ${activeLocale.toUpperCase()}`}>
@@ -149,6 +194,17 @@ export function DevicePanel({ project, screenshot }: Props) {
           onChange={(v) =>
             update((s) => {
               s.device.tiltRotation = v;
+            })
+          }
+        />
+        <Slider
+          label="Perspektif"
+          value={dev.perspective}
+          min={0}
+          max={30}
+          onChange={(v) =>
+            update((s) => {
+              s.device.perspective = v;
             })
           }
         />

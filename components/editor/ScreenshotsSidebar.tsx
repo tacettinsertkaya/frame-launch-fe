@@ -1,7 +1,23 @@
 "use client";
 
-import { Plus, Trash2, Copy } from "lucide-react";
-import type { Project } from "@/lib/types/project";
+import { Plus, Trash2, Copy, GripVertical } from "lucide-react";
+import {
+  DndContext,
+  PointerSensor,
+  KeyboardSensor,
+  closestCenter,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import type { Project, Screenshot, Locale } from "@/lib/types/project";
 import { useProjectsStore, makeBlankScreenshot } from "@/store/projectsStore";
 import { useEditorStore } from "@/store/editorStore";
 import { Canvas } from "./Canvas";
@@ -17,6 +33,16 @@ export function ScreenshotsSidebar({ project }: Props) {
   const activeLocale = useEditorStore((s) => s.activeLocale);
   const updateProject = useProjectsStore((s) => s.updateProject);
   const removeScreenshot = useProjectsStore((s) => s.removeScreenshot);
+  const reorderScreenshots = useProjectsStore((s) => s.reorderScreenshots);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: { distance: 4 },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    }),
+  );
 
   const addScreenshot = () => {
     const next = makeBlankScreenshot(`Ekran ${project.screenshots.length + 1}`);
@@ -52,6 +78,17 @@ export function ScreenshotsSidebar({ project }: Props) {
     }
   };
 
+  const handleDragEnd = (e: DragEndEvent) => {
+    const { active, over } = e;
+    if (!over || active.id === over.id) return;
+    const fromIdx = project.screenshots.findIndex((s) => s.id === active.id);
+    const toIdx = project.screenshots.findIndex((s) => s.id === over.id);
+    if (fromIdx === -1 || toIdx === -1) return;
+    reorderScreenshots(project.id, fromIdx, toIdx);
+  };
+
+  const items = project.screenshots.map((s) => s.id);
+
   return (
     <aside className="flex h-full w-[200px] flex-col border-r border-[var(--color-surface-2)] bg-[var(--color-surface-1)]">
       <div className="flex items-center justify-between px-3 py-3">
@@ -66,51 +103,111 @@ export function ScreenshotsSidebar({ project }: Props) {
           <Plus size={14} />
         </button>
       </div>
-      <div className="flex-1 space-y-3 overflow-y-auto px-3 pb-3">
-        {project.screenshots.map((s, i) => {
-          const active = s.id === activeId;
-          // Thumbnail için: max 168px genişlik
-          const thumbScale = 168 / 1320;
-          return (
-            <div key={s.id} className="group relative">
-              <button
-                onClick={() => setActive(s.id)}
-                className={cn(
-                  "block w-full overflow-hidden rounded-[var(--radius-md)] border-2 transition-all",
-                  active
-                    ? "border-[var(--color-brand-primary)] shadow-[var(--shadow-md)]"
-                    : "border-transparent hover:border-[var(--color-surface-2)]",
-                )}
-              >
-                <div className="pointer-events-none">
-                  <Canvas screenshot={s} locale={activeLocale} scale={thumbScale} />
-                </div>
-              </button>
-              <div className="mt-1 flex items-center justify-between gap-1">
-                <span className="truncate text-[11px] text-[var(--color-ink-body)]">
-                  {String(i + 1).padStart(2, "0")} · {s.name}
-                </span>
-                <div className="flex items-center gap-0.5 opacity-0 transition-opacity group-hover:opacity-100">
-                  <button
-                    onClick={() => duplicate(s.id)}
-                    className="grid h-6 w-6 place-items-center rounded text-[var(--color-ink-muted)] hover:bg-white hover:text-[var(--color-ink-strong)]"
-                    aria-label="Çoğalt"
-                  >
-                    <Copy size={11} />
-                  </button>
-                  <button
-                    onClick={() => remove(s.id)}
-                    className="grid h-6 w-6 place-items-center rounded text-[var(--color-ink-muted)] hover:bg-red-50 hover:text-red-500"
-                    aria-label="Sil"
-                  >
-                    <Trash2 size={11} />
-                  </button>
-                </div>
-              </div>
+      <div className="flex-1 overflow-y-auto px-3 pb-3">
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+        >
+          <SortableContext items={items} strategy={verticalListSortingStrategy}>
+            <div className="space-y-3">
+              {project.screenshots.map((s, i) => (
+                <SortableRow
+                  key={s.id}
+                  screenshot={s}
+                  index={i}
+                  active={s.id === activeId}
+                  locale={activeLocale}
+                  onSelect={() => setActive(s.id)}
+                  onDuplicate={() => duplicate(s.id)}
+                  onRemove={() => remove(s.id)}
+                />
+              ))}
             </div>
-          );
-        })}
+          </SortableContext>
+        </DndContext>
       </div>
     </aside>
+  );
+}
+
+interface SortableRowProps {
+  screenshot: Screenshot;
+  index: number;
+  active: boolean;
+  locale: Locale;
+  onSelect: () => void;
+  onDuplicate: () => void;
+  onRemove: () => void;
+}
+
+function SortableRow({
+  screenshot,
+  index,
+  active,
+  locale,
+  onSelect,
+  onDuplicate,
+  onRemove,
+}: SortableRowProps) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
+    useSortable({ id: screenshot.id });
+
+  const thumbScale = 168 / 1320;
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={{
+        transform: CSS.Transform.toString(transform),
+        transition,
+        opacity: isDragging ? 0.5 : 1,
+      }}
+      className="group relative"
+    >
+      <button
+        type="button"
+        aria-label="Sürükle"
+        {...attributes}
+        {...listeners}
+        className="absolute left-1 top-1 z-10 grid h-6 w-5 cursor-grab place-items-center rounded text-[var(--color-ink-muted)] opacity-0 transition-opacity group-hover:opacity-100 active:cursor-grabbing"
+      >
+        <GripVertical size={12} />
+      </button>
+      <button
+        onClick={onSelect}
+        className={cn(
+          "block w-full overflow-hidden rounded-[var(--radius-md)] border-2 transition-all",
+          active
+            ? "border-[var(--color-brand-primary)] shadow-[var(--shadow-md)]"
+            : "border-transparent hover:border-[var(--color-surface-2)]",
+        )}
+      >
+        <div className="pointer-events-none">
+          <Canvas screenshot={screenshot} locale={locale} scale={thumbScale} />
+        </div>
+      </button>
+      <div className="mt-1 flex items-center justify-between gap-1">
+        <span className="truncate text-[11px] text-[var(--color-ink-body)]">
+          {String(index + 1).padStart(2, "0")} · {screenshot.name}
+        </span>
+        <div className="flex items-center gap-0.5 opacity-0 transition-opacity group-hover:opacity-100">
+          <button
+            onClick={onDuplicate}
+            className="grid h-6 w-6 place-items-center rounded text-[var(--color-ink-muted)] hover:bg-white hover:text-[var(--color-ink-strong)]"
+            aria-label="Çoğalt"
+          >
+            <Copy size={11} />
+          </button>
+          <button
+            onClick={onRemove}
+            className="grid h-6 w-6 place-items-center rounded text-[var(--color-ink-muted)] hover:bg-red-50 hover:text-red-500"
+            aria-label="Sil"
+          >
+            <Trash2 size={11} />
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }

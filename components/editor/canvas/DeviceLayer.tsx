@@ -70,7 +70,13 @@ export function DeviceLayer({
       )})`
     : "none";
 
-  const transform = `rotate(${device.tiltRotation}deg)`;
+  // Perspektif: değer 0 ise sade rotate. >0 ise CSS perspective + rotateY uygulanır.
+  // Daha kapsamlı 3D projection alt-proje 13'te ele alınacak (kompromis: spec #02 §3.2).
+  const persp = Math.max(0, device.perspective ?? 0);
+  const transform =
+    persp > 0
+      ? `perspective(1200px) rotateY(${(persp * 0.6).toFixed(2)}deg) rotate(${device.tiltRotation}deg)`
+      : `rotate(${device.tiltRotation}deg)`;
 
   return (
     <div
@@ -81,6 +87,7 @@ export function DeviceLayer({
         width: deviceWidth,
         height: deviceHeight,
         transform,
+        transformStyle: persp > 0 ? "preserve-3d" : undefined,
         filter: shadowFilter,
         pointerEvents: "none",
       }}

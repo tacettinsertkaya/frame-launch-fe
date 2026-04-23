@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
+import { BrandLockup } from "@/components/BrandLockup";
 
 export function Nav() {
   const [scrolled, setScrolled] = useState(false);
@@ -34,12 +35,11 @@ export function Nav() {
         >
           <Link
             href="/"
-            aria-label="Framelaunch ana sayfası"
-            className="group relative rounded-full text-base font-bold text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+            aria-label="FrameLaunch ana sayfası"
+            className="group relative flex items-center gap-2 rounded-full text-base font-bold text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-black"
           >
-            <span className="relative z-10">
-              Frame
-              <span className="text-[var(--color-brand-primary)]">launch</span>
+            <span className="relative z-10 min-w-0">
+              <BrandLockup variant="on-dark" imageClassName="rounded-md" priority />
             </span>
             <motion.span
               aria-hidden

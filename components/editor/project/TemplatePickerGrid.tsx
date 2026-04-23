@@ -36,8 +36,11 @@ export function TemplatePickerGrid({ selectedId, onSelect }: Props) {
             key={meta.id}
             type="button"
             onClick={() => onSelect(meta.id)}
+            aria-pressed={selected}
+            aria-label={`${meta.name} şablonu — ${meta.category}`}
             className={cn(
               "group flex flex-col overflow-hidden rounded-[var(--radius-md)] border-2 text-left transition-all",
+              "focus:outline-none focus-visible:border-[var(--color-brand-primary)] focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)]/40",
               selected
                 ? "border-[var(--color-brand-primary)] shadow-[var(--shadow-md)]"
                 : "border-[var(--color-surface-2)] hover:border-[var(--color-surface-3)]",

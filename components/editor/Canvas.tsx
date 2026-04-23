@@ -25,6 +25,8 @@ export const Canvas = forwardRef<HTMLDivElement, CanvasProps>(function Canvas(
 
   return (
     <div
+      role="img"
+      aria-label={`Ekran görüntüsü tuvali — ${size.label}, ${dims.width}×${dims.height}`}
       style={{
         width: dims.width * scale,
         height: dims.height * scale,
@@ -35,6 +37,7 @@ export const Canvas = forwardRef<HTMLDivElement, CanvasProps>(function Canvas(
       <div
         ref={ref}
         data-fl-canvas
+        aria-hidden
         style={{
           width: dims.width,
           height: dims.height,

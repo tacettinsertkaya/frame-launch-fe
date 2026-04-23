@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Download, Home, Languages, Pencil, Plus, Settings, Trash2 } from "lucide-react";
+import { Download, Languages, Pencil, Plus, Settings, Trash2 } from "lucide-react";
+import { BrandLockup } from "@/components/BrandLockup";
 import { toast } from "sonner";
 import type { Locale, Project } from "@/lib/types/project";
 import { LOCALE_LABELS } from "@/lib/i18n/localeLabels";
@@ -45,24 +46,15 @@ export function Topbar({ project }: Props) {
         initial={{ y: -16, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-        className="sticky top-0 z-40 flex h-14 items-center justify-between border-b border-black/5 bg-[color-mix(in_srgb,var(--color-surface-0)_72%,transparent)] px-4 backdrop-blur-xl backdrop-saturate-150"
+        className="sticky top-0 z-40 flex h-14 items-center justify-between border-b border-[var(--color-surface-2)] bg-[color-mix(in_srgb,var(--color-surface-0)_72%,transparent)] px-4 backdrop-blur-xl backdrop-saturate-150"
       >
         <div className="flex min-w-0 items-center gap-3">
           <Link
             href="/"
             aria-label="Ana sayfaya dön"
-            className="group relative flex shrink-0 items-center gap-2 rounded-[var(--radius-sm)] text-sm font-bold text-black focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-2"
+            className="group relative flex shrink-0 items-center gap-2 rounded-[var(--radius-sm)] text-sm font-bold text-[var(--color-ink-strong)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-2"
           >
-            <motion.span
-              whileHover={{ rotate: -10, scale: 1.1 }}
-              transition={{ type: "spring", stiffness: 400, damping: 16 }}
-              className="grid h-7 w-7 place-items-center rounded-[var(--radius-sm)] bg-gradient-to-br from-[var(--color-brand-primary)] to-[#fff066] text-black shadow-[0_4px_14px_rgba(232,198,16,0.35)]"
-            >
-              <Home size={14} />
-            </motion.span>
-            <span className="hidden sm:inline">
-              Frame<span className="text-[var(--color-brand-primary)]">launch</span>
-            </span>
+            <BrandLockup variant="on-surface" imageClassName="rounded-md" />
           </Link>
           <div className="h-5 w-px shrink-0 bg-[var(--color-surface-2)]" />
           {project && (

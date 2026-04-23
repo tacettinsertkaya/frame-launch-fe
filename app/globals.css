@@ -67,13 +67,20 @@ body {
   padding: 0;
 }
 
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
 body {
   font-family: var(--font-sans);
   background: var(--color-surface-0);
   color: var(--color-ink-strong);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
+
 
 /* ==========================================================================
    Glassmorphism + motion utilities (added by UI revamp)
@@ -224,6 +231,14 @@ body {
 
 /* Reduced motion safety net */
 @media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
   .animate-drift-1,
   .animate-drift-2,
   .animate-drift-3,
@@ -327,4 +342,21 @@ html.framelaunch-dark ::-webkit-scrollbar-thumb {
 }
 html.framelaunch-dark ::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.28);
+}
+
+/* Sonner toast: align with theme tokens (light + dark via attribute selector) */
+[data-sonner-toaster] {
+  --normal-bg: var(--color-surface-0);
+  --normal-text: var(--color-ink-body);
+  --normal-border: var(--color-surface-2);
+  --gray1: var(--color-surface-1);
+  --gray2: var(--color-surface-2);
+  --gray3: var(--color-surface-3);
+  --gray12: var(--color-ink-strong);
+  font-family: var(--font-sans);
+}
+[data-sonner-toaster][data-theme="dark"] {
+  --normal-bg: var(--color-surface-1);
+  --normal-text: var(--color-ink-body);
+  --normal-border: var(--color-surface-2);
 }

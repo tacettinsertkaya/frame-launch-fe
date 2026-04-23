@@ -145,10 +145,11 @@ export function ElementsPanel({ project, screenshot }: Props) {
                 key={name}
                 type="button"
                 title={name}
+                aria-label={`${name} ikonu ekle`}
                 onClick={() => addIcon(name)}
-                className="grid h-9 w-9 place-items-center rounded-[var(--radius-md)] border border-[var(--color-surface-2)] text-[var(--color-ink-body)] transition-colors hover:border-black hover:bg-[var(--color-surface-1)]"
+                className="grid h-9 w-9 place-items-center rounded-[var(--radius-md)] border border-[var(--color-surface-2)] text-[var(--color-ink-body)] transition-colors hover:border-[var(--color-ink-strong)] hover:bg-[var(--color-surface-1)] focus:outline-none focus-visible:border-[var(--color-brand-primary)] focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)]"
               >
-                <Icon size={18} strokeWidth={2} />
+                <Icon size={18} strokeWidth={2} aria-hidden />
               </button>
             );
           })}
@@ -159,23 +160,25 @@ export function ElementsPanel({ project, screenshot }: Props) {
         {screenshot.elements.length === 0 ? (
           <p className="text-[11px] text-[var(--color-ink-muted)]">Henüz öğe yok.</p>
         ) : (
-          <ul className="max-h-40 space-y-1 overflow-y-auto pr-1">
+          <ul className="max-h-40 space-y-1 overflow-y-auto pr-1" role="list">
             {screenshot.elements.map((el) => (
               <li key={el.id}>
                 <button
                   type="button"
                   onClick={() => setSelectedId(el.id)}
+                  aria-pressed={el.id === selectedId}
                   className={cn(
-                    "flex w-full items-center justify-between rounded-[var(--radius-md)] border px-2 py-1.5 text-left text-[11px] transition-colors",
+                    "flex w-full items-center justify-between gap-2 rounded-[var(--radius-md)] border px-2 py-1.5 text-left text-[11px] transition-colors",
+                    "focus:outline-none focus-visible:border-[var(--color-brand-primary)] focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)]",
                     el.id === selectedId
-                      ? "border-black bg-[var(--color-surface-1)]"
+                      ? "border-[var(--color-ink-strong)] bg-[var(--color-surface-1)]"
                       : "border-[var(--color-surface-2)] hover:border-[var(--color-surface-3)]",
                   )}
                 >
-                  <span className="font-medium capitalize text-[var(--color-ink-strong)]">
+                  <span className="shrink-0 font-medium capitalize text-[var(--color-ink-strong)]">
                     {el.kind}
                   </span>
-                  <span className="truncate text-[var(--color-ink-muted)]">
+                  <span className="min-w-0 flex-1 truncate text-right text-[var(--color-ink-muted)]">
                     {el.kind === "emoji" && el.emoji}
                     {el.kind === "text" && (el.text[activeLocale] ?? el.text["en"] ?? "").slice(0, 24)}
                     {el.kind === "graphic" && "Görsel"}
@@ -243,12 +246,13 @@ export function ElementsPanel({ project, screenshot }: Props) {
                 type="text"
                 maxLength={8}
                 value={selected.emoji}
+                aria-label="Emoji karakteri"
                 onChange={(e) =>
                   patchSelected((el) => {
                     if (el.kind === "emoji") el.emoji = e.target.value || "✨";
                   })
                 }
-                className="w-full rounded-[var(--radius-md)] border border-[var(--color-surface-2)] bg-white px-2 py-1.5 text-sm"
+                className="w-full rounded-[var(--radius-md)] border border-[var(--color-surface-2)] bg-[var(--color-surface-0)] px-2 py-1.5 text-sm text-[var(--color-ink-strong)] transition-colors focus:border-[var(--color-brand-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--color-brand-primary)]"
               />
             </PanelSection>
           )}
@@ -304,7 +308,7 @@ export function ElementsPanel({ project, screenshot }: Props) {
 
           {selected.kind === "graphic" && (
             <PanelSection title="Grafik">
-              <label className="flex items-center gap-2 text-[11px]">
+              <label className="flex cursor-pointer items-center gap-2 text-[11px]">
                 <input
                   type="checkbox"
                   checked={selected.flipH}
@@ -313,10 +317,11 @@ export function ElementsPanel({ project, screenshot }: Props) {
                       if (el.kind === "graphic") el.flipH = e.target.checked;
                     })
                   }
+                  className="h-3.5 w-3.5 shrink-0 cursor-pointer accent-[var(--color-brand-primary)]"
                 />
                 Yatay çevir
               </label>
-              <label className="flex items-center gap-2 text-[11px]">
+              <label className="flex cursor-pointer items-center gap-2 text-[11px]">
                 <input
                   type="checkbox"
                   checked={selected.flipV}
@@ -325,16 +330,33 @@ export function ElementsPanel({ project, screenshot }: Props) {
                       if (el.kind === "graphic") el.flipV = e.target.checked;
                     })
                   }
+                  className="h-3.5 w-3.5 shrink-0 cursor-pointer accent-[var(--color-brand-primary)]"
                 />
                 Dikey çevir
               </label>
             </PanelSection>
           )}
 
-          <PanelSection title="Sil">
-            <Button type="button" variant="destructive" size="sm" onClick={removeSelected}>
+          <PanelSection title="Tehlikeli alan">
+            <Button
+              type="button"
+              variant="destructive"
+              size="sm"
+              className="w-full"
+              onClick={removeSelected}
+              title="Sil tuşu ile de kaldırabilirsin"
+            >
               Öğeyi kaldır
             </Button>
+            <p className="text-[10px] text-[var(--color-ink-muted)]">
+              Kısayollar: <kbd className="rounded bg-[var(--color-surface-2)] px-1">Del</kbd>{" "}
+              sil ·{" "}
+              <kbd className="rounded bg-[var(--color-surface-2)] px-1">Esc</kbd> seçimi
+              kaldır ·{" "}
+              <kbd className="rounded bg-[var(--color-surface-2)] px-1">←↑↓→</kbd> kaydır
+              (
+              <kbd className="rounded bg-[var(--color-surface-2)] px-1">Shift</kbd>: 5×)
+            </p>
           </PanelSection>
         </>
       )}

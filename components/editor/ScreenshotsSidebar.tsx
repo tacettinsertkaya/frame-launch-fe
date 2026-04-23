@@ -145,7 +145,7 @@ export function ScreenshotsSidebar({ project }: Props) {
         <button
           type="button"
           onClick={addScreenshot}
-          className="grid h-7 w-7 place-items-center rounded-[var(--radius-sm)] bg-black text-white shadow-[var(--shadow-sm)] transition-colors hover:bg-[var(--color-dark-surface-2)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-surface-1)]"
+          className="grid h-7 w-7 place-items-center rounded-[var(--radius-sm)] bg-[var(--color-ink-strong)] text-[var(--color-ink-inverse)] shadow-[var(--shadow-sm)] transition-colors hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-surface-1)]"
           aria-label="Yeni ekran ekle"
         >
           <Plus size={14} aria-hidden />
@@ -227,7 +227,7 @@ function RowAction({ onClick, label, title, danger, children }: RowActionProps) 
         "focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-1 focus-visible:ring-offset-[var(--color-surface-1)]",
         danger
           ? "hover:bg-red-50 hover:text-red-500 focus-visible:ring-red-400"
-          : "hover:bg-white hover:text-[var(--color-ink-strong)]",
+          : "hover:bg-[var(--color-surface-0)] hover:text-[var(--color-ink-strong)]",
       )}
     >
       {children}
@@ -282,7 +282,7 @@ function SortableRow({
         aria-label={`"${screenshot.name}" ekranını sürükle`}
         {...attributes}
         {...listeners}
-        className="absolute left-1 top-1 z-10 grid h-6 w-5 cursor-grab place-items-center rounded text-[var(--color-ink-muted)] opacity-0 transition-opacity hover:bg-white/70 focus:opacity-100 group-hover:opacity-100 group-focus-within:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] active:cursor-grabbing"
+        className="absolute left-1 top-1 z-10 grid h-6 w-5 cursor-grab place-items-center rounded text-[var(--color-ink-muted)] opacity-0 transition-opacity hover:bg-[var(--color-surface-0)]/70 focus:opacity-100 group-hover:opacity-100 group-focus-within:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] active:cursor-grabbing"
       >
         <GripVertical size={12} aria-hidden />
       </button>

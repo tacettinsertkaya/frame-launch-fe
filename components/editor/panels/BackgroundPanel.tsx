@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { Image as ImageIcon, Palette, SlidersHorizontal, Trash2 } from "lucide-react";
 import type { Project, Screenshot } from "@/lib/types/project";
 import { useProjectsStore } from "@/store/projectsStore";
@@ -10,6 +10,7 @@ import { Slider } from "@/components/ui/slider";
 import { ColorInput } from "@/components/ui/color-input";
 import { Button } from "@/components/ui/button";
 import { PanelSection } from "./PanelSection";
+import { GradientBar } from "./GradientBar";
 
 const GRADIENT_PRESETS: { name: string; stops: { color: string; position: number }[]; direction?: number }[] = [
   { name: "Brand Amber", stops: [{ color: "#e8c610", position: 0 }, { color: "#fff066", position: 100 }] },
@@ -28,6 +29,7 @@ interface Props {
 export function BackgroundPanel({ project, screenshot }: Props) {
   const updateScreenshot = useProjectsStore((s) => s.updateScreenshot);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [selectedStopIndex, setSelectedStopIndex] = useState<number | null>(null);
 
   const bg = screenshot.background;
 
@@ -67,21 +69,23 @@ export function BackgroundPanel({ project, screenshot }: Props) {
               {GRADIENT_PRESETS.map((p) => (
                 <button
                   key={p.name}
+                  type="button"
                   onClick={() =>
                     update((s) => {
                       s.background.gradient.stops = structuredClone(p.stops);
                       if (p.direction !== undefined) s.background.gradient.direction = p.direction;
                     })
                   }
-                  className="group relative aspect-[4/3] overflow-hidden rounded-[var(--radius-md)] border border-[var(--color-surface-2)] transition-transform hover:-translate-y-0.5 hover:shadow-[var(--shadow-md)]"
+                  className="group relative aspect-[4/3] overflow-hidden rounded-[var(--radius-md)] border border-[var(--color-surface-2)] transition-transform hover:-translate-y-0.5 hover:shadow-[var(--shadow-md)] focus:outline-none focus-visible:border-[var(--color-brand-primary)] focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-1"
                   title={p.name}
+                  aria-label={`Gradient ön ayarı: ${p.name}`}
                   style={{
                     backgroundImage: `linear-gradient(${p.direction ?? 135}deg, ${p.stops
                       .map((s) => `${s.color} ${s.position}%`)
                       .join(", ")})`,
                   }}
                 >
-                  <span className="absolute inset-x-1 bottom-1 truncate rounded-[4px] bg-black/40 px-1.5 py-0.5 text-[10px] font-medium text-white opacity-0 transition-opacity group-hover:opacity-100">
+                  <span className="absolute inset-x-1 bottom-1 truncate rounded-[4px] bg-black/40 px-1.5 py-0.5 text-[10px] font-medium text-white opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">
                     {p.name}
                   </span>
                 </button>
@@ -90,8 +94,39 @@ export function BackgroundPanel({ project, screenshot }: Props) {
           </PanelSection>
 
           <PanelSection title="Renk durakları">
+            <GradientBar
+              stops={bg.gradient.stops}
+              direction={bg.gradient.direction}
+              selectedIndex={selectedStopIndex}
+              onSelect={setSelectedStopIndex}
+              onChangePosition={(idx, position) =>
+                update((s) => {
+                  if (s.background.gradient.stops[idx]) {
+                    s.background.gradient.stops[idx].position = position;
+                  }
+                })
+              }
+              onAdd={(color, position) => {
+                update((s) => {
+                  s.background.gradient.stops.push({ color, position });
+                });
+                setSelectedStopIndex(bg.gradient.stops.length);
+              }}
+              onRemove={(idx) => {
+                update((s) => {
+                  s.background.gradient.stops.splice(idx, 1);
+                });
+                setSelectedStopIndex(null);
+              }}
+            />
             {bg.gradient.stops.map((stop, idx) => (
-              <div key={idx} className="flex items-center gap-2">
+              <div
+                key={idx}
+                className={[
+                  "flex items-center gap-2 rounded-[var(--radius-sm)] px-1 py-0.5 transition-colors",
+                  selectedStopIndex === idx ? "bg-[var(--color-surface-2)]" : "",
+                ].join(" ")}
+              >
                 <ColorInput
                   value={stop.color}
                   onChange={(c) =>
@@ -106,24 +141,28 @@ export function BackgroundPanel({ project, screenshot }: Props) {
                   min={0}
                   max={100}
                   value={stop.position}
+                  aria-label={`Stop ${idx + 1} pozisyonu (%)`}
+                  onFocus={() => setSelectedStopIndex(idx)}
                   onChange={(e) =>
                     update((s) => {
                       s.background.gradient.stops[idx].position = Number(e.target.value);
                     })
                   }
-                  className="w-14 rounded-[var(--radius-sm)] border border-[var(--color-surface-2)] px-1.5 py-1 text-right text-[11px] tabular-nums"
+                  className="fl-no-focus w-14 rounded-[var(--radius-sm)] border border-[var(--color-surface-2)] px-1.5 py-1 text-right text-[11px] tabular-nums transition-colors focus:border-[var(--color-brand-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--color-brand-primary)]"
                 />
                 {bg.gradient.stops.length > 2 && (
                   <button
-                    onClick={() =>
+                    type="button"
+                    onClick={() => {
                       update((s) => {
                         s.background.gradient.stops.splice(idx, 1);
-                      })
-                    }
-                    className="grid h-7 w-7 place-items-center rounded-[var(--radius-sm)] text-[var(--color-ink-muted)] hover:bg-red-50 hover:text-red-500"
-                    aria-label="Sil"
+                      });
+                      setSelectedStopIndex(null);
+                    }}
+                    className="grid h-7 w-7 shrink-0 place-items-center rounded-[var(--radius-sm)] text-[var(--color-ink-muted)] transition-colors hover:bg-red-50 hover:text-red-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)]"
+                    aria-label={`Stop ${idx + 1}'i sil`}
                   >
-                    <Trash2 size={13} />
+                    <Trash2 size={13} aria-hidden />
                   </button>
                 )}
               </div>
@@ -131,14 +170,15 @@ export function BackgroundPanel({ project, screenshot }: Props) {
             <Button
               size="sm"
               variant="outline"
-              onClick={() =>
+              onClick={() => {
                 update((s) => {
                   s.background.gradient.stops.push({
                     color: "#ffffff",
                     position: 50,
                   });
-                })
-              }
+                });
+                setSelectedStopIndex(bg.gradient.stops.length);
+              }}
               className="w-full"
             >
               + Renk durağı ekle
@@ -251,7 +291,7 @@ export function BackgroundPanel({ project, screenshot }: Props) {
       </PanelSection>
 
       <PanelSection title="Noise">
-        <label className="flex items-center justify-between text-xs">
+        <label className="flex cursor-pointer items-center justify-between gap-2 text-xs">
           <span className="font-medium text-[var(--color-ink-body)]">Etkin</span>
           <input
             type="checkbox"
@@ -261,6 +301,7 @@ export function BackgroundPanel({ project, screenshot }: Props) {
                 s.background.noise.enabled = e.target.checked;
               })
             }
+            className="h-4 w-4 shrink-0 cursor-pointer accent-[var(--color-brand-primary)]"
           />
         </label>
         {bg.noise.enabled && (

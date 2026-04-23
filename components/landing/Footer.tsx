@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { BrandLockup } from "@/components/BrandLockup";
 
 export function Footer() {
   return (
@@ -15,13 +16,10 @@ export function Footer() {
       <div className="container mx-auto flex max-w-6xl flex-col items-center justify-between gap-6 px-4 text-center sm:flex-row sm:text-left">
         <Link
           href="/"
-          aria-label="Framelaunch ana sayfası"
-          className="group rounded-md text-lg font-bold text-black transition-transform hover:scale-[1.03] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-2"
+          aria-label="FrameLaunch ana sayfası"
+          className="group flex min-w-0 items-center gap-2 rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-2"
         >
-          Frame
-          <span className="bg-gradient-to-r from-[var(--color-brand-primary)] to-[#fff066] bg-clip-text text-transparent transition-all group-hover:tracking-wide">
-            launch
-          </span>
+          <BrandLockup variant="on-surface" imageClassName="rounded-md" />
         </Link>
         <p className="text-xs text-[var(--color-ink-muted)]">
           © {new Date().getFullYear()} Framelaunch · Tarayıcıda %100 ücretsiz
@@ -41,7 +39,7 @@ function FooterLink({ href, children }: { href: string; children: React.ReactNod
       href={href}
       className="group relative rounded-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-2"
     >
-      <span className="text-[var(--color-ink-body)] transition-colors group-hover:text-black">
+      <span className="text-[var(--color-ink-body)] transition-colors group-hover:text-[var(--color-ink-strong)]">
         {children}
       </span>
       <span

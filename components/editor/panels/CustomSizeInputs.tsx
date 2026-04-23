@@ -39,9 +39,11 @@ export function CustomSizeInputs({
           value={width}
           onChange={(e) => handleWidth(e.target.value)}
           aria-label="Genişlik (px)"
-          className="w-full rounded-[var(--radius-md)] border border-[var(--color-surface-2)] bg-white px-2 py-1.5 text-sm tabular-nums"
+          className="fl-no-focus w-full min-w-0 rounded-[var(--radius-md)] border border-[var(--color-surface-2)] bg-[var(--color-surface-0)] px-2 py-1.5 text-sm tabular-nums text-[var(--color-ink-strong)] transition-colors focus:border-[var(--color-brand-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--color-brand-primary)]"
         />
-        <span className="select-none text-xs text-[var(--color-ink-muted)]">×</span>
+        <span aria-hidden className="select-none text-xs text-[var(--color-ink-muted)]">
+          ×
+        </span>
         <input
           type="number"
           min={min}
@@ -49,7 +51,7 @@ export function CustomSizeInputs({
           value={height}
           onChange={(e) => handleHeight(e.target.value)}
           aria-label="Yükseklik (px)"
-          className="w-full rounded-[var(--radius-md)] border border-[var(--color-surface-2)] bg-white px-2 py-1.5 text-sm tabular-nums"
+          className="fl-no-focus w-full min-w-0 rounded-[var(--radius-md)] border border-[var(--color-surface-2)] bg-[var(--color-surface-0)] px-2 py-1.5 text-sm tabular-nums text-[var(--color-ink-strong)] transition-colors focus:border-[var(--color-brand-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--color-brand-primary)]"
         />
       </div>
       <p className="text-[10px] text-[var(--color-ink-muted)]">

@@ -47,6 +47,10 @@ interface EditorState {
   isSliding: boolean;
   slidingDirection: "left" | "right" | null;
 
+  /** Mobile drawer flags (no-op on >=md). */
+  mobileScreensOpen: boolean;
+  mobileToolsOpen: boolean;
+
   settingsModalOpen: boolean;
   languagesModalOpen: boolean;
   applyStyleModalOpen: boolean;
@@ -70,6 +74,10 @@ interface EditorState {
   setSelectedElementId: (id: string | null) => void;
   setSelectedPopoutId: (id: string | null) => void;
   setSliding: (isSliding: boolean, direction?: "left" | "right" | null) => void;
+
+  setMobileScreensOpen: (open: boolean) => void;
+  setMobileToolsOpen: (open: boolean) => void;
+  closeMobileDrawers: () => void;
 
   openSettingsModal: () => void;
   closeSettingsModal: () => void;
@@ -106,6 +114,9 @@ export const useEditorStore = create<EditorState>((set) => ({
   isSliding: false,
   slidingDirection: null,
 
+  mobileScreensOpen: false,
+  mobileToolsOpen: false,
+
   settingsModalOpen: false,
   languagesModalOpen: false,
   applyStyleModalOpen: false,
@@ -133,6 +144,19 @@ export const useEditorStore = create<EditorState>((set) => ({
   setSelectedPopoutId: (id) => set({ selectedPopoutId: id }),
   setSliding: (isSliding, direction = null) =>
     set({ isSliding, slidingDirection: direction }),
+
+  setMobileScreensOpen: (open) =>
+    set((s) => ({
+      mobileScreensOpen: open,
+      mobileToolsOpen: open ? false : s.mobileToolsOpen,
+    })),
+  setMobileToolsOpen: (open) =>
+    set((s) => ({
+      mobileToolsOpen: open,
+      mobileScreensOpen: open ? false : s.mobileScreensOpen,
+    })),
+  closeMobileDrawers: () =>
+    set({ mobileScreensOpen: false, mobileToolsOpen: false }),
 
   openSettingsModal: () => set({ settingsModalOpen: true }),
   closeSettingsModal: () => set({ settingsModalOpen: false }),

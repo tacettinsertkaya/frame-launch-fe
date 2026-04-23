@@ -62,6 +62,7 @@ export function DevicePanel({ project, screenshot }: Props) {
       <PanelSection title="Boyut" description="Marketler için doğru çıktı çözünürlüğü.">
         <select
           value={screenshot.deviceSizeId}
+          aria-label="Cihaz boyutu"
           onChange={(e) =>
             update((s) => {
               const nextId = e.target.value as Screenshot["deviceSizeId"];
@@ -72,7 +73,7 @@ export function DevicePanel({ project, screenshot }: Props) {
               }
             })
           }
-          className="w-full rounded-[var(--radius-md)] border border-[var(--color-surface-2)] bg-white px-3 py-2 text-sm"
+          className="w-full rounded-[var(--radius-md)] border border-[var(--color-surface-2)] bg-[var(--color-surface-0)] px-3 py-2 text-sm text-[var(--color-ink-strong)] transition-colors focus:border-[var(--color-brand-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--color-brand-primary)]"
         >
           {Object.entries(groupedSizes).map(([cat, items]) => (
             <optgroup key={cat} label={cat}>
@@ -232,7 +233,7 @@ export function DevicePanel({ project, screenshot }: Props) {
       </PanelSection>
 
       <PanelSection title="Gölge">
-        <label className="flex items-center justify-between text-xs">
+        <label className="flex cursor-pointer items-center justify-between gap-2 text-xs">
           <span className="font-medium text-[var(--color-ink-body)]">Etkin</span>
           <input
             type="checkbox"
@@ -242,6 +243,7 @@ export function DevicePanel({ project, screenshot }: Props) {
                 s.device.shadow.enabled = e.target.checked;
               })
             }
+            className="h-4 w-4 shrink-0 cursor-pointer accent-[var(--color-brand-primary)]"
           />
         </label>
         {dev.shadow.enabled && (
@@ -294,7 +296,7 @@ export function DevicePanel({ project, screenshot }: Props) {
       </PanelSection>
 
       <PanelSection title="Kenarlık">
-        <label className="flex items-center justify-between text-xs">
+        <label className="flex cursor-pointer items-center justify-between gap-2 text-xs">
           <span className="font-medium text-[var(--color-ink-body)]">Etkin</span>
           <input
             type="checkbox"
@@ -304,6 +306,7 @@ export function DevicePanel({ project, screenshot }: Props) {
                 s.device.border.enabled = e.target.checked;
               })
             }
+            className="h-4 w-4 shrink-0 cursor-pointer accent-[var(--color-brand-primary)]"
           />
         </label>
         {dev.border.enabled && (

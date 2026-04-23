@@ -143,7 +143,7 @@ function FeatureCard({ feature, index }: { feature: Feature; index: number }) {
       variants={card}
       whileHover={reduce ? undefined : { y: -6 }}
       transition={{ type: "spring", stiffness: 320, damping: 24 }}
-      className="gradient-border group relative overflow-hidden rounded-[var(--radius-xl)] border border-black/5 bg-white p-6 shadow-[0_2px_10px_rgba(0,0,0,0.04)] transition-shadow duration-500 hover:shadow-[0_24px_50px_-20px_rgba(0,0,0,0.18)]"
+      className="gradient-border group relative overflow-hidden rounded-[var(--radius-xl)] border border-[var(--color-surface-2)] bg-[var(--color-surface-0)] p-6 shadow-[0_2px_10px_rgba(0,0,0,0.04)] transition-shadow duration-500 hover:shadow-[0_24px_50px_-20px_rgba(0,0,0,0.18)]"
     >
       {/* Gradient hover wash */}
       <div
@@ -173,7 +173,7 @@ function FeatureCard({ feature, index }: { feature: Feature; index: number }) {
       {/* Subtle index marker */}
       <span
         aria-hidden
-        className="absolute right-5 top-5 text-[10px] font-mono font-medium tracking-wider text-black/20 transition-colors group-hover:text-black/40"
+        className="absolute right-5 top-5 text-[10px] font-mono font-medium tracking-wider text-[var(--color-ink-muted)]/60 transition-colors group-hover:text-[var(--color-ink-muted)]"
       >
         {String(index + 1).padStart(2, "0")}
       </span>

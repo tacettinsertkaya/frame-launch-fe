@@ -59,7 +59,9 @@ const SideCanvas = memo(function SideCanvas({
       className={cn(
         "origin-center overflow-hidden rounded-lg shadow-[0_25px_80px_rgba(0,0,0,0.2)]",
         "opacity-60 transition-opacity hover:opacity-[0.85]",
-        interactive ? "cursor-pointer" : "pointer-events-none",
+        interactive
+          ? "cursor-pointer focus:outline-none focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-surface-1)]"
+          : "pointer-events-none",
       )}
       style={{ maxWidth: 400, maxHeight: 700, direction: "ltr" as const }}
     >
@@ -185,7 +187,7 @@ export function SidePreviewStrip({ project, active, activeLocale, zoom }: Props)
 
         <div
           ref={mainRef}
-          className="relative z-20 rounded-[var(--radius-lg)] bg-white shadow-[var(--shadow-xl)]"
+          className="relative z-20 rounded-[var(--radius-lg)] bg-[var(--color-surface-0)] shadow-[var(--shadow-xl)]"
         >
           <Canvas
             screenshot={active}

@@ -47,7 +47,7 @@ export function TextPanel({ project, screenshot }: Props) {
     apply: (mutate: (cfg: TextConfig) => void) => void,
   ) => (
     <PanelSection title={label} description={`Aktif dil: ${activeLocale.toUpperCase()}`}>
-      <label className="flex items-center justify-between text-xs">
+      <label className="flex cursor-pointer items-center justify-between gap-2 text-xs">
         <span className="font-medium text-[var(--color-ink-body)]">Etkin</span>
         <input
           type="checkbox"
@@ -57,15 +57,16 @@ export function TextPanel({ project, screenshot }: Props) {
               c.enabled = e.target.checked;
             })
           }
+          className="h-4 w-4 shrink-0 cursor-pointer accent-[var(--color-brand-primary)]"
         />
       </label>
       {project.activeLocales.length > 1 && (
         <button
           type="button"
           onClick={() => openTranslateModal({ field, screenshotId: screenshot.id })}
-          className="mb-2 inline-flex items-center gap-1 text-[10px] font-medium text-[var(--color-brand-primary)] hover:underline"
+          className="mb-2 inline-flex items-center gap-1 rounded-[var(--radius-sm)] text-[10px] font-medium text-[var(--color-brand-primary)] transition-colors hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-1"
         >
-          <Languages className="h-3 w-3" />
+          <Languages className="h-3 w-3" aria-hidden />
           Çoklu dil / AI çevirisi…
         </button>
       )}
@@ -126,18 +127,19 @@ export function TextPanel({ project, screenshot }: Props) {
             }
             weightsToLoad={[...WEIGHT_NUMS]}
           />
-          <div className="flex gap-1 pt-1">
+          <div className="flex gap-1 pt-1" role="group" aria-label="Metin stili">
             {(
               [
-                ["italic", Italic, config.italic] as const,
-                ["underline", Underline, config.underline] as const,
-                ["strikethrough", Strikethrough, config.strikethrough] as const,
+                ["italic", Italic, config.italic, "İtalik"] as const,
+                ["underline", Underline, config.underline, "Altı çizili"] as const,
+                ["strikethrough", Strikethrough, config.strikethrough, "Üstü çizili"] as const,
               ]
-            ).map(([key, Icon, on]) => (
+            ).map(([key, Icon, on, ariaLabel]) => (
               <button
                 key={key}
                 type="button"
                 aria-pressed={on}
+                aria-label={ariaLabel}
                 onClick={() =>
                   apply((c) => {
                     if (key === "italic") c.italic = !c.italic;
@@ -147,24 +149,30 @@ export function TextPanel({ project, screenshot }: Props) {
                 }
                 className={cn(
                   "inline-flex h-8 flex-1 items-center justify-center rounded-[var(--radius-sm)] border border-[var(--color-surface-2)] text-[var(--color-ink-body)] transition-colors",
-                  on ? "bg-[var(--color-surface-1)] ring-1 ring-[var(--color-ink-muted)]" : "bg-white hover:bg-[var(--color-surface-1)]",
+                  "focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)]",
+                  on ? "bg-[var(--color-surface-1)] ring-1 ring-[var(--color-ink-muted)]" : "bg-[var(--color-surface-0)] hover:bg-[var(--color-surface-1)]",
                 )}
               >
-                <Icon className="h-3.5 w-3.5" />
+                <Icon className="h-3.5 w-3.5" aria-hidden />
               </button>
             ))}
           </div>
-          <label className="text-[10px] font-medium uppercase tracking-wide text-[var(--color-ink-muted)]">
+          <label
+            htmlFor={`${field}-weight`}
+            className="text-[10px] font-medium uppercase tracking-wide text-[var(--color-ink-muted)]"
+          >
             Kalınlık
           </label>
           <select
+            id={`${field}-weight`}
             value={config.weight}
+            aria-label={`${label} kalınlığı`}
             onChange={(e) =>
               apply((c) => {
                 c.weight = e.target.value as TextWeight;
               })
             }
-            className="w-full rounded-[var(--radius-md)] border border-[var(--color-surface-2)] bg-white px-2 py-1.5 text-xs"
+            className="w-full rounded-[var(--radius-md)] border border-[var(--color-surface-2)] bg-[var(--color-surface-0)] px-2 py-1.5 text-xs text-[var(--color-ink-strong)] transition-colors focus:border-[var(--color-brand-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--color-brand-primary)]"
           >
             {WEIGHTS.map((w) => (
               <option key={w} value={w}>

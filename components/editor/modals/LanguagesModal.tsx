@@ -96,7 +96,7 @@ export function LanguagesModal({ project }: Props) {
             <select
               value={pick}
               onChange={(e) => setPick(e.target.value as Locale | "")}
-              className="w-full rounded-[var(--radius-md)] border border-[var(--color-surface-2)] bg-white px-2 py-1.5 text-sm sm:w-auto"
+              className="w-full rounded-[var(--radius-md)] border border-[var(--color-surface-2)] bg-[var(--color-surface-0)] px-2 py-1.5 text-sm text-[var(--color-ink-strong)] transition-colors focus:border-[var(--color-brand-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--color-brand-primary)] sm:w-auto"
             >
               <option value="">Seçin…</option>
               {addable.map((l) => (

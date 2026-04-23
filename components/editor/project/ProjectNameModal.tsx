@@ -84,14 +84,23 @@ export function ProjectNameModal({
       open={open}
       onClose={() => onOpenChange(false)}
       title={mode === "new" ? "Yeni Proje" : "Projeyi Yeniden Adlandır"}
+      description={
+        mode === "new"
+          ? "Yeni bir proje oluşturun. Boş başlayın, mevcut projeyi çoğaltın veya bir şablon seçin."
+          : "Aktif projenin adını değiştirin."
+      }
       maxWidth={modalMaxWidth}
     >
       <div className="space-y-4">
         <div>
-          <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-[var(--color-ink-muted)]">
+          <label
+            htmlFor="project-name-input"
+            className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-[var(--color-ink-muted)]"
+          >
             Proje Adı
           </label>
           <input
+            id="project-name-input"
             autoFocus
             value={name}
             onChange={(e) => setName(e.target.value)}
@@ -99,7 +108,8 @@ export function ProjectNameModal({
               if (e.key === "Enter" && !submitDisabled) submit();
             }}
             placeholder="Örn. App Store Lansmanı"
-            className="w-full rounded-[var(--radius-sm)] border border-[var(--color-surface-2)] bg-white px-3 py-2 text-sm text-[var(--color-ink-strong)] placeholder:text-[var(--color-ink-muted)] focus:border-[var(--color-brand-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-brand-primary)]/20"
+            aria-invalid={!name.trim() || undefined}
+            className="w-full rounded-[var(--radius-sm)] border border-[var(--color-surface-2)] bg-[var(--color-surface-0)] px-3 py-2 text-sm text-[var(--color-ink-strong)] placeholder:text-[var(--color-ink-muted)] transition-colors focus:border-[var(--color-brand-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-brand-primary)]/20 aria-[invalid=true]:border-[var(--color-danger)]"
           />
         </div>
 
@@ -142,11 +152,21 @@ export function ProjectNameModal({
           </fieldset>
         )}
 
-        <div className="flex items-center justify-end gap-2 pt-2">
-          <Button variant="ghost" size="sm" onClick={() => onOpenChange(false)}>
+        <div className="flex flex-col-reverse gap-2 pt-2 sm:flex-row sm:items-center sm:justify-end">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="w-full sm:w-auto"
+            onClick={() => onOpenChange(false)}
+          >
             İptal
           </Button>
-          <Button size="sm" onClick={submit} disabled={submitDisabled}>
+          <Button
+            size="sm"
+            className="w-full sm:w-auto"
+            onClick={submit}
+            disabled={submitDisabled}
+          >
             {mode === "new" ? "Oluştur" : "Kaydet"}
           </Button>
         </div>
@@ -170,7 +190,7 @@ function RadioRow({ value, label, desc, current, onSelect }: RadioRowProps) {
       type="button"
       onClick={() => onSelect(value)}
       aria-pressed={active}
-      className={`flex w-full items-start gap-3 rounded-[var(--radius-md)] border px-3 py-2 text-left transition-all ${
+      className={`flex w-full items-start gap-3 rounded-[var(--radius-md)] border px-3 py-2 text-left transition-all focus:outline-none focus-visible:border-[var(--color-brand-primary)] focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)]/30 ${
         active
           ? "border-[var(--color-brand-primary)] bg-[var(--color-brand-primary)]/5"
           : "border-[var(--color-surface-2)] hover:bg-[var(--color-surface-1)]"
@@ -185,11 +205,11 @@ function RadioRow({ value, label, desc, current, onSelect }: RadioRowProps) {
       >
         {active && <div className="h-1.5 w-1.5 rounded-full bg-white" />}
       </div>
-      <div className="flex-1">
+      <div className="min-w-0 flex-1">
         <div className="text-sm font-medium text-[var(--color-ink-strong)]">
           {label}
         </div>
-        <div className="text-xs text-[var(--color-ink-muted)]">{desc}</div>
+        <div className="truncate text-xs text-[var(--color-ink-muted)]">{desc}</div>
       </div>
     </button>
   );

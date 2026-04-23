@@ -31,6 +31,7 @@ export function DeleteProjectModal({
       open={open}
       onClose={() => onOpenChange(false)}
       title="Projeyi sil"
+      description={`"${projectName}" projesi kalıcı olarak silinecek.`}
       maxWidth="440px"
     >
       <div className="space-y-4">
@@ -38,11 +39,21 @@ export function DeleteProjectModal({
           <strong className="text-[var(--color-ink-strong)]">&quot;{projectName}&quot;</strong>{" "}
           silinecek. Bu işlem geri alınamaz.
         </p>
-        <div className="flex items-center justify-end gap-2">
-          <Button variant="ghost" size="sm" onClick={() => onOpenChange(false)}>
+        <div className="flex flex-col-reverse gap-2 sm:flex-row sm:items-center sm:justify-end">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="w-full sm:w-auto"
+            onClick={() => onOpenChange(false)}
+          >
             İptal
           </Button>
-          <Button variant="destructive" size="sm" onClick={confirm}>
+          <Button
+            variant="destructive"
+            size="sm"
+            className="w-full sm:w-auto"
+            onClick={confirm}
+          >
             Sil
           </Button>
         </div>

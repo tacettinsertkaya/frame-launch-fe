@@ -222,7 +222,7 @@ export function ExportModal({ project }: Props) {
                 setFlow("menu");
                 void runZipSingleLanguage(activeLocale);
               }}
-              className="flex flex-col items-start gap-1 rounded-[var(--radius-lg)] border border-[var(--color-surface-2)] bg-white p-4 text-left transition-all hover:border-[var(--color-brand-primary)] hover:shadow-[var(--shadow-md)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-[var(--color-surface-2)] disabled:hover:shadow-none"
+              className="flex flex-col items-start gap-1 rounded-[var(--radius-lg)] border border-[var(--color-surface-2)] bg-[var(--color-surface-0)] p-4 text-left text-[var(--color-ink-body)] transition-all hover:border-[var(--color-brand-primary)] hover:shadow-[var(--shadow-md)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-[var(--color-surface-2)] disabled:hover:shadow-none"
             >
               <Languages size={18} aria-hidden className="text-[var(--color-brand-primary)]" />
               <span className="text-sm font-semibold text-[var(--color-ink-strong)]">
@@ -262,7 +262,7 @@ export function ExportModal({ project }: Props) {
               type="button"
               disabled={busy || !activeScreenshotId}
               onClick={exportActive}
-              className="group flex flex-col items-start gap-1.5 rounded-[var(--radius-lg)] border border-[var(--color-surface-2)] bg-white p-4 text-left transition-all hover:-translate-y-0.5 hover:border-[var(--color-brand-primary)] hover:shadow-[var(--shadow-md)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0 disabled:hover:border-[var(--color-surface-2)] disabled:hover:shadow-none"
+              className="group flex flex-col items-start gap-1.5 rounded-[var(--radius-lg)] border border-[var(--color-surface-2)] bg-[var(--color-surface-0)] p-4 text-left text-[var(--color-ink-body)] transition-all hover:-translate-y-0.5 hover:border-[var(--color-brand-primary)] hover:shadow-[var(--shadow-md)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0 disabled:hover:border-[var(--color-surface-2)] disabled:hover:shadow-none"
             >
               <Download size={18} aria-hidden className="text-[var(--color-brand-primary)]" />
               <span className="text-sm font-semibold text-[var(--color-ink-strong)]">

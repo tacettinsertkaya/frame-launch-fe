@@ -53,8 +53,8 @@ export function RightPanel({ project, screenshot }: Props) {
                 "flex-1 inline-flex min-w-0 flex-col items-center gap-1 py-3 text-[11px] font-medium transition-colors",
                 "focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--color-brand-primary)]",
                 active
-                  ? "border-b-2 border-black text-black"
-                  : "border-b-2 border-transparent text-[var(--color-ink-muted)] hover:bg-[var(--color-surface-1)] hover:text-black",
+                  ? "border-b-2 border-[var(--color-ink-strong)] text-[var(--color-ink-strong)]"
+                  : "border-b-2 border-transparent text-[var(--color-ink-muted)] hover:bg-[var(--color-surface-1)] hover:text-[var(--color-ink-strong)]",
               )}
             >
               <Icon size={16} aria-hidden />

@@ -43,7 +43,7 @@ export function Segment<T extends string>({
               "focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-1",
               size === "sm" ? "h-7 px-2.5 text-xs" : "h-9 px-3 text-sm",
               active
-                ? "bg-white text-[var(--color-ink-strong)] shadow-[var(--shadow-sm)]"
+                ? "bg-[var(--color-surface-0)] text-[var(--color-ink-strong)] shadow-[var(--shadow-sm)]"
                 : "text-[var(--color-ink-muted)] hover:text-[var(--color-ink-strong)]",
             )}
           >

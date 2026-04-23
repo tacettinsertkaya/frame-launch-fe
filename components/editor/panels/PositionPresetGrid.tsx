@@ -83,7 +83,7 @@ export function PositionPresetGrid({ active, onApply }: Props) {
             title={preset.label}
             aria-pressed={isActive}
             className={[
-              "flex flex-col items-center gap-1 rounded-[var(--radius-md)] border bg-white px-1.5 py-2 transition",
+              "flex flex-col items-center gap-1 rounded-[var(--radius-md)] border bg-[var(--color-surface-0)] px-1.5 py-2 transition",
               "hover:-translate-y-0.5 hover:border-[var(--color-brand-primary)] hover:bg-[var(--color-brand-primary-soft)]",
               "focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-1",
               isActive

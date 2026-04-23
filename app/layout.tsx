@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
-import { Toaster } from "sonner";
 import { ThemeSync } from "@/components/ThemeSync";
+import { AppToaster } from "@/components/AppToaster";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -22,8 +22,26 @@ export const metadata: Metadata = {
     siteName: "Framelaunch",
     locale: "tr_TR",
     type: "website",
+    images: [
+      {
+        url: "/logo.png",
+        width: 768,
+        height: 1024,
+        alt: "Framelaunch",
+      },
+    ],
   },
-  icons: { icon: "/favicon.ico" },
+  twitter: {
+    card: "summary",
+    title: "Framelaunch — App Store ekran görüntüleri",
+    description:
+      "Tarayıcıda saniyeler içinde App Store / Play Store görselleri. %100 ücretsiz, hesap yok, watermark yok.",
+    images: ["/logo.png"],
+  },
+  icons: {
+    icon: [{ url: "/logo.png", type: "image/png" }],
+    apple: "/logo.png",
+  },
 };
 
 export const viewport: Viewport = {
@@ -38,7 +56,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <ThemeSync />
         {children}
-        <Toaster richColors position="bottom-right" />
+        <AppToaster />
       </body>
     </html>
   );

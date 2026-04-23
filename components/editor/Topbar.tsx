@@ -1,13 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
-import { Download, Home, Info, Languages, Pencil, Plus, Settings, Trash2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Download, Home, Info, Languages, Pencil, Plus, Settings, Sparkles, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import type { Locale, Project } from "@/lib/types/project";
 import { LOCALE_LABELS } from "@/lib/i18n/localeLabels";
 import { useEditorStore } from "@/store/editorStore";
 import { useProjectsStore } from "@/store/projectsStore";
+import { useSettingsStore } from "@/store/settingsStore";
 import { Button } from "@/components/ui/button";
 import { ProjectSelector } from "./project/ProjectSelector";
 import { ProjectNameModal } from "./project/ProjectNameModal";
@@ -24,12 +25,47 @@ export function Topbar({ project }: Props) {
   const activeLocale = useEditorStore((s) => s.activeLocale);
   const setActiveLocale = useEditorStore((s) => s.setActiveLocale);
   const openLanguagesModal = useEditorStore((s) => s.openLanguagesModal);
+  const openMagicalTitlesModal = useEditorStore((s) => s.openMagicalTitlesModal);
   const setCurrentLocale = useProjectsStore((s) => s.setCurrentLocale);
   const projects = useProjectsStore((s) => s.projects);
+
+  const aiProvider = useSettingsStore((s) => s.aiProvider);
+  const apiKeyForProvider = useSettingsStore((s) => s.apiKeys[s.aiProvider]);
+  const hasSeenMagicalTooltip = useSettingsStore((s) => s.hasSeenMagicalTitlesTooltip);
+  const markMagicalTooltipSeen = useSettingsStore((s) => s.markMagicalTitlesTooltipSeen);
 
   const [newOpen, setNewOpen] = useState(false);
   const [renameOpen, setRenameOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const [magicalTip, setMagicalTip] = useState(false);
+
+  useEffect(() => {
+    if (!project) {
+      setMagicalTip(false);
+      return;
+    }
+    if (project.screenshots.length === 0) return;
+    if (hasSeenMagicalTooltip) return;
+    if (!apiKeyForProvider?.trim()) return;
+    setMagicalTip(true);
+    const t = window.setTimeout(() => {
+      setMagicalTip(false);
+      markMagicalTooltipSeen();
+    }, 8000);
+    return () => window.clearTimeout(t);
+  }, [
+    project?.id,
+    project?.screenshots.length,
+    hasSeenMagicalTooltip,
+    apiKeyForProvider,
+    markMagicalTooltipSeen,
+  ]);
+
+  const openMagicalTitles = () => {
+    setMagicalTip(false);
+    markMagicalTooltipSeen();
+    openMagicalTitlesModal();
+  };
 
   const handleDeleteClick = () => {
     if (projects.length <= 1) {
@@ -114,6 +150,27 @@ export function Topbar({ project }: Props) {
                   </select>
                 </div>
               )}
+              <div className="relative">
+                <IconBtn label="Sihirli başlıklar (AI)" onClick={openMagicalTitles}>
+                  <Sparkles size={14} />
+                </IconBtn>
+                {magicalTip && (
+                  <div className="absolute right-0 top-full z-50 mt-1 w-48 rounded-[var(--radius-md)] border border-[var(--color-surface-2)] bg-[var(--color-surface-0)] p-2 text-[10px] leading-snug text-[var(--color-ink-body)] shadow-[var(--shadow-lg)]">
+                    <button
+                      type="button"
+                      className="float-right text-[var(--color-ink-muted)] hover:text-[var(--color-ink-strong)]"
+                      aria-label="Kapat"
+                      onClick={() => {
+                        setMagicalTip(false);
+                        markMagicalTooltipSeen();
+                      }}
+                    >
+                      ×
+                    </button>
+                    AI ile tüm ekranlar için kısa başlıklar deneyin.
+                  </div>
+                )}
+              </div>
             </>
           )}
           <Button size="sm" onClick={() => setExportOpen(true)}>

@@ -15,6 +15,7 @@ import { ApplyStyleModal } from "./modals/ApplyStyleModal";
 import { SettingsModal } from "./modals/SettingsModal";
 import { AboutModal } from "./modals/AboutModal";
 import { TranslateModal } from "./modals/TranslateModal";
+import { MagicalTitlesModal } from "./modals/MagicalTitlesModal";
 
 export function EditorShell() {
   const hydrated = useProjectsStore((s) => s.hydrated);
@@ -85,6 +86,7 @@ export function EditorShell() {
       <SettingsModal />
       <AboutModal />
       <TranslateModal />
+      <MagicalTitlesModal />
     </div>
   );
 }

@@ -86,6 +86,9 @@ export interface TextConfig {
   text: Partial<Record<Locale, string>>;
   font: string;
   weight: TextWeight;
+  italic: boolean;
+  underline: boolean;
+  strikethrough: boolean;
   perLanguageLayout: boolean;
   position: "top" | "bottom";
   verticalOffset: number;
@@ -231,6 +234,9 @@ export const defaultText = (
   text: {},
   font: "Inter",
   weight: isHeadline ? "Bold" : "Medium",
+  italic: false,
+  underline: false,
+  strikethrough: false,
   perLanguageLayout: false,
   position,
   verticalOffset: 12,

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { Italic, Strikethrough, Underline } from "lucide-react";
+import { Italic, Languages, Strikethrough, Underline } from "lucide-react";
 import type { Project, Screenshot, TextConfig, TextWeight } from "@/lib/types/project";
 import { useProjectsStore } from "@/store/projectsStore";
 import { useEditorStore } from "@/store/editorStore";
@@ -27,6 +27,7 @@ const WEIGHT_NUMS = [300, 400, 500, 600, 700, 800, 900] as const;
 export function TextPanel({ project, screenshot }: Props) {
   const updateScreenshot = useProjectsStore((s) => s.updateScreenshot);
   const activeLocale = useEditorStore((s) => s.activeLocale);
+  const openTranslateModal = useEditorStore((s) => s.openTranslateModal);
 
   const update = (mut: (s: Screenshot) => void) =>
     updateScreenshot(project.id, screenshot.id, mut);
@@ -41,6 +42,7 @@ export function TextPanel({ project, screenshot }: Props) {
 
   const renderTextEditor = (
     label: "Headline" | "Subheadline",
+    field: "headline" | "subheadline",
     config: TextConfig,
     apply: (mutate: (cfg: TextConfig) => void) => void,
   ) => (
@@ -57,6 +59,16 @@ export function TextPanel({ project, screenshot }: Props) {
           }
         />
       </label>
+      {project.activeLocales.length > 1 && (
+        <button
+          type="button"
+          onClick={() => openTranslateModal({ field, screenshotId: screenshot.id })}
+          className="mb-2 inline-flex items-center gap-1 text-[10px] font-medium text-[var(--color-brand-primary)] hover:underline"
+        >
+          <Languages className="h-3 w-3" />
+          Çoklu dil / AI çevirisi…
+        </button>
+      )}
       {config.enabled && (
         <>
           <TextArea
@@ -216,10 +228,10 @@ export function TextPanel({ project, screenshot }: Props) {
 
   return (
     <div className="overflow-y-auto">
-      {renderTextEditor("Headline", screenshot.text.headline, (m) =>
+      {renderTextEditor("Headline", "headline", screenshot.text.headline, (m) =>
         update((s) => m(s.text.headline)),
       )}
-      {renderTextEditor("Subheadline", screenshot.text.subheadline, (m) =>
+      {renderTextEditor("Subheadline", "subheadline", screenshot.text.subheadline, (m) =>
         update((s) => m(s.text.subheadline)),
       )}
     </div>

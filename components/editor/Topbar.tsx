@@ -5,22 +5,13 @@ import { useState } from "react";
 import { Download, Home, Info, Languages, Pencil, Plus, Settings, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import type { Locale, Project } from "@/lib/types/project";
+import { LOCALE_LABELS } from "@/lib/i18n/localeLabels";
 import { useEditorStore } from "@/store/editorStore";
 import { useProjectsStore } from "@/store/projectsStore";
 import { Button } from "@/components/ui/button";
 import { ProjectSelector } from "./project/ProjectSelector";
 import { ProjectNameModal } from "./project/ProjectNameModal";
 import { DeleteProjectModal } from "./project/DeleteProjectModal";
-
-const LOCALE_LABELS: Record<Locale, string> = {
-  tr: "Türkçe",
-  en: "English",
-  de: "Deutsch",
-  es: "Español",
-  fr: "Français",
-  ja: "日本語",
-  pt: "Português",
-};
 
 interface Props {
   project: Project | null;

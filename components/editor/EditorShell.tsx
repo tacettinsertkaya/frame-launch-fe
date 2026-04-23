@@ -14,6 +14,7 @@ import { ScreenshotTranslationsModal } from "./modals/ScreenshotTranslationsModa
 import { ApplyStyleModal } from "./modals/ApplyStyleModal";
 import { SettingsModal } from "./modals/SettingsModal";
 import { AboutModal } from "./modals/AboutModal";
+import { TranslateModal } from "./modals/TranslateModal";
 
 export function EditorShell() {
   const hydrated = useProjectsStore((s) => s.hydrated);
@@ -83,6 +84,7 @@ export function EditorShell() {
       <ApplyStyleModal project={project} />
       <SettingsModal />
       <AboutModal />
+      <TranslateModal />
     </div>
   );
 }

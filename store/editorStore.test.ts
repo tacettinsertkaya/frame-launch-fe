@@ -37,15 +37,17 @@ describe("editorStore extensions", () => {
   });
 
   it("openTranslateModal sets translateModalState with field", () => {
-    useEditorStore.getState().openTranslateModal({ field: "headline" });
+    useEditorStore.getState().openTranslateModal({ field: "headline", screenshotId: "s1" });
     expect(useEditorStore.getState().translateModalState).toEqual({
       open: true,
       field: "headline",
+      screenshotId: "s1",
+      elementId: undefined,
     });
   });
 
   it("closeTranslateModal sets translateModalState null", () => {
-    useEditorStore.getState().openTranslateModal({ field: "subheadline" });
+    useEditorStore.getState().openTranslateModal({ field: "subheadline", screenshotId: "s1" });
     useEditorStore.getState().closeTranslateModal();
     expect(useEditorStore.getState().translateModalState).toBeNull();
   });

@@ -15,6 +15,7 @@ export type TranslateField = "headline" | "subheadline" | "element";
 export interface TranslateModalState {
   open: boolean;
   field: TranslateField;
+  screenshotId: string;
   elementId?: string;
 }
 
@@ -84,7 +85,11 @@ interface EditorState {
   closeApplyStyleModal: () => void;
   setExportLanguageDialogOpen: (open: boolean) => void;
 
-  openTranslateModal: (opts: { field: TranslateField; elementId?: string }) => void;
+  openTranslateModal: (opts: {
+    field: TranslateField;
+    screenshotId: string;
+    elementId?: string;
+  }) => void;
   closeTranslateModal: () => void;
 
   setDuplicateUploadDialog: (state: DuplicateUploadDialogState | null) => void;
@@ -146,8 +151,8 @@ export const useEditorStore = create<EditorState>((set) => ({
     set({ applyStyleModalOpen: false, applyStyleSourceScreenshotId: null }),
   setExportLanguageDialogOpen: (open) => set({ exportLanguageDialogOpen: open }),
 
-  openTranslateModal: ({ field, elementId }) =>
-    set({ translateModalState: { open: true, field, elementId } }),
+  openTranslateModal: ({ field, screenshotId, elementId }) =>
+    set({ translateModalState: { open: true, field, screenshotId, elementId } }),
   closeTranslateModal: () => set({ translateModalState: null }),
 
   setDuplicateUploadDialog: (state) => set({ duplicateUploadDialog: state }),

@@ -6,6 +6,7 @@ import { ArrowLeft, Download, Loader2, Languages, Package } from "lucide-react";
 import JSZip from "jszip";
 import { toast } from "sonner";
 import type { Locale, Project } from "@/lib/types/project";
+import { LOCALE_LABELS } from "@/lib/i18n/localeLabels";
 import { useEditorStore } from "@/store/editorStore";
 import { Dialog } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -16,16 +17,6 @@ import { getEffectiveDimensions } from "@/lib/devices/registry";
 interface Props {
   project: Project | null;
 }
-
-const LOCALE_LABELS: Record<Locale, string> = {
-  tr: "Türkçe",
-  en: "English",
-  de: "Deutsch",
-  es: "Español",
-  fr: "Français",
-  ja: "日本語",
-  pt: "Português",
-};
 
 type ExportFlow = "menu" | "scope";
 

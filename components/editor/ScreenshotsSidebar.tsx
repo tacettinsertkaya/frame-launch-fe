@@ -1,6 +1,6 @@
 "use client";
 
-import { Plus, Trash2, Copy, GripVertical } from "lucide-react";
+import { Plus, Trash2, Copy, GripVertical, Languages } from "lucide-react";
 import {
   DndContext,
   PointerSensor,
@@ -34,6 +34,9 @@ export function ScreenshotsSidebar({ project }: Props) {
   const updateProject = useProjectsStore((s) => s.updateProject);
   const removeScreenshot = useProjectsStore((s) => s.removeScreenshot);
   const reorderScreenshots = useProjectsStore((s) => s.reorderScreenshots);
+  const openScreenshotTranslationsModal = useEditorStore(
+    (s) => s.openScreenshotTranslationsModal,
+  );
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -121,6 +124,7 @@ export function ScreenshotsSidebar({ project }: Props) {
                   onSelect={() => setActive(s.id)}
                   onDuplicate={() => duplicate(s.id)}
                   onRemove={() => remove(s.id)}
+                  onTranslations={() => openScreenshotTranslationsModal(s.id)}
                 />
               ))}
             </div>
@@ -139,6 +143,7 @@ interface SortableRowProps {
   onSelect: () => void;
   onDuplicate: () => void;
   onRemove: () => void;
+  onTranslations: () => void;
 }
 
 function SortableRow({
@@ -149,6 +154,7 @@ function SortableRow({
   onSelect,
   onDuplicate,
   onRemove,
+  onTranslations,
 }: SortableRowProps) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
     useSortable({ id: screenshot.id });
@@ -193,6 +199,19 @@ function SortableRow({
         </span>
         <div className="flex items-center gap-0.5 opacity-0 transition-opacity group-hover:opacity-100">
           <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onTranslations();
+            }}
+            className="grid h-6 w-6 place-items-center rounded text-[var(--color-ink-muted)] hover:bg-white hover:text-[var(--color-ink-strong)]"
+            aria-label="Çeviriler"
+            title="Çeviriler"
+          >
+            <Languages size={11} />
+          </button>
+          <button
+            type="button"
             onClick={onDuplicate}
             className="grid h-6 w-6 place-items-center rounded text-[var(--color-ink-muted)] hover:bg-white hover:text-[var(--color-ink-strong)]"
             aria-label="Çoğalt"
@@ -200,6 +219,7 @@ function SortableRow({
             <Copy size={11} />
           </button>
           <button
+            type="button"
             onClick={onRemove}
             className="grid h-6 w-6 place-items-center rounded text-[var(--color-ink-muted)] hover:bg-red-50 hover:text-red-500"
             aria-label="Sil"

@@ -4,7 +4,7 @@ import { useRef } from "react";
 import type { Project, Screenshot } from "@/lib/types/project";
 import { useProjectsStore } from "@/store/projectsStore";
 import { useEditorStore } from "@/store/editorStore";
-import { saveBlob } from "@/lib/persistence/blobStore";
+import { handleScreenshotImageUpload } from "@/lib/i18n/handleScreenshotImageUpload";
 import { DEVICE_SIZES, getDeviceSize } from "@/lib/devices/registry";
 import {
   applyPositionPreset,
@@ -30,11 +30,8 @@ export function DevicePanel({ project, screenshot }: Props) {
   const update = (mut: (s: Screenshot) => void) =>
     updateScreenshot(project.id, screenshot.id, mut);
 
-  const onPickFile = async (file: File) => {
-    const blobId = await saveBlob(file);
-    update((s) => {
-      s.uploads = { ...s.uploads, [activeLocale]: blobId };
-    });
+  const onPickFile = (file: File) => {
+    void handleScreenshotImageUpload(project, screenshot.id, file, activeLocale);
   };
 
   const dev = screenshot.device;

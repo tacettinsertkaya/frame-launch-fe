@@ -98,4 +98,24 @@ describe("projectsStore actions", () => {
     const proj = useProjectsStore.getState().projects.find((x) => x.id === p.id)!;
     expect(proj.currentLocale).toBe("en");
   });
+
+  it("removeLocale clears uploads and uploadMeta for that locale on all screenshots", () => {
+    const p = useProjectsStore.getState().createProject("StripUploads");
+    useProjectsStore.getState().addLocale(p.id, "en");
+    const proj0 = useProjectsStore.getState().projects.find((x) => x.id === p.id)!;
+    const sid = proj0.screenshots[0].id;
+    useProjectsStore.getState().updateScreenshot(p.id, sid, (s) => {
+      s.uploads = { tr: "b1", en: "b2" };
+      s.uploadMeta = {
+        tr: { filename: "a.png", baseFilename: "a", uploadedAt: "t" },
+        en: { filename: "a_en.png", baseFilename: "a", uploadedAt: "t" },
+      };
+    });
+    useProjectsStore.getState().removeLocale(p.id, "en");
+    const proj = useProjectsStore.getState().projects.find((x) => x.id === p.id)!;
+    const s = proj.screenshots[0];
+    expect(s.uploads.en).toBeUndefined();
+    expect(s.uploadMeta?.en).toBeUndefined();
+    expect(s.uploads.tr).toBe("b1");
+  });
 });

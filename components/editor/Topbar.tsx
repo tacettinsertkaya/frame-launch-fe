@@ -30,6 +30,8 @@ export function Topbar({ project }: Props) {
   const setExportOpen = useEditorStore((s) => s.setExportModalOpen);
   const activeLocale = useEditorStore((s) => s.activeLocale);
   const setActiveLocale = useEditorStore((s) => s.setActiveLocale);
+  const openLanguagesModal = useEditorStore((s) => s.openLanguagesModal);
+  const setCurrentLocale = useProjectsStore((s) => s.setCurrentLocale);
   const projects = useProjectsStore((s) => s.projects);
 
   const [newOpen, setNewOpen] = useState(false);
@@ -80,21 +82,40 @@ export function Topbar({ project }: Props) {
         </div>
 
         <div className="flex shrink-0 items-center gap-2">
-          {project && project.activeLocales.length > 1 && (
-            <div className="flex items-center gap-1.5 rounded-[var(--radius-md)] bg-[var(--color-surface-1)] px-2 py-1.5">
-              <Languages size={14} className="text-[var(--color-ink-muted)]" />
-              <select
-                value={activeLocale}
-                onChange={(e) => setActiveLocale(e.target.value as Locale)}
-                className="bg-transparent text-xs font-medium text-[var(--color-ink-strong)] focus:outline-none"
+          {project && (
+            <>
+              <button
+                type="button"
+                onClick={() => openLanguagesModal()}
+                className="grid h-8 w-8 place-items-center rounded-[var(--radius-md)] bg-[var(--color-surface-1)] text-[var(--color-ink-muted)] hover:text-[var(--color-ink-strong)]"
+                aria-label="Dilleri yönet"
+                title="Dilleri yönet"
               >
-                {project.activeLocales.map((l) => (
-                  <option key={l} value={l}>
-                    {LOCALE_LABELS[l]}
-                  </option>
-                ))}
-              </select>
-            </div>
+                <Languages size={16} />
+              </button>
+              {project.activeLocales.length > 1 && (
+                <div className="flex items-center gap-1.5 rounded-[var(--radius-md)] bg-[var(--color-surface-1)] px-2 py-1.5">
+                  <span className="text-[10px] font-medium uppercase tracking-wide text-[var(--color-ink-muted)]">
+                    Dil
+                  </span>
+                  <select
+                    value={activeLocale}
+                    onChange={(e) => {
+                      const loc = e.target.value as Locale;
+                      setCurrentLocale(project.id, loc);
+                      setActiveLocale(loc);
+                    }}
+                    className="max-w-[120px] bg-transparent text-xs font-medium text-[var(--color-ink-strong)] focus:outline-none"
+                  >
+                    {project.activeLocales.map((l) => (
+                      <option key={l} value={l}>
+                        {LOCALE_LABELS[l]}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+            </>
           )}
           <Button size="sm" onClick={() => setExportOpen(true)}>
             <Download size={14} />

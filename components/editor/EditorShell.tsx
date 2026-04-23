@@ -9,6 +9,9 @@ import { ScreenshotsSidebar } from "./ScreenshotsSidebar";
 import { RightPanel } from "./RightPanel";
 import { CanvasStage } from "./CanvasStage";
 import { ExportModal } from "./ExportModal";
+import { DuplicateUploadModal } from "./modals/DuplicateUploadModal";
+import { LanguagesModal } from "./modals/LanguagesModal";
+import { ScreenshotTranslationsModal } from "./modals/ScreenshotTranslationsModal";
 
 export function EditorShell() {
   const hydrated = useProjectsStore((s) => s.hydrated);
@@ -17,6 +20,7 @@ export function EditorShell() {
   const activeProjectId = useProjectsStore((s) => s.activeProjectId);
   const setActiveScreenshot = useEditorStore((s) => s.setActiveScreenshot);
   const activeScreenshotId = useEditorStore((s) => s.activeScreenshotId);
+  const setActiveLocale = useEditorStore((s) => s.setActiveLocale);
 
   useEffect(() => {
     hydrate();
@@ -27,6 +31,13 @@ export function EditorShell() {
     () => projects.find((p) => p.id === activeProjectId) ?? null,
     [projects, activeProjectId],
   );
+
+  useEffect(() => {
+    if (!project) return;
+    if (project.activeLocales.includes(project.currentLocale)) {
+      setActiveLocale(project.currentLocale);
+    }
+  }, [project, setActiveLocale]);
 
   // Aktif projedeki ilk ekranı seç
   useEffect(() => {
@@ -65,6 +76,9 @@ export function EditorShell() {
         )}
       </div>
       <ExportModal project={project} />
+      <DuplicateUploadModal />
+      <LanguagesModal project={project} />
+      <ScreenshotTranslationsModal project={project} />
     </div>
   );
 }

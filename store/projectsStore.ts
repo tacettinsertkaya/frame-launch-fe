@@ -185,6 +185,18 @@ export const useProjectsStore = create<ProjectsState>((set, get) => ({
       if (p.currentLocale === locale) {
         p.currentLocale = p.activeLocales[0];
       }
+      for (const s of p.screenshots) {
+        if (s.uploads?.[locale]) {
+          const nextU = { ...s.uploads };
+          delete nextU[locale];
+          s.uploads = nextU;
+        }
+        if (s.uploadMeta?.[locale]) {
+          const nextM = { ...s.uploadMeta };
+          delete nextM[locale];
+          s.uploadMeta = Object.keys(nextM).length ? nextM : undefined;
+        }
+      }
     });
   },
 

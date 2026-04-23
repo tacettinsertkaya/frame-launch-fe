@@ -22,6 +22,7 @@ function reset() {
     applyStyleModalOpen: false,
     translateModalState: null,
     duplicateUploadDialog: null,
+    screenshotTranslationsModalId: null,
     exportLanguageDialogOpen: false,
   });
 }

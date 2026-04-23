@@ -24,7 +24,10 @@ export interface DuplicateUploadDialogState {
   open: boolean;
   baseFilename: string;
   matchedScreenshotId: string;
+  /** Kullanıcının yükleme başlattığı ekran (create şablonu için). */
+  targetScreenshotId: string;
   locale: Locale;
+  pendingFile: File;
   resolve: (action: DuplicateUploadAction) => void;
 }
 
@@ -52,6 +55,8 @@ interface EditorState {
 
   translateModalState: TranslateModalState | null;
   duplicateUploadDialog: DuplicateUploadDialogState | null;
+  /** Screenshot çevirileri modal'ı — açıkken screenshot id */
+  screenshotTranslationsModalId: string | null;
 
   setActiveScreenshot: (id: string | null) => void;
   setActiveLocale: (locale: Locale) => void;
@@ -81,6 +86,8 @@ interface EditorState {
   closeTranslateModal: () => void;
 
   setDuplicateUploadDialog: (state: DuplicateUploadDialogState | null) => void;
+  openScreenshotTranslationsModal: (screenshotId: string) => void;
+  closeScreenshotTranslationsModal: () => void;
 }
 
 export const useEditorStore = create<EditorState>((set) => ({
@@ -107,6 +114,7 @@ export const useEditorStore = create<EditorState>((set) => ({
 
   translateModalState: null,
   duplicateUploadDialog: null,
+  screenshotTranslationsModalId: null,
 
   setActiveScreenshot: (id) => set({ activeScreenshotId: id }),
   setActiveLocale: (locale) => set({ activeLocale: locale }),
@@ -138,4 +146,8 @@ export const useEditorStore = create<EditorState>((set) => ({
   closeTranslateModal: () => set({ translateModalState: null }),
 
   setDuplicateUploadDialog: (state) => set({ duplicateUploadDialog: state }),
+  openScreenshotTranslationsModal: (screenshotId) =>
+    set({ screenshotTranslationsModalId: screenshotId }),
+  closeScreenshotTranslationsModal: () =>
+    set({ screenshotTranslationsModalId: null }),
 }));

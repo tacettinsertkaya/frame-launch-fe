@@ -1,5 +1,6 @@
 "use client";
 
+import { motion } from "framer-motion";
 import {
   Plus,
   Trash2,
@@ -134,42 +135,63 @@ export function ScreenshotsSidebar({ project }: Props) {
   };
 
   return (
-    <aside
-      className="flex h-full w-[200px] shrink-0 flex-col border-r border-[var(--color-surface-2)] bg-[var(--color-surface-1)]"
+    <motion.aside
+      initial={{ x: -16, opacity: 0 }}
+      animate={{ x: 0, opacity: 1 }}
+      transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+      className="flex h-full w-[min(92vw,320px)] shrink-0 flex-col overflow-hidden rounded-[26px] border border-black/8 bg-[linear-gradient(180deg,rgba(255,255,255,0.92)_0%,rgba(248,244,228,0.9)_100%)] shadow-[0_24px_60px_rgba(0,0,0,0.08)] md:w-[272px]"
       aria-label="Ekran listesi"
     >
-      <div className="flex shrink-0 items-center justify-between px-3 py-3">
-        <h2 className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--color-ink-muted)]">
-          Ekranlar
-        </h2>
-        <button
-          type="button"
-          onClick={addScreenshot}
-          className="grid h-7 w-7 place-items-center rounded-[var(--radius-sm)] bg-[var(--color-ink-strong)] text-[var(--color-ink-inverse)] shadow-[var(--shadow-sm)] transition-colors hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-surface-1)]"
-          aria-label="Yeni ekran ekle"
-        >
-          <Plus size={14} aria-hidden />
-        </button>
+      <div className="shrink-0 border-b border-black/6 px-4 py-4">
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[var(--color-ink-muted)]">
+              Storyboard
+            </p>
+            <h2 className="mt-1 text-sm font-semibold tracking-[-0.02em] text-[var(--color-ink-strong)]">
+              Prompt akisini yonetin
+            </h2>
+            <p className="mt-1 text-xs leading-5 text-[var(--color-ink-muted)]">
+              Siralayin, varyasyon cikarın ve ceviri akislarini tek yerden kontrol edin.
+            </p>
+          </div>
+          <div className="flex shrink-0 items-center gap-2">
+            <div className="rounded-full border border-black/8 bg-white/80 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-[var(--color-ink-muted)]">
+              {project.screenshots.length} kare
+            </div>
+            <button
+              type="button"
+              onClick={addScreenshot}
+              className="grid h-9 w-9 place-items-center rounded-full bg-black text-[var(--color-ink-inverse)] shadow-[0_10px_26px_rgba(0,0,0,0.16)] transition-transform hover:-translate-y-0.5 hover:opacity-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+              aria-label="Yeni ekran ekle"
+            >
+              <Plus size={16} aria-hidden />
+            </button>
+          </div>
+        </div>
+        <div className="mt-3 grid grid-cols-2 gap-2">
+          <SidebarStat label="Aktif diller" value={String(project.activeLocales.length)} />
+          <SidebarStat label="Son islem" value={transferTarget ? "Stil secimi" : "Hazir"} />
+        </div>
       </div>
       {transferTarget && (
-        <div
-          role="status"
-          className="mx-2 mb-2 flex shrink-0 items-center justify-between gap-1 rounded-[var(--radius-md)] border border-amber-200 bg-amber-50 px-2 py-1.5 text-[10px] leading-tight text-amber-950"
+        <button
+          type="button"
+          onClick={() => {
+            setTransferTarget(null);
+            toast.info("Stil aktarimi iptal edildi");
+          }}
+          className="mx-3 mt-3 flex shrink-0 items-center justify-between gap-2 rounded-[20px] border border-amber-200 bg-[linear-gradient(135deg,rgba(255,243,176,0.8)_0%,rgba(255,255,255,0.88)_100%)] px-3 py-2 text-left text-[11px] leading-tight text-amber-950 shadow-[0_12px_28px_rgba(232,198,16,0.16)]"
         >
-          <span className="min-w-0 flex-1 truncate">Kaynak ekrana tıklayın</span>
-          <button
-            type="button"
-            className="shrink-0 rounded font-medium underline transition-colors hover:text-amber-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
-            onClick={() => {
-              setTransferTarget(null);
-              toast.info("İptal");
-            }}
-          >
-            İptal
-          </button>
-        </div>
+          <span className="min-w-0 flex-1">
+            Hedef ekran secildi. Simdi gorunum stilini kopyalamak icin kaynak ekrana dokunun.
+          </span>
+          <span className="shrink-0 rounded-full bg-amber-950 px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-amber-50">
+            Iptal
+          </span>
+        </button>
       )}
-      <div className="flex-1 overflow-y-auto px-3 pb-3">
+      <div className="flex-1 overflow-y-auto px-3 pb-3 pt-3">
         <DndContext
           sensors={sensors}
           collisionDetection={closestCenter}
@@ -200,7 +222,7 @@ export function ScreenshotsSidebar({ project }: Props) {
           </SortableContext>
         </DndContext>
       </div>
-    </aside>
+    </motion.aside>
   );
 }
 
@@ -223,11 +245,11 @@ function RowAction({ onClick, label, title, danger, children }: RowActionProps) 
       aria-label={label}
       title={title}
       className={cn(
-        "grid h-6 w-6 place-items-center rounded text-[var(--color-ink-muted)] transition-colors",
+        "grid h-7 w-7 place-items-center rounded-full border border-black/6 bg-white/80 text-[var(--color-ink-muted)] shadow-[0_6px_14px_rgba(0,0,0,0.05)] transition-colors",
         "focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-1 focus-visible:ring-offset-[var(--color-surface-1)]",
         danger
-          ? "hover:bg-red-50 hover:text-red-500 focus-visible:ring-red-400"
-          : "hover:bg-[var(--color-surface-0)] hover:text-[var(--color-ink-strong)]",
+          ? "hover:border-red-100 hover:bg-red-50 hover:text-red-500 focus-visible:ring-red-400"
+          : "hover:bg-white hover:text-[var(--color-ink-strong)]",
       )}
     >
       {children}
@@ -282,7 +304,7 @@ function SortableRow({
         aria-label={`"${screenshot.name}" ekranını sürükle`}
         {...attributes}
         {...listeners}
-        className="absolute left-1 top-1 z-10 grid h-6 w-5 cursor-grab place-items-center rounded text-[var(--color-ink-muted)] opacity-0 transition-opacity hover:bg-[var(--color-surface-0)]/70 focus:opacity-100 group-hover:opacity-100 group-focus-within:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] active:cursor-grabbing"
+        className="absolute left-2 top-2 z-10 grid h-7 w-7 cursor-grab place-items-center rounded-full border border-black/8 bg-white/90 text-[var(--color-ink-muted)] opacity-100 shadow-[0_8px_20px_rgba(0,0,0,0.06)] transition-opacity md:opacity-0 md:hover:bg-white md:focus:opacity-100 md:group-hover:opacity-100 md:group-focus-within:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] active:cursor-grabbing"
       >
         <GripVertical size={12} aria-hidden />
       </button>
@@ -292,11 +314,11 @@ function SortableRow({
         aria-label={`${screenshot.name} ekranını seç`}
         aria-pressed={active}
         className={cn(
-          "block w-full overflow-hidden rounded-[var(--radius-md)] border-2 transition-all",
+          "block w-full overflow-hidden rounded-[22px] border-2 bg-white transition-all shadow-[0_16px_38px_rgba(0,0,0,0.08)]",
           "focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-surface-1)]",
           active
-            ? "border-[var(--color-brand-primary)] shadow-[var(--shadow-md)]"
-            : "border-transparent hover:border-[var(--color-surface-2)]",
+            ? "border-[var(--color-brand-primary)] -translate-y-0.5"
+            : "border-transparent hover:-translate-y-0.5 hover:border-black/10",
           isStyleRecipient && "ring-2 ring-amber-400 ring-offset-1",
         )}
       >
@@ -304,11 +326,23 @@ function SortableRow({
           <Canvas screenshot={screenshot} locale={locale} scale={thumbScale} selectedElementId={null} />
         </div>
       </button>
-      <div className="mt-1 flex items-center justify-between gap-1">
-        <span className="min-w-0 flex-1 truncate text-[11px] text-[var(--color-ink-body)]">
-          {String(index + 1).padStart(2, "0")} · {screenshot.name}
-        </span>
-        <div className="flex shrink-0 items-center gap-0.5 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
+      <div className="mt-2 rounded-[20px] border border-black/6 bg-white/80 px-3 py-2 shadow-[0_8px_20px_rgba(0,0,0,0.04)]">
+        <div className="flex items-start justify-between gap-2">
+          <div className="min-w-0">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--color-ink-muted)]">
+              Sahne {String(index + 1).padStart(2, "0")}
+            </p>
+            <span className="mt-1 block min-w-0 truncate text-xs font-semibold text-[var(--color-ink-body)]">
+              {screenshot.name}
+            </span>
+          </div>
+          {active && (
+            <span className="rounded-full bg-[rgba(232,198,16,0.16)] px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--color-ink-strong)]">
+              Aktif
+            </span>
+          )}
+        </div>
+        <div className="mt-2 flex shrink-0 items-center gap-1 opacity-100 transition-opacity md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100">
           <RowAction onClick={onMarkStyleRecipient} label="Stil buraya kopyalansın" title="Önce bu hedefi seçin, sonra kaynak ekrana tıklayın">
             <ArrowRightLeft size={11} aria-hidden />
           </RowAction>
@@ -325,6 +359,24 @@ function SortableRow({
             <Trash2 size={11} aria-hidden />
           </RowAction>
         </div>
+      </div>
+    </div>
+  );
+}
+
+interface SidebarStatProps {
+  label: string;
+  value: string;
+}
+
+function SidebarStat({ label, value }: SidebarStatProps) {
+  return (
+    <div className="rounded-[18px] border border-black/6 bg-white/75 px-3 py-2">
+      <div className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[var(--color-ink-muted)]">
+        {label}
+      </div>
+      <div className="mt-1 text-sm font-semibold text-[var(--color-ink-strong)]">
+        {value}
       </div>
     </div>
   );

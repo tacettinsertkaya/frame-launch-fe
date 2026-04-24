@@ -1,10 +1,12 @@
 "use client";
 
-import { useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import { ZoomIn, ZoomOut, Maximize2 } from "lucide-react";
 import type { Project } from "@/lib/types/project";
-import { getEffectiveDimensions } from "@/lib/devices/registry";
+import { LOCALE_LABELS } from "@/lib/i18n/localeLabels";
+import { getDeviceSize, getEffectiveDimensions } from "@/lib/devices/registry";
 import { useEditorStore } from "@/store/editorStore";
+import { cn } from "@/lib/utils";
 import { Canvas } from "./Canvas";
 import { SidePreviewStrip } from "./canvas/SidePreviewStrip";
 
@@ -32,23 +34,55 @@ export function CanvasStage({ project }: Props) {
     [activeId, project.screenshots],
   );
 
-  const fitZoom = () => {
-    if (!containerRef.current || !active) return;
-    const { width, height } = getEffectiveDimensions(
-      active.deviceSizeId,
-      active.customDimensions,
-    );
-    const cw = containerRef.current.clientWidth - 80;
-    const ch = containerRef.current.clientHeight - 80;
-    const z = Math.min(cw / width, ch / height, 1);
-    setZoom(z);
-  };
+  const activeIndex = active
+    ? project.screenshots.findIndex((s) => s.id === active.id)
+    : -1;
+  const activeDimensions = useMemo(
+    () =>
+      active
+        ? getEffectiveDimensions(active.deviceSizeId, active.customDimensions)
+        : null,
+    [active],
+  );
+  const activeDevice = active ? getDeviceSize(active.deviceSizeId) : null;
+
+  const measureFitZoom = useCallback(() => {
+    if (!containerRef.current || !activeDimensions) return null;
+    const cw = containerRef.current.clientWidth - 96;
+    const ch = containerRef.current.clientHeight - 160;
+    return Math.min(cw / activeDimensions.width, ch / activeDimensions.height, 1);
+  }, [activeDimensions]);
+
+  const fitZoom = useCallback(() => {
+    const nextZoom = measureFitZoom();
+    if (nextZoom !== null) {
+      setZoom(nextZoom);
+    }
+  }, [measureFitZoom, setZoom]);
 
   useEffect(() => {
-    const t = setTimeout(fitZoom, 50);
-    return () => clearTimeout(t);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [active?.deviceSizeId]);
+    const t = window.setTimeout(fitZoom, 50);
+    return () => window.clearTimeout(t);
+  }, [
+    fitZoom,
+    active?.deviceSizeId,
+    active?.customDimensions?.width,
+    active?.customDimensions?.height,
+  ]);
+
+  useEffect(() => {
+    if (!containerRef.current || typeof ResizeObserver === "undefined") return;
+    const observer = new ResizeObserver(() => {
+      const nextZoom = measureFitZoom();
+      if (nextZoom === null) return;
+      const currentZoom = useEditorStore.getState().zoom;
+      if (currentZoom > nextZoom) {
+        setZoom(nextZoom);
+      }
+    });
+    observer.observe(containerRef.current);
+    return () => observer.disconnect();
+  }, [measureFitZoom, setZoom]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -62,12 +96,13 @@ export function CanvasStage({ project }: Props) {
       ) {
         return;
       }
+      const currentZoom = useEditorStore.getState().zoom;
       if (e.key === "=" || e.key === "+") {
         e.preventDefault();
-        setZoom(zoom + 0.05);
+        setZoom(currentZoom + 0.05);
       } else if (e.key === "-" || e.key === "_") {
         e.preventDefault();
-        setZoom(zoom - 0.05);
+        setZoom(currentZoom - 0.05);
       } else if (e.key === "0") {
         e.preventDefault();
         fitZoom();
@@ -75,21 +110,60 @@ export function CanvasStage({ project }: Props) {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [zoom]);
+  }, [fitZoom, setZoom]);
 
   return (
     <div
       role="region"
       aria-label="Ekran görüntüsü tuval alanı"
-      className="relative flex h-full min-h-0 min-w-0 flex-1 flex-col bg-[var(--color-surface-1)]"
+      className="relative flex h-full min-h-0 min-w-0 flex-1 overflow-hidden rounded-[28px] border border-black/8 bg-[linear-gradient(180deg,rgba(255,255,255,0.88)_0%,rgba(255,248,214,0.8)_100%)] shadow-[0_30px_80px_rgba(0,0,0,0.08)]"
     >
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(232,198,16,0.18),transparent_34%),radial-gradient(circle_at_bottom_right,rgba(0,0,0,0.08),transparent_32%)]" />
+        <div className="absolute inset-0 opacity-50 [background-image:linear-gradient(to_right,rgba(0,0,0,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,0,0,0.04)_1px,transparent_1px)] [background-size:28px_28px] [mask-image:radial-gradient(circle_at_center,black,transparent_85%)]" />
+      </div>
       <div
         ref={containerRef}
         className="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden"
       >
+        {active && activeDimensions && activeDevice && (
+          <div className="pointer-events-none absolute inset-x-4 top-4 z-20 flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+            <div className="pointer-events-auto max-w-xl rounded-[24px] border border-black/10 bg-[rgba(255,255,255,0.82)] px-4 py-3 shadow-[0_12px_40px_rgba(0,0,0,0.08)] backdrop-blur-xl">
+              <div className="flex flex-wrap items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.22em] text-[var(--color-ink-muted)]">
+                <span>Review Stage</span>
+                <span className="h-1 w-1 rounded-full bg-[var(--color-brand-primary)]" />
+                <span>
+                  {activeIndex + 1} / {project.screenshots.length}
+                </span>
+              </div>
+              <div className="mt-2 flex flex-wrap items-center gap-2">
+                <h2 className="text-lg font-semibold tracking-[-0.02em] text-[var(--color-ink-strong)]">
+                  {active.name}
+                </h2>
+                <span className="rounded-full bg-black px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-white">
+                  {LOCALE_LABELS[activeLocale]}
+                </span>
+              </div>
+              <p className="mt-1 max-w-lg text-xs leading-5 text-[var(--color-ink-muted)]">
+                {project.screenshots.length > 1
+                  ? "Yan önizlemeleri kullanarak akışı hızlıca gözden geçirin; düzen bozulmadan varyasyonlar arasında gezinebilirsiniz."
+                  : "İlk sahnenizi inşa ediyorsunuz. Yeni ekranlar ekledikçe bu alan tam bir storyboard inceleme yüzeyine dönüşecek."}
+              </p>
+            </div>
+
+            <div className="pointer-events-auto hidden items-center gap-2 md:flex">
+              <StageBadge label="Format" value={activeDevice.label} />
+              <StageBadge
+                label="Boyut"
+                value={`${activeDimensions.width}×${activeDimensions.height}`}
+              />
+              <StageBadge label="Yakınlaştırma" value={`${Math.round(zoom * 100)}%`} />
+            </div>
+          </div>
+        )}
+
         <div
-          className="relative flex min-h-0 flex-1 items-stretch justify-center overflow-auto p-4 sm:p-8 md:p-10"
+          className="relative flex min-h-0 flex-1 items-stretch justify-center overflow-auto px-4 pb-8 pt-28 sm:px-8 sm:pt-32 md:px-10 md:pt-36"
         >
           {/* Export için gizli tam çözünürlük kopyaları */}
           <div
@@ -122,12 +196,12 @@ export function CanvasStage({ project }: Props) {
       <div
         role="toolbar"
         aria-label="Yakınlaştırma"
-        className="pointer-events-auto absolute bottom-4 right-4 z-30 flex items-center gap-1 rounded-full border border-[var(--color-surface-2)] bg-[var(--color-surface-0)]/95 px-2 py-1.5 text-[var(--color-ink-body)] shadow-[var(--shadow-md)] backdrop-blur-md"
+        className="pointer-events-auto absolute bottom-4 right-4 z-30 flex items-center gap-1 rounded-full border border-black/10 bg-[rgba(255,255,255,0.88)] px-2 py-1.5 text-[var(--color-ink-body)] shadow-[0_12px_36px_rgba(0,0,0,0.12)] backdrop-blur-xl"
       >
         <button
           type="button"
           onClick={() => setZoom(zoom - 0.05)}
-          className="grid h-7 w-7 place-items-center rounded-full text-[var(--color-ink-body)] transition-colors hover:bg-[var(--color-surface-1)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)]"
+          className="grid h-7 w-7 place-items-center rounded-full text-[var(--color-ink-body)] transition-colors hover:bg-black/5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)]"
           aria-label="Uzaklaştır (Ctrl/Cmd + −)"
           title="Uzaklaştır (Ctrl/Cmd + −)"
         >
@@ -143,7 +217,7 @@ export function CanvasStage({ project }: Props) {
         <button
           type="button"
           onClick={() => setZoom(zoom + 0.05)}
-          className="grid h-7 w-7 place-items-center rounded-full text-[var(--color-ink-body)] transition-colors hover:bg-[var(--color-surface-1)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)]"
+          className="grid h-7 w-7 place-items-center rounded-full text-[var(--color-ink-body)] transition-colors hover:bg-black/5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)]"
           aria-label="Yakınlaştır (Ctrl/Cmd + +)"
           title="Yakınlaştır (Ctrl/Cmd + +)"
         >
@@ -152,12 +226,34 @@ export function CanvasStage({ project }: Props) {
         <button
           type="button"
           onClick={fitZoom}
-          className="grid h-7 w-7 place-items-center rounded-full text-[var(--color-ink-body)] transition-colors hover:bg-[var(--color-surface-1)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)]"
+          className="grid h-7 w-7 place-items-center rounded-full bg-black px-2 text-white transition-colors hover:bg-black/85 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)]"
           aria-label="Ekrana sığdır (Ctrl/Cmd + 0)"
           title="Ekrana sığdır (Ctrl/Cmd + 0)"
         >
           <Maximize2 size={14} aria-hidden />
         </button>
+      </div>
+    </div>
+  );
+}
+
+interface StageBadgeProps {
+  label: string;
+  value: string;
+}
+
+function StageBadge({ label, value }: StageBadgeProps) {
+  return (
+    <div
+      className={cn(
+        "rounded-full border border-black/10 bg-[rgba(255,255,255,0.8)] px-3 py-2 shadow-[0_10px_24px_rgba(0,0,0,0.06)] backdrop-blur-xl",
+      )}
+    >
+      <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--color-ink-muted)]">
+        {label}
+      </div>
+      <div className="mt-0.5 text-xs font-semibold text-[var(--color-ink-strong)]">
+        {value}
       </div>
     </div>
   );

@@ -54,7 +54,7 @@ export function ProjectSelector({ activeProject, projects }: Props) {
         aria-haspopup="listbox"
         aria-expanded={open}
         aria-label={`Aktif proje: ${activeProject.name}. Projeyi değiştir`}
-        className="flex max-w-[60vw] items-center gap-2 rounded-[var(--radius-sm)] px-2.5 py-1.5 text-left transition-colors hover:bg-[var(--color-surface-1)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-1 sm:max-w-[260px]"
+        className="flex max-w-[60vw] items-center gap-2 rounded-full border border-black/8 bg-white/70 px-3 py-2 text-left shadow-[0_8px_20px_rgba(0,0,0,0.04)] transition-colors hover:bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-1 sm:max-w-[280px]"
       >
         <div className="min-w-0 max-w-[180px]">
           <div className="truncate text-sm font-medium text-[var(--color-ink-strong)]">
@@ -75,7 +75,7 @@ export function ProjectSelector({ activeProject, projects }: Props) {
       </button>
 
       {open && (
-        <div className="absolute left-0 top-full z-40 mt-1 w-72 max-w-[calc(100vw-1rem)] overflow-hidden rounded-[var(--radius-md)] border border-[var(--color-surface-2)] bg-[var(--color-surface-0)] shadow-[var(--shadow-lg)]">
+        <div className="absolute left-0 top-full z-40 mt-2 w-72 max-w-[calc(100vw-1rem)] overflow-hidden rounded-[24px] border border-black/8 bg-[rgba(255,255,255,0.96)] shadow-[0_24px_60px_rgba(0,0,0,0.12)] backdrop-blur-xl">
           <ul role="listbox" className="max-h-80 overflow-y-auto py-1">
             {projects.map((p) => {
               const active = p.id === activeProject.id;
@@ -120,7 +120,7 @@ export function ProjectSelector({ activeProject, projects }: Props) {
                     onClick={() => handleDuplicate(p.id, p.name)}
                     aria-label={`"${p.name}" projesini çoğalt`}
                     title="Çoğalt"
-                    className="grid h-7 w-7 shrink-0 place-items-center rounded-[var(--radius-sm)] text-[var(--color-ink-muted)] opacity-0 transition-colors hover:bg-[var(--color-surface-2)] hover:text-[var(--color-ink-strong)] focus:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] group-hover:opacity-100"
+                    className="grid h-7 w-7 shrink-0 place-items-center rounded-full border border-black/6 bg-white/80 text-[var(--color-ink-muted)] opacity-100 transition-colors hover:bg-white hover:text-[var(--color-ink-strong)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] md:opacity-0 md:focus:opacity-100 md:group-hover:opacity-100"
                   >
                     <Copy size={12} aria-hidden />
                   </button>

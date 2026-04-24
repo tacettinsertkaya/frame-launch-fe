@@ -92,9 +92,13 @@ export function EditorShell() {
     project.screenshots.find((s) => s.id === activeScreenshotId) ?? project.screenshots[0];
 
   return (
-    <div className="flex h-[100dvh] flex-col overflow-hidden bg-[var(--color-surface-0)]">
+    <div className="relative flex h-[100dvh] flex-col overflow-hidden bg-[#f6f1d6]">
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(232,198,16,0.2),transparent_34%),radial-gradient(circle_at_bottom_right,rgba(0,0,0,0.08),transparent_28%),linear-gradient(180deg,#fffdf5_0%,#f4eed1_100%)]" />
+        <div className="absolute inset-x-0 top-0 h-40 bg-[linear-gradient(180deg,rgba(255,255,255,0.7),transparent)]" />
+      </div>
       <Topbar project={project} />
-      <div className="relative flex min-h-0 flex-1 overflow-hidden">
+      <div className="relative flex min-h-0 flex-1 gap-3 overflow-hidden px-3 pb-3 pt-2 md:px-4 md:pb-4 md:pt-3">
         <MobileBackdrop />
         <MobileDrawer side="left" panel="screens">
           <ScreenshotsSidebar project={project} />
@@ -129,7 +133,7 @@ function MobileBackdrop() {
       type="button"
       aria-label="Paneli kapat"
       onClick={close}
-      className="absolute inset-0 z-30 bg-black/40 backdrop-blur-[2px] md:hidden"
+      className="absolute inset-0 z-30 bg-black/45 backdrop-blur-[6px] md:hidden"
     />
   );
 }
@@ -151,9 +155,9 @@ function MobileDrawer({ side, panel, children }: DrawerProps) {
     <div
       className={cn(
         "z-40 transition-transform duration-200 ease-out md:relative md:z-0 md:translate-x-0",
-        "max-md:absolute max-md:inset-y-0",
+        "max-md:absolute max-md:bottom-20 max-md:top-0",
         isLeft ? "max-md:left-0" : "max-md:right-0",
-        "max-md:shadow-[var(--shadow-lg)] max-md:bg-[var(--color-surface-0)]",
+        "max-md:mx-3 max-md:my-1 max-md:shadow-[0_24px_60px_rgba(0,0,0,0.18)] max-md:bg-transparent",
         open
           ? "translate-x-0"
           : isLeft
@@ -188,41 +192,42 @@ function MobileEditorBar() {
   const setTools = useEditorStore((s) => s.setMobileToolsOpen);
 
   return (
-    <nav
-      aria-label="Mobil editör paneli kontrolleri"
-      className="flex shrink-0 items-stretch border-t border-[var(--color-surface-2)] bg-[var(--color-surface-0)] md:hidden"
-    >
-      <button
-        type="button"
-        aria-pressed={screensOpen}
-        onClick={() => setScreens(!screensOpen)}
-        className={cn(
-          "flex flex-1 items-center justify-center gap-2 py-2.5 text-xs font-medium transition-colors",
-          "focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--color-brand-primary)]",
-          screensOpen
-            ? "bg-[var(--color-surface-1)] text-[var(--color-ink-strong)]"
-            : "text-[var(--color-ink-muted)] hover:bg-[var(--color-surface-1)] hover:text-[var(--color-ink-strong)]",
-        )}
+    <div className="pointer-events-none absolute inset-x-0 bottom-0 z-40 px-3 pb-[calc(env(safe-area-inset-bottom,0px)+0.75rem)] md:hidden">
+      <nav
+        aria-label="Mobil editör paneli kontrolleri"
+        className="pointer-events-auto mx-auto flex max-w-sm items-stretch overflow-hidden rounded-full border border-black/10 bg-[rgba(255,255,255,0.82)] p-1 shadow-[0_18px_48px_rgba(0,0,0,0.16)] backdrop-blur-xl"
       >
-        <Layers size={16} aria-hidden />
-        Ekranlar
-      </button>
-      <div className="w-px bg-[var(--color-surface-2)]" aria-hidden />
-      <button
-        type="button"
-        aria-pressed={toolsOpen}
-        onClick={() => setTools(!toolsOpen)}
-        className={cn(
-          "flex flex-1 items-center justify-center gap-2 py-2.5 text-xs font-medium transition-colors",
-          "focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--color-brand-primary)]",
-          toolsOpen
-            ? "bg-[var(--color-surface-1)] text-[var(--color-ink-strong)]"
-            : "text-[var(--color-ink-muted)] hover:bg-[var(--color-surface-1)] hover:text-[var(--color-ink-strong)]",
-        )}
-      >
-        <Sliders size={16} aria-hidden />
-        Araçlar
-      </button>
-    </nav>
+        <button
+          type="button"
+          aria-pressed={screensOpen}
+          onClick={() => setScreens(!screensOpen)}
+          className={cn(
+            "flex flex-1 items-center justify-center gap-2 rounded-full py-2.5 text-xs font-semibold transition-colors",
+            "focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--color-brand-primary)]",
+            screensOpen
+              ? "bg-black text-white"
+              : "text-[var(--color-ink-muted)] hover:bg-white hover:text-[var(--color-ink-strong)]",
+          )}
+        >
+          <Layers size={16} aria-hidden />
+          Ekranlar
+        </button>
+        <button
+          type="button"
+          aria-pressed={toolsOpen}
+          onClick={() => setTools(!toolsOpen)}
+          className={cn(
+            "flex flex-1 items-center justify-center gap-2 rounded-full py-2.5 text-xs font-semibold transition-colors",
+            "focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--color-brand-primary)]",
+            toolsOpen
+              ? "bg-black text-white"
+              : "text-[var(--color-ink-muted)] hover:bg-white hover:text-[var(--color-ink-strong)]",
+          )}
+        >
+          <Sliders size={16} aria-hidden />
+          Araçlar
+        </button>
+      </nav>
+    </div>
   );
 }

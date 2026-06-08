@@ -66,7 +66,7 @@ const SideCanvas = memo(function SideCanvas({
       style={{ maxWidth: 400, maxHeight: 700, direction: "ltr" as const }}
     >
       <div className="pointer-events-none">
-        <Canvas screenshot={screenshot} locale={locale} scale={scale} />
+        <Canvas screenshot={screenshot} locale={locale} scale={scale} preview />
       </div>
     </div>
   );

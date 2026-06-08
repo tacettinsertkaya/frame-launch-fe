@@ -30,7 +30,7 @@ export function CustomSizeInputs({
   };
 
   return (
-    <div className="mt-2 space-y-1">
+    <div className="mt-2 space-y-2 rounded-[18px] border border-black/6 bg-white/65 p-3 shadow-[0_8px_20px_rgba(0,0,0,0.03)]">
       <div className="flex items-center gap-2">
         <input
           type="number"
@@ -39,9 +39,9 @@ export function CustomSizeInputs({
           value={width}
           onChange={(e) => handleWidth(e.target.value)}
           aria-label="Genişlik (px)"
-          className="fl-no-focus w-full min-w-0 rounded-[var(--radius-md)] border border-[var(--color-surface-2)] bg-[var(--color-surface-0)] px-2 py-1.5 text-sm tabular-nums text-[var(--color-ink-strong)] transition-colors focus:border-[var(--color-brand-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--color-brand-primary)]"
+          className="fl-no-focus w-full min-w-0 rounded-[16px] border border-black/6 bg-white px-3 py-2 text-sm tabular-nums text-[var(--color-ink-strong)] transition-colors focus:border-[var(--color-brand-primary)] focus:outline-none focus:ring-2 focus:ring-[rgba(232,198,16,0.22)]"
         />
-        <span aria-hidden className="select-none text-xs text-[var(--color-ink-muted)]">
+        <span aria-hidden className="select-none text-xs font-semibold text-[var(--color-ink-muted)]">
           ×
         </span>
         <input
@@ -51,7 +51,7 @@ export function CustomSizeInputs({
           value={height}
           onChange={(e) => handleHeight(e.target.value)}
           aria-label="Yükseklik (px)"
-          className="fl-no-focus w-full min-w-0 rounded-[var(--radius-md)] border border-[var(--color-surface-2)] bg-[var(--color-surface-0)] px-2 py-1.5 text-sm tabular-nums text-[var(--color-ink-strong)] transition-colors focus:border-[var(--color-brand-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--color-brand-primary)]"
+          className="fl-no-focus w-full min-w-0 rounded-[16px] border border-black/6 bg-white px-3 py-2 text-sm tabular-nums text-[var(--color-ink-strong)] transition-colors focus:border-[var(--color-brand-primary)] focus:outline-none focus:ring-2 focus:ring-[rgba(232,198,16,0.22)]"
         />
       </div>
       <p className="text-[10px] text-[var(--color-ink-muted)]">

@@ -10,7 +10,10 @@ import {
   applyPositionPreset,
   type DevicePositionPresetId,
 } from "@/lib/devices/positionPresets";
-import { PanelSection } from "./PanelSection";
+import { getFramePresets } from "@/lib/devices/frameColorPresets";
+import { get3DFramePresets } from "@/lib/devices/deviceModels";
+import { isPhoneOrTablet } from "@/lib/devices/registry";
+import { PanelBadge, PanelSection, PanelToggle } from "./PanelSection";
 import { CustomSizeInputs } from "./CustomSizeInputs";
 import { PositionPresetGrid } from "./PositionPresetGrid";
 import { Slider } from "@/components/ui/slider";
@@ -35,6 +38,7 @@ export function DevicePanel({ project, screenshot }: Props) {
   };
 
   const dev = screenshot.device;
+  const activeSize = getDeviceSize(screenshot.deviceSizeId);
 
   const groupedSizes = DEVICE_SIZES.reduce<Record<string, typeof DEVICE_SIZES>>(
     (acc, d) => {
@@ -59,6 +63,29 @@ export function DevicePanel({ project, screenshot }: Props) {
 
   return (
     <div className="h-full overflow-y-auto pb-4">
+      <div className="mx-3 mt-3 overflow-hidden rounded-[22px] border border-black/6 bg-[linear-gradient(135deg,rgba(255,255,255,0.9)_0%,rgba(255,246,209,0.82)_100%)] px-4 py-4 shadow-[0_16px_40px_rgba(0,0,0,0.06)]">
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--color-ink-muted)]">
+              Device Staging
+            </p>
+            <h3 className="mt-1 text-sm font-semibold text-[var(--color-ink-strong)]">
+              Cihazı sahnede net ve güvenli konumlandırın
+            </h3>
+            <p className="mt-1 text-xs leading-5 text-[var(--color-ink-muted)]">
+              Market boyutu, medya durumu ve perspektif hissi tek akışta kontrol altında olsun.
+            </p>
+          </div>
+          <PanelBadge tone={screenshot.uploads[activeLocale] ? "highlight" : "default"}>
+            {screenshot.uploads[activeLocale] ? "Medya hazır" : "Medya bekliyor"}
+          </PanelBadge>
+        </div>
+        <div className="mt-3 flex flex-wrap gap-2">
+          <PanelBadge>{activeLocale.toUpperCase()}</PanelBadge>
+          <PanelBadge>{activeSize.label}</PanelBadge>
+          <PanelBadge>{activeSize.width}×{activeSize.height}</PanelBadge>
+        </div>
+      </div>
       <PanelSection title="Boyut" description="Marketler için doğru çıktı çözünürlüğü.">
         <select
           value={screenshot.deviceSizeId}
@@ -73,7 +100,7 @@ export function DevicePanel({ project, screenshot }: Props) {
               }
             })
           }
-          className="w-full rounded-[var(--radius-md)] border border-[var(--color-surface-2)] bg-[var(--color-surface-0)] px-3 py-2 text-sm text-[var(--color-ink-strong)] transition-colors focus:border-[var(--color-brand-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--color-brand-primary)]"
+          className="w-full rounded-[18px] border border-black/6 bg-[rgba(255,255,255,0.8)] px-3 py-2.5 text-sm text-[var(--color-ink-strong)] shadow-[0_8px_20px_rgba(0,0,0,0.03)] transition-colors focus:border-[var(--color-brand-primary)] focus:outline-none focus:ring-2 focus:ring-[rgba(232,198,16,0.22)]"
         >
           {Object.entries(groupedSizes).map(([cat, items]) => (
             <optgroup key={cat} label={cat}>
@@ -108,7 +135,123 @@ export function DevicePanel({ project, screenshot }: Props) {
         />
       </PanelSection>
 
-      <PanelSection title="Görsel" description={`Aktif dil: ${activeLocale.toUpperCase()}`}>
+      {/* 2D / 3D Device Type */}
+      {isPhoneOrTablet(screenshot.deviceSizeId) && (
+        <PanelSection title="Cihaz Tipi" description="2D düz çerçeve veya 3D gerçekçi model.">
+          <div className="flex gap-1 rounded-[18px] border border-black/6 bg-white/70 p-1 shadow-[0_8px_20px_rgba(0,0,0,0.03)]">
+            {(["2d", "3d"] as const).map((m) => (
+              <button
+                key={m}
+                onClick={() => update((s) => { s.device.mode = m; })}
+                className={`flex-1 rounded-[14px] py-2 text-xs font-semibold uppercase tracking-wider transition-all ${
+                  dev.mode === m
+                    ? "bg-[var(--color-brand-primary)] text-white shadow-[0_4px_12px_rgba(232,198,16,0.3)]"
+                    : "text-[var(--color-ink-muted)] hover:bg-black/4"
+                }`}
+              >
+                {m}
+              </button>
+            ))}
+          </div>
+
+          {dev.mode === "3d" && (
+            <>
+              <div className="space-y-1.5">
+                <span className="text-xs font-medium text-[var(--color-ink-body)]">
+                  Cihaz Modeli
+                </span>
+                <div className="flex gap-1 rounded-[18px] border border-black/6 bg-white/70 p-1 shadow-[0_8px_20px_rgba(0,0,0,0.03)]">
+                  {(["iphone", "samsung"] as const).map((m) => (
+                    <button
+                      key={m}
+                      onClick={() => update((s) => { s.device.model = m; })}
+                      className={`flex-1 rounded-[14px] py-2 text-xs font-semibold transition-all ${
+                        dev.model === m
+                          ? "bg-[var(--color-brand-primary)] text-white shadow-[0_4px_12px_rgba(232,198,16,0.3)]"
+                          : "text-[var(--color-ink-muted)] hover:bg-black/4"
+                      }`}
+                    >
+                      {m === "iphone" ? "iPhone" : "Samsung"}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* 3D Color Presets */}
+              <div className="space-y-1.5">
+                <span className="text-xs font-medium text-[var(--color-ink-body)]">
+                  Renk
+                </span>
+                <div className="flex flex-wrap gap-1.5">
+                  {get3DFramePresets(dev.model).map((preset) => (
+                    <button
+                      key={preset.id}
+                      title={preset.label}
+                      onClick={() =>
+                        update((s) => {
+                          s.device.frameColor = preset.swatch;
+                          s.device.frameColorPresetId = preset.id;
+                        })
+                      }
+                      className="h-9 w-9 shrink-0 rounded-full border-2 shadow-[0_8px_18px_rgba(0,0,0,0.08)] transition-transform hover:scale-110"
+                      style={{
+                        background: preset.swatch,
+                        borderColor:
+                          dev.frameColorPresetId === preset.id
+                            ? "var(--color-brand-primary)"
+                            : "var(--color-surface-2)",
+                      }}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              {/* 3D Rotation */}
+              <Slider
+                label="Rotation X (Tilt)"
+                value={dev.rotation.x}
+                min={-45}
+                max={45}
+                unit="°"
+                onChange={(v) =>
+                  update((s) => { s.device.rotation = { ...s.device.rotation, x: v }; })
+                }
+              />
+              <Slider
+                label="Rotation Y (Turn)"
+                value={dev.rotation.y}
+                min={-45}
+                max={45}
+                unit="°"
+                onChange={(v) =>
+                  update((s) => { s.device.rotation = { ...s.device.rotation, y: v }; })
+                }
+              />
+              <Slider
+                label="Rotation Z (Roll)"
+                value={dev.rotation.z}
+                min={-45}
+                max={45}
+                unit="°"
+                onChange={(v) =>
+                  update((s) => { s.device.rotation = { ...s.device.rotation, z: v }; })
+                }
+              />
+            </>
+          )}
+        </PanelSection>
+      )}
+
+      <PanelSection
+        title="Görsel"
+        description={`Aktif dil: ${activeLocale.toUpperCase()}`}
+        accent="highlight"
+        toolbar={
+          <PanelBadge tone={screenshot.uploads[activeLocale] ? "highlight" : "default"}>
+            {screenshot.uploads[activeLocale] ? "Yüklendi" : "Boş"}
+          </PanelBadge>
+        }
+      >
         <input
           ref={fileInputRef}
           type="file"
@@ -183,69 +326,101 @@ export function DevicePanel({ project, screenshot }: Props) {
             })
           }
         />
-        <Slider
-          label="Döndürme"
-          value={dev.tiltRotation}
-          min={-45}
-          max={45}
-          unit="°"
-          onChange={(v) =>
-            update((s) => {
-              s.device.tiltRotation = v;
-            })
-          }
-        />
-        <Slider
-          label="Perspektif"
-          value={dev.perspective}
-          min={0}
-          max={30}
-          onChange={(v) =>
-            update((s) => {
-              s.device.perspective = v;
-            })
-          }
-        />
+        {dev.mode !== "3d" && (
+          <>
+            <Slider
+              label="Döndürme"
+              value={dev.tiltRotation}
+              min={-45}
+              max={45}
+              unit="°"
+              onChange={(v) =>
+                update((s) => {
+                  s.device.tiltRotation = v;
+                })
+              }
+            />
+            <Slider
+              label="Perspektif"
+              value={dev.perspective}
+              min={0}
+              max={30}
+              onChange={(v) =>
+                update((s) => {
+                  s.device.perspective = v;
+                })
+              }
+            />
+          </>
+        )}
       </PanelSection>
 
-      <PanelSection title="Çerçeve">
-        <ColorInput
-          label="Çerçeve rengi"
-          value={dev.frameColor}
-          onChange={(c) =>
-            update((s) => {
-              s.device.frameColor = c;
-            })
-          }
-        />
-        <Slider
-          label="Köşe yuvarlama"
-          value={dev.cornerRadius}
-          min={0}
-          max={50}
-          unit="%"
-          onChange={(v) =>
-            update((s) => {
-              s.device.cornerRadius = v;
-            })
-          }
-        />
-      </PanelSection>
-
-      <PanelSection title="Gölge">
-        <label className="flex cursor-pointer items-center justify-between gap-2 text-xs">
-          <span className="font-medium text-[var(--color-ink-body)]">Etkin</span>
-          <input
-            type="checkbox"
-            checked={dev.shadow.enabled}
-            onChange={(e) =>
+      {/* 2D Frame controls - hidden when 3D is active */}
+      {dev.mode !== "3d" && (
+        <PanelSection title="Çerçeve" description="Hazır kasa tonlarından başlayıp gerektiğinde özel renge inin.">
+          <div className="space-y-1.5">
+            <span className="text-xs font-medium text-[var(--color-ink-body)]">
+              Renk Presetleri
+            </span>
+            <div className="flex flex-wrap gap-1.5">
+              {getFramePresets(screenshot.deviceSizeId).map((preset) => (
+                <button
+                  key={preset.id}
+                  title={preset.label}
+                  onClick={() =>
+                    update((s) => {
+                      s.device.frameColor = preset.color;
+                      s.device.frameColorPresetId = preset.id;
+                    })
+                  }
+                  className="group relative h-9 w-9 shrink-0 rounded-full border-2 shadow-[0_8px_18px_rgba(0,0,0,0.08)] transition-transform hover:scale-110"
+                  style={{
+                    background: preset.color,
+                    borderColor:
+                      dev.frameColorPresetId === preset.id
+                        ? "var(--color-brand-primary)"
+                        : "var(--color-surface-2)",
+                  }}
+                />
+              ))}
+            </div>
+          </div>
+          <ColorInput
+            label="Çerçeve rengi"
+            value={dev.frameColor}
+            onChange={(c) =>
               update((s) => {
-                s.device.shadow.enabled = e.target.checked;
+                s.device.frameColor = c;
+                s.device.frameColorPresetId = undefined;
               })
             }
-            className="h-4 w-4 shrink-0 cursor-pointer accent-[var(--color-brand-primary)]"
           />
-        </label>
+          <Slider
+            label="Köşe yuvarlama"
+            value={dev.cornerRadius}
+            min={0}
+            max={50}
+            unit="%"
+            onChange={(v) =>
+              update((s) => {
+                s.device.cornerRadius = v;
+              })
+            }
+          />
+        </PanelSection>
+      )}
+
+      <PanelSection title="Gölge" description="Cihaza havada durma hissi verin.">
+        <PanelToggle
+          label="Gölge etkin"
+          description="Düşük kontrast arka planlarda cihaza ayrışma kazandırır."
+          checked={dev.shadow.enabled}
+          onChange={(checked) =>
+            update((s) => {
+              s.device.shadow.enabled = checked;
+            })
+          }
+        />
         {dev.shadow.enabled && (
           <>
             <ColorInput
@@ -295,20 +470,17 @@ export function DevicePanel({ project, screenshot }: Props) {
         )}
       </PanelSection>
 
-      <PanelSection title="Kenarlık">
-        <label className="flex cursor-pointer items-center justify-between gap-2 text-xs">
-          <span className="font-medium text-[var(--color-ink-body)]">Etkin</span>
-          <input
-            type="checkbox"
-            checked={dev.border.enabled}
-            onChange={(e) =>
-              update((s) => {
-                s.device.border.enabled = e.target.checked;
-              })
-            }
-            className="h-4 w-4 shrink-0 cursor-pointer accent-[var(--color-brand-primary)]"
-          />
-        </label>
+      <PanelSection title="Kenarlık" description="Özellikle koyu zeminlerde çerçeveyi yeniden ayırın.">
+        <PanelToggle
+          label="Kenarlık etkin"
+          description="Şeffaf veya açık renkli cihazlarda kenar tanımı güçlenir."
+          checked={dev.border.enabled}
+          onChange={(checked) =>
+            update((s) => {
+              s.device.border.enabled = checked;
+            })
+          }
+        />
         {dev.border.enabled && (
           <>
             <ColorInput

@@ -113,7 +113,7 @@ export function GradientBar({
       <div
         ref={trackRef}
         onClick={onTrackClick}
-        className="relative h-7 w-full cursor-copy overflow-visible rounded-[var(--radius-sm)] border border-[var(--color-surface-2)]"
+        className="relative h-10 w-full cursor-copy overflow-visible rounded-[18px] border border-black/6 shadow-[inset_0_1px_0_rgba(255,255,255,0.45)]"
         style={{
           backgroundImage: `linear-gradient(90deg, ${stops
             .map((s) => `${s.color} ${s.position}%`)
@@ -175,7 +175,7 @@ export function GradientBar({
                 if (onRemove && stops.length > 2) onRemove(s.originalIndex);
               }}
               className={[
-                "absolute top-1/2 h-5 w-3.5 -translate-x-1/2 -translate-y-1/2 rounded-[3px] border shadow-sm transition-transform",
+                "absolute top-1/2 h-7 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 shadow-[0_8px_18px_rgba(0,0,0,0.14)] transition-transform",
                 "focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-1",
                 isSelected
                   ? "scale-110 border-[var(--color-ink-strong)]"
@@ -192,8 +192,8 @@ export function GradientBar({
       </div>
       <p className="text-[10px] leading-tight text-[var(--color-ink-muted)]">
         Çubuğa tıkla: yeni durak · Sürükle veya{" "}
-        <kbd className="rounded bg-[var(--color-surface-2)] px-1">←→</kbd> ile pozisyon ·
-        Çift tıkla / <kbd className="rounded bg-[var(--color-surface-2)] px-1">Del</kbd>{" "}
+        <kbd className="rounded-full border border-black/6 bg-white px-1.5 py-0.5">←→</kbd> ile pozisyon ·
+        Çift tıkla / <kbd className="rounded-full border border-black/6 bg-white px-1.5 py-0.5">Del</kbd>{" "}
         ile sil
       </p>
     </div>

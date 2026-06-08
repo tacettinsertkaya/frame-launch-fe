@@ -26,7 +26,7 @@ export function Segment<T extends string>({
   return (
     <div
       className={cn(
-        "inline-flex w-full rounded-[var(--radius-md)] bg-[var(--color-surface-2)] p-1",
+        "inline-flex w-full rounded-[18px] border border-black/6 bg-[rgba(255,255,255,0.72)] p-1 shadow-[inset_0_1px_0_rgba(255,255,255,0.45)]",
         className,
       )}
     >
@@ -39,12 +39,12 @@ export function Segment<T extends string>({
             onClick={() => onChange(opt.value)}
             aria-pressed={active}
             className={cn(
-              "flex-1 inline-flex min-w-0 items-center justify-center gap-1.5 rounded-[var(--radius-sm)] font-medium transition-all",
+              "flex-1 inline-flex min-w-0 items-center justify-center gap-1.5 rounded-[14px] font-medium transition-all",
               "focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-1",
               size === "sm" ? "h-7 px-2.5 text-xs" : "h-9 px-3 text-sm",
               active
-                ? "bg-[var(--color-surface-0)] text-[var(--color-ink-strong)] shadow-[var(--shadow-sm)]"
-                : "text-[var(--color-ink-muted)] hover:text-[var(--color-ink-strong)]",
+                ? "bg-black text-white shadow-[0_8px_20px_rgba(0,0,0,0.14)]"
+                : "text-[var(--color-ink-muted)] hover:bg-white/80 hover:text-[var(--color-ink-strong)]",
             )}
           >
             {opt.icon}

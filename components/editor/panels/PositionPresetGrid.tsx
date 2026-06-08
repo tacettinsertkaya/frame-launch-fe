@@ -83,12 +83,12 @@ export function PositionPresetGrid({ active, onApply }: Props) {
             title={preset.label}
             aria-pressed={isActive}
             className={[
-              "flex flex-col items-center gap-1 rounded-[var(--radius-md)] border bg-[var(--color-surface-0)] px-1.5 py-2 transition",
-              "hover:-translate-y-0.5 hover:border-[var(--color-brand-primary)] hover:bg-[var(--color-brand-primary-soft)]",
+              "flex flex-col items-center gap-1 rounded-[18px] border bg-white/80 px-1.5 py-2 transition shadow-[0_8px_20px_rgba(0,0,0,0.03)]",
+              "hover:-translate-y-0.5 hover:border-[var(--color-brand-primary)] hover:bg-[rgba(232,198,16,0.12)]",
               "focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-1",
               isActive
                 ? "border-[var(--color-brand-primary)] ring-1 ring-[var(--color-brand-primary)]"
-                : "border-[var(--color-surface-2)]",
+                : "border-black/6",
             ].join(" ")}
           >
             <span className="block h-7 w-5 text-[var(--color-ink-body)]">

@@ -49,12 +49,17 @@ export function ApplyStyleModal({ project }: Props) {
       description="Bu ekranın stilini diğer tüm ekranlara uygular."
       maxWidth="440px"
     >
-      <p className="text-sm text-[var(--color-ink-body)]">
-        Bu işlem, bu ekranın <strong>arka plan</strong>, <strong>cihaz</strong> ve{" "}
-        <strong>metin stili</strong> ayarlarını diğer tüm ekranlara kopyalar. Her ekranın
-        yazı <em>içeriği</em> (diller) aynı kalır. Geri alınamaz.
-      </p>
-      <div className="mt-6 flex flex-col-reverse justify-end gap-2 sm:flex-row">
+      <div className="rounded-[22px] border border-[rgba(232,198,16,0.22)] bg-[linear-gradient(135deg,rgba(255,247,207,0.88)_0%,rgba(255,255,255,0.82)_100%)] p-4 shadow-[0_14px_36px_rgba(232,198,16,0.16)]">
+        <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--color-ink-muted)]">
+          Style Broadcast
+        </p>
+        <p className="mt-2 text-sm leading-6 text-[var(--color-ink-body)]">
+          Bu işlem, bu ekranın <strong>arka plan</strong>, <strong>cihaz</strong> ve{" "}
+          <strong>metin stili</strong> ayarlarını diğer tüm ekranlara kopyalar. Her ekranın
+          yazı <em>içeriği</em> aynı kalır. Geri alınamaz.
+        </p>
+      </div>
+      <div className="mt-6 flex flex-col-reverse justify-end gap-2 border-t border-black/6 pt-4 sm:flex-row">
         <Button type="button" variant="outline" onClick={close}>
           Vazgeç
         </Button>

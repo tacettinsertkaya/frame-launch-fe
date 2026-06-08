@@ -92,6 +92,16 @@ export function ProjectNameModal({
       maxWidth={modalMaxWidth}
     >
       <div className="space-y-4">
+        <div className="rounded-[22px] border border-[rgba(232,198,16,0.22)] bg-[linear-gradient(135deg,rgba(255,247,207,0.88)_0%,rgba(255,255,255,0.82)_100%)] p-4 shadow-[0_14px_36px_rgba(232,198,16,0.16)]">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--color-ink-muted)]">
+            {mode === "new" ? "Project Setup" : "Project Identity"}
+          </p>
+          <p className="mt-2 text-sm leading-6 text-[var(--color-ink-body)]">
+            {mode === "new"
+              ? "İsim, başlangıç noktası ve gerekiyorsa şablon seçimini tek akışta tamamlayın."
+              : "Projenin görünen adını güncelleyin; mevcut ekranlar ve ayarlar olduğu gibi kalır."}
+          </p>
+        </div>
         <div>
           <label
             htmlFor="project-name-input"
@@ -109,12 +119,12 @@ export function ProjectNameModal({
             }}
             placeholder="Örn. App Store Lansmanı"
             aria-invalid={!name.trim() || undefined}
-            className="w-full rounded-[var(--radius-sm)] border border-[var(--color-surface-2)] bg-[var(--color-surface-0)] px-3 py-2 text-sm text-[var(--color-ink-strong)] placeholder:text-[var(--color-ink-muted)] transition-colors focus:border-[var(--color-brand-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-brand-primary)]/20 aria-[invalid=true]:border-[var(--color-danger)]"
+            className="w-full rounded-[18px] border border-black/6 bg-white px-3 py-2.5 text-sm text-[var(--color-ink-strong)] placeholder:text-[var(--color-ink-muted)] shadow-[0_8px_20px_rgba(0,0,0,0.03)] transition-colors focus:border-[var(--color-brand-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-brand-primary)]/20 aria-[invalid=true]:border-[var(--color-danger)]"
           />
         </div>
 
         {mode === "new" && (
-          <fieldset className="space-y-2">
+          <fieldset className="space-y-2 rounded-[22px] border border-black/6 bg-white/75 p-4 shadow-[0_12px_28px_rgba(0,0,0,0.05)]">
             <legend className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-[var(--color-ink-muted)]">
               Başlangıç Noktası
             </legend>
@@ -152,7 +162,7 @@ export function ProjectNameModal({
           </fieldset>
         )}
 
-        <div className="flex flex-col-reverse gap-2 pt-2 sm:flex-row sm:items-center sm:justify-end">
+        <div className="flex flex-col-reverse gap-2 border-t border-black/6 pt-4 sm:flex-row sm:items-center sm:justify-end">
           <Button
             variant="ghost"
             size="sm"
@@ -190,10 +200,10 @@ function RadioRow({ value, label, desc, current, onSelect }: RadioRowProps) {
       type="button"
       onClick={() => onSelect(value)}
       aria-pressed={active}
-      className={`flex w-full items-start gap-3 rounded-[var(--radius-md)] border px-3 py-2 text-left transition-all focus:outline-none focus-visible:border-[var(--color-brand-primary)] focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)]/30 ${
+      className={`flex w-full items-start gap-3 rounded-[18px] border px-3 py-3 text-left shadow-[0_8px_20px_rgba(0,0,0,0.03)] transition-all focus:outline-none focus-visible:border-[var(--color-brand-primary)] focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)]/30 ${
         active
           ? "border-[var(--color-brand-primary)] bg-[var(--color-brand-primary)]/5"
-          : "border-[var(--color-surface-2)] hover:bg-[var(--color-surface-1)]"
+          : "border-black/6 bg-white/80 hover:bg-white"
       }`}
     >
       <div

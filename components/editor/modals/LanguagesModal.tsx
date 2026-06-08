@@ -54,14 +54,19 @@ export function LanguagesModal({ project }: Props) {
       description="Projedeki dilleri yönet"
       maxWidth="440px"
     >
-      <p className="text-sm text-[var(--color-ink-muted)]">
-        Projede hangi dillerin kullanılacağını yönetin. En az bir dil kalmalıdır.
-      </p>
+      <div className="rounded-[22px] border border-[rgba(232,198,16,0.22)] bg-[linear-gradient(135deg,rgba(255,247,207,0.88)_0%,rgba(255,255,255,0.82)_100%)] p-4 shadow-[0_14px_36px_rgba(232,198,16,0.16)]">
+        <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--color-ink-muted)]">
+          Locale Stack
+        </p>
+        <p className="mt-2 text-sm leading-6 text-[var(--color-ink-body)]">
+          Projede hangi dillerin kullanılacağını yönetin. En az bir dil kalmalıdır.
+        </p>
+      </div>
       <ul className="mt-4 space-y-2" role="list">
         {project.activeLocales.map((loc) => (
           <li
             key={loc}
-            className="flex items-center justify-between gap-3 rounded-[var(--radius-md)] border border-[var(--color-surface-2)] px-3 py-2 text-sm"
+            className="flex items-center justify-between gap-3 rounded-[20px] border border-black/6 bg-white/75 px-3 py-3 text-sm shadow-[0_10px_24px_rgba(0,0,0,0.04)]"
           >
             <span className="min-w-0 truncate">
               <strong className="text-[var(--color-ink-strong)]">{LABELS[loc]}</strong>{" "}
@@ -90,13 +95,13 @@ export function LanguagesModal({ project }: Props) {
         ))}
       </ul>
       {addable.length > 0 && (
-        <div className="mt-4 flex flex-wrap items-end gap-2 border-t border-[var(--color-surface-2)] pt-4">
+        <div className="mt-4 flex flex-wrap items-end gap-2 border-t border-black/6 pt-4">
           <label className="flex min-w-0 flex-1 flex-col gap-1 text-xs font-medium text-[var(--color-ink-body)] sm:flex-none">
             Dil ekle
             <select
               value={pick}
               onChange={(e) => setPick(e.target.value as Locale | "")}
-              className="w-full rounded-[var(--radius-md)] border border-[var(--color-surface-2)] bg-[var(--color-surface-0)] px-2 py-1.5 text-sm text-[var(--color-ink-strong)] transition-colors focus:border-[var(--color-brand-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--color-brand-primary)] sm:w-auto"
+              className="w-full rounded-[18px] border border-black/6 bg-white px-3 py-2 text-sm text-[var(--color-ink-strong)] shadow-[0_8px_20px_rgba(0,0,0,0.03)] transition-colors focus:border-[var(--color-brand-primary)] focus:outline-none focus:ring-2 focus:ring-[rgba(232,198,16,0.22)] sm:w-auto"
             >
               <option value="">Seçin…</option>
               {addable.map((l) => (
@@ -111,7 +116,7 @@ export function LanguagesModal({ project }: Props) {
           </Button>
         </div>
       )}
-      <div className="mt-6 flex justify-end">
+      <div className="mt-6 flex justify-end border-t border-black/6 pt-4">
         <Button type="button" variant="outline" onClick={close}>
           Kapat
         </Button>

@@ -20,11 +20,11 @@ const TABS: { id: RightPanelTab; label: string; icon: typeof Image }[] = [
 ];
 
 const TAB_DESCRIPTIONS: Record<RightPanelTab, string> = {
-  background: "Gradient, doku ve arka plan kontrastini ayarlayin.",
-  device: "Cihaz yerlesimi, perspektif ve medya yuklemelerini duzenleyin.",
-  text: "Baslik hiyerarsisini ve dil bazli tipografi ayarlarini ince ayarlayin.",
-  elements: "Ek ikonlar, rozetler ve metin katmanlari ile kompozisyonu zenginlestirin.",
-  popouts: "Detay crop alanlari ile ana vaadi yakin plan halinde vurgulayin.",
+  background: "Gradient, doku ve arka plan kontrastını ayarlayın.",
+  device: "Cihaz yerleşimi, perspektif ve medya yüklemelerini düzenleyin.",
+  text: "Başlık hiyerarşisini ve dil bazlı tipografi ayarlarını ince ayarlayın.",
+  elements: "Ek ikonlar, rozetler ve metin katmanları ile kompozisyonu zenginleştirin.",
+  popouts: "Detay crop alanları ile ana vaadi yakın plan halinde vurgulayın.",
 };
 
 interface Props {

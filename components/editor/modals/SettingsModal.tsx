@@ -46,7 +46,7 @@ export function SettingsModal() {
       <div
         role="tablist"
         aria-label="Ayar sekmeleri"
-        className="flex shrink-0 gap-1 border-b border-[var(--color-surface-2)] px-5 py-3"
+        className="flex shrink-0 gap-1 border-b border-black/6 px-5 py-3"
       >
         {(
           [
@@ -60,10 +60,10 @@ export function SettingsModal() {
             type="button"
             aria-selected={tab === id}
             onClick={() => setTab(id)}
-            className={`rounded-[var(--radius-sm)] px-3 py-1.5 text-xs font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-1 ${
+            className={`rounded-full px-3 py-1.5 text-xs font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-1 ${
               tab === id
                 ? "bg-[var(--color-ink-strong)] text-[var(--color-ink-inverse)]"
-                : "text-[var(--color-ink-muted)] hover:bg-[var(--color-surface-1)] hover:text-[var(--color-ink-strong)]"
+                : "text-[var(--color-ink-muted)] hover:bg-white hover:text-[var(--color-ink-strong)]"
             }`}
           >
             {label}
@@ -74,7 +74,15 @@ export function SettingsModal() {
       <div className="min-h-0 flex-1 overflow-y-auto px-5 py-4">
         {tab === "general" ? (
           <div className="space-y-5 text-sm">
-            <div>
+            <div className="rounded-[22px] border border-[rgba(232,198,16,0.22)] bg-[linear-gradient(135deg,rgba(255,247,207,0.88)_0%,rgba(255,255,255,0.82)_100%)] p-4 shadow-[0_14px_36px_rgba(232,198,16,0.16)]">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--color-ink-muted)]">
+                Workspace Feel
+              </p>
+              <p className="mt-2 text-sm leading-6 text-[var(--color-ink-body)]">
+                Tema ve yardımcı anahtarlar yalnızca bu cihazda tutulur. Düzeni bozmaz; üretim akışını hızlandırır.
+              </p>
+            </div>
+            <div className="rounded-[22px] border border-black/6 bg-white/75 p-4 shadow-[0_12px_28px_rgba(0,0,0,0.05)]">
               <p className="mb-2 text-xs font-medium uppercase tracking-wide text-[var(--color-ink-muted)]">
                 Görünüm
               </p>
@@ -91,7 +99,7 @@ export function SettingsModal() {
                 Otomatik, işletim sisteminizin açık / koyu tercihini kullanır.
               </p>
             </div>
-            <div>
+            <div className="rounded-[22px] border border-black/6 bg-white/75 p-4 shadow-[0_12px_28px_rgba(0,0,0,0.05)]">
               <label className="mb-1 block text-xs font-medium uppercase tracking-wide text-[var(--color-ink-muted)]">
                 Google Fonts API anahtarı (isteğe bağlı)
               </label>
@@ -101,7 +109,7 @@ export function SettingsModal() {
                 value={googleFontsApiKey}
                 onChange={(e) => setGoogleFontsApiKey(e.target.value)}
                 placeholder="webfonts/v1 için API key"
-                className="w-full rounded-[var(--radius-md)] border border-[var(--color-surface-2)] bg-[var(--color-surface-0)] px-3 py-2 text-sm text-[var(--color-ink-strong)] placeholder:text-[var(--color-ink-muted)] focus:border-[var(--color-brand-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-brand-primary)]/25"
+                className="w-full rounded-[18px] border border-black/6 bg-white px-3 py-2.5 text-sm text-[var(--color-ink-strong)] placeholder:text-[var(--color-ink-muted)] shadow-[0_8px_20px_rgba(0,0,0,0.03)] focus:border-[var(--color-brand-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-brand-primary)]/25"
               />
               <p className="mt-1 text-xs text-[var(--color-ink-muted)]">
                 Yalnızca tarayıcınızda saklanır; tam font listesi çekmek için kullanılabilir.
@@ -110,7 +118,15 @@ export function SettingsModal() {
           </div>
         ) : (
           <div className="space-y-6 text-sm">
-            <div>
+            <div className="rounded-[22px] border border-[rgba(232,198,16,0.22)] bg-[linear-gradient(135deg,rgba(255,247,207,0.88)_0%,rgba(255,255,255,0.82)_100%)] p-4 shadow-[0_14px_36px_rgba(232,198,16,0.16)]">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--color-ink-muted)]">
+                AI Routing
+              </p>
+              <p className="mt-2 text-sm leading-6 text-[var(--color-ink-body)]">
+                Ana sağlayıcı çeviri ve üretim yardımcılarını yönlendirir. Anahtarlar yalnızca tarayıcıda tutulur.
+              </p>
+            </div>
+            <div className="rounded-[22px] border border-black/6 bg-white/75 p-4 shadow-[0_12px_28px_rgba(0,0,0,0.05)]">
               <p className="mb-2 text-xs font-medium uppercase tracking-wide text-[var(--color-ink-muted)]">
                 Varsayılan sağlayıcı
               </p>
@@ -134,7 +150,7 @@ export function SettingsModal() {
               return (
                 <div
                   key={id}
-                  className="rounded-[var(--radius-lg)] border border-[var(--color-surface-2)] bg-[var(--color-surface-1)] p-4"
+                  className="rounded-[22px] border border-black/6 bg-white/75 p-4 shadow-[0_12px_28px_rgba(0,0,0,0.05)]"
                 >
                   <p className="mb-3 text-xs font-semibold text-[var(--color-ink-strong)]">
                     {cfg.name}
@@ -148,7 +164,7 @@ export function SettingsModal() {
                     value={key}
                     onChange={(e) => setApiKey(id, e.target.value)}
                     placeholder={`${cfg.keyPrefix}…`}
-                    className="mb-3 w-full rounded-[var(--radius-md)] border border-[var(--color-surface-2)] bg-[var(--color-surface-0)] px-3 py-2 text-xs text-[var(--color-ink-strong)] placeholder:text-[var(--color-ink-muted)] focus:border-[var(--color-brand-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-brand-primary)]/25"
+                    className="mb-3 w-full rounded-[18px] border border-black/6 bg-white px-3 py-2 text-xs text-[var(--color-ink-strong)] placeholder:text-[var(--color-ink-muted)] shadow-[0_8px_20px_rgba(0,0,0,0.03)] focus:border-[var(--color-brand-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-brand-primary)]/25"
                   />
                   <label className="mb-1 block text-[10px] font-medium uppercase tracking-wide text-[var(--color-ink-muted)]">
                     Model
@@ -156,7 +172,7 @@ export function SettingsModal() {
                   <select
                     value={model}
                     onChange={(e) => setSelectedModel(id, e.target.value)}
-                    className="w-full rounded-[var(--radius-md)] border border-[var(--color-surface-2)] bg-[var(--color-surface-0)] px-2 py-2 text-xs text-[var(--color-ink-strong)]"
+                    className="w-full rounded-[18px] border border-black/6 bg-white px-3 py-2 text-xs text-[var(--color-ink-strong)] shadow-[0_8px_20px_rgba(0,0,0,0.03)]"
                   >
                     {cfg.models.map((m) => (
                       <option key={m.id} value={m.id}>
@@ -185,7 +201,7 @@ export function SettingsModal() {
         )}
       </div>
 
-      <div className="flex shrink-0 justify-end border-t border-[var(--color-surface-2)] px-5 py-3">
+      <div className="flex shrink-0 justify-end border-t border-black/6 px-5 py-3">
         <Button size="sm" onClick={close}>
           Kapat
         </Button>

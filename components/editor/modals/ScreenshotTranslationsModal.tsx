@@ -99,63 +99,73 @@ export function ScreenshotTranslationsModal({ project }: Props) {
         aria-label="Görsel seç"
       />
       {!screenshot ? null : (
-        <ul className="space-y-3" role="list">
-          {project.activeLocales.map((loc) => {
-            const has = Boolean(screenshot.uploads[loc]);
-            return (
-              <li
-                key={loc}
-                className="flex items-center gap-3 rounded-[var(--radius-md)] border border-[var(--color-surface-2)] p-3"
-              >
-                <div className="flex h-16 w-10 shrink-0 items-center justify-center overflow-hidden rounded bg-[var(--color-surface-1)]">
-                  {thumb[loc] ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={thumb[loc]!}
-                      alt={`${LABELS[loc]} önizlemesi`}
-                      className="max-h-full max-w-full object-contain"
-                    />
-                  ) : (
-                    <span className="text-[10px] text-[var(--color-ink-muted)]" aria-hidden>
-                      —
-                    </span>
-                  )}
-                </div>
-                <div className="min-w-0 flex-1">
-                  <div className="truncate text-sm font-medium text-[var(--color-ink-strong)]">
-                    {LABELS[loc]}
+        <div className="space-y-4">
+          <div className="rounded-[22px] border border-[rgba(232,198,16,0.22)] bg-[linear-gradient(135deg,rgba(255,247,207,0.88)_0%,rgba(255,255,255,0.82)_100%)] p-4 shadow-[0_14px_36px_rgba(232,198,16,0.16)]">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--color-ink-muted)]">
+              Locale Assets
+            </p>
+            <p className="mt-2 text-sm leading-6 text-[var(--color-ink-body)]">
+              Her dil için ayrı ekran görseli yükleyin veya güncelleyin. Metin çevirileriyle birlikte düşünülür.
+            </p>
+          </div>
+          <ul className="space-y-3" role="list">
+            {project.activeLocales.map((loc) => {
+              const has = Boolean(screenshot.uploads[loc]);
+              return (
+                <li
+                  key={loc}
+                  className="flex items-center gap-3 rounded-[22px] border border-black/6 bg-white/75 p-3 shadow-[0_12px_28px_rgba(0,0,0,0.05)]"
+                >
+                  <div className="flex h-16 w-10 shrink-0 items-center justify-center overflow-hidden rounded-[14px] bg-[var(--color-surface-1)]">
+                    {thumb[loc] ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={thumb[loc]!}
+                        alt={`${LABELS[loc]} önizlemesi`}
+                        className="max-h-full max-w-full object-contain"
+                      />
+                    ) : (
+                      <span className="text-[10px] text-[var(--color-ink-muted)]" aria-hidden>
+                        —
+                      </span>
+                    )}
                   </div>
-                  <div className="text-xs text-[var(--color-ink-muted)]">{loc}</div>
-                </div>
-                <div className="flex shrink-0 gap-1">
-                  <Button
-                    type="button"
-                    size="sm"
-                    variant="outline"
-                    onClick={() => onPick(loc)}
-                    aria-label={`${LABELS[loc]} için görsel ${has ? "değiştir" : "yükle"}`}
-                  >
-                    {has ? "Değiştir" : "Yükle"}
-                  </Button>
-                  {has && (
+                  <div className="min-w-0 flex-1">
+                    <div className="truncate text-sm font-medium text-[var(--color-ink-strong)]">
+                      {LABELS[loc]}
+                    </div>
+                    <div className="text-xs text-[var(--color-ink-muted)]">{loc}</div>
+                  </div>
+                  <div className="flex shrink-0 gap-1">
                     <Button
                       type="button"
                       size="sm"
-                      variant="ghost"
-                      className="text-red-600 hover:bg-red-50 hover:text-red-700"
-                      onClick={() => remove(loc)}
-                      aria-label={`${LABELS[loc]} görselini kaldır`}
+                      variant="outline"
+                      onClick={() => onPick(loc)}
+                      aria-label={`${LABELS[loc]} için görsel ${has ? "değiştir" : "yükle"}`}
                     >
-                      Kaldır
+                      {has ? "Değiştir" : "Yükle"}
                     </Button>
-                  )}
-                </div>
-              </li>
-            );
-          })}
-        </ul>
+                    {has && (
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="ghost"
+                        className="text-red-600 hover:bg-red-50 hover:text-red-700"
+                        onClick={() => remove(loc)}
+                        aria-label={`${LABELS[loc]} görselini kaldır`}
+                      >
+                        Kaldır
+                      </Button>
+                    )}
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
       )}
-      <div className="mt-6 flex justify-end">
+      <div className="mt-6 flex justify-end border-t border-black/6 pt-4">
         <Button type="button" onClick={close}>
           Tamam
         </Button>

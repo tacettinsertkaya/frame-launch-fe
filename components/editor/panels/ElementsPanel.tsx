@@ -12,7 +12,7 @@ import {
   makeTextElement,
 } from "@/lib/editor/elementFactory";
 import { ELEMENT_ICON_NAMES, resolveElementIcon } from "@/lib/editor/elementIcons";
-import { PanelSection } from "./PanelSection";
+import { PanelBadge, PanelSection } from "./PanelSection";
 import { Slider } from "@/components/ui/slider";
 import { Segment } from "@/components/ui/segment";
 import { ColorInput } from "@/components/ui/color-input";
@@ -97,7 +97,29 @@ export function ElementsPanel({ project, screenshot }: Props) {
 
   return (
     <div className="h-full overflow-y-auto pb-4">
-      <PanelSection title="Ekle" description="Emoji, metin, PNG/SVG veya ikon yerleştir.">
+      <div className="mx-3 mt-3 overflow-hidden rounded-[22px] border border-black/6 bg-[linear-gradient(135deg,rgba(255,255,255,0.9)_0%,rgba(255,246,209,0.82)_100%)] px-4 py-4 shadow-[0_16px_40px_rgba(0,0,0,0.06)]">
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--color-ink-muted)]">
+              Layer Builder
+            </p>
+            <h3 className="mt-1 text-sm font-semibold text-[var(--color-ink-strong)]">
+              Destekleyici rozetleri ve vurguları yönetin
+            </h3>
+            <p className="mt-1 text-xs leading-5 text-[var(--color-ink-muted)]">
+              İkonlar, mini etiketler ve sticker hissi veren katmanlar burada şekilleniyor.
+            </p>
+          </div>
+          <PanelBadge tone={selected ? "highlight" : "default"}>
+            {selected ? selected.kind : "Seçim yok"}
+          </PanelBadge>
+        </div>
+      </div>
+      <PanelSection
+        title="Ekle"
+        description="Emoji, metin, PNG/SVG veya ikon yerleştir."
+        accent="highlight"
+      >
         <input
           ref={graphicInputRef}
           type="file"
@@ -109,15 +131,15 @@ export function ElementsPanel({ project, screenshot }: Props) {
             if (f) void onGraphicFile(f);
           }}
         />
-        <div className="flex flex-wrap gap-2">
-          <div className="flex flex-wrap gap-1">
+        <div className="grid grid-cols-2 gap-2">
+          <div className="col-span-2 flex flex-wrap gap-1">
             {QUICK_EMOJIS.map((em) => (
               <Button
                 key={em}
                 type="button"
                 variant="outline"
                 size="sm"
-                className="min-w-9 px-2 text-base"
+                className="min-w-9 rounded-full px-2 text-base"
                 onClick={() => addEmoji(em)}
                 title="Emoji ekle"
               >
@@ -125,13 +147,14 @@ export function ElementsPanel({ project, screenshot }: Props) {
               </Button>
             ))}
           </div>
-          <Button type="button" variant="secondary" size="sm" onClick={addText}>
+          <Button type="button" variant="secondary" size="sm" className="w-full" onClick={addText}>
             Metin
           </Button>
           <Button
             type="button"
             variant="outline"
             size="sm"
+            className="w-full"
             onClick={() => graphicInputRef.current?.click()}
           >
             Grafik
@@ -147,7 +170,7 @@ export function ElementsPanel({ project, screenshot }: Props) {
                 title={name}
                 aria-label={`${name} ikonu ekle`}
                 onClick={() => addIcon(name)}
-                className="grid h-9 w-9 place-items-center rounded-[var(--radius-md)] border border-[var(--color-surface-2)] text-[var(--color-ink-body)] transition-colors hover:border-[var(--color-ink-strong)] hover:bg-[var(--color-surface-1)] focus:outline-none focus-visible:border-[var(--color-brand-primary)] focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)]"
+                className="grid h-10 w-10 place-items-center rounded-[16px] border border-black/6 bg-white/75 text-[var(--color-ink-body)] shadow-[0_8px_18px_rgba(0,0,0,0.04)] transition-colors hover:border-[var(--color-ink-strong)] hover:bg-white focus:outline-none focus-visible:border-[var(--color-brand-primary)] focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)]"
               >
                 <Icon size={18} strokeWidth={2} aria-hidden />
               </button>
@@ -156,7 +179,11 @@ export function ElementsPanel({ project, screenshot }: Props) {
         </div>
       </PanelSection>
 
-      <PanelSection title="Öğeler" description="Listeden seç; sarı çerçeve ana tuvalde görünür.">
+      <PanelSection
+        title="Öğeler"
+        description="Listeden seç; sarı çerçeve ana tuvalde görünür."
+        toolbar={<PanelBadge>{screenshot.elements.length} adet</PanelBadge>}
+      >
         {screenshot.elements.length === 0 ? (
           <p className="text-[11px] text-[var(--color-ink-muted)]">Henüz öğe yok.</p>
         ) : (
@@ -168,11 +195,11 @@ export function ElementsPanel({ project, screenshot }: Props) {
                   onClick={() => setSelectedId(el.id)}
                   aria-pressed={el.id === selectedId}
                   className={cn(
-                    "flex w-full items-center justify-between gap-2 rounded-[var(--radius-md)] border px-2 py-1.5 text-left text-[11px] transition-colors",
+                    "flex w-full items-center justify-between gap-2 rounded-[18px] border px-3 py-2 text-left text-[11px] transition-colors shadow-[0_8px_20px_rgba(0,0,0,0.03)]",
                     "focus:outline-none focus-visible:border-[var(--color-brand-primary)] focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)]",
                     el.id === selectedId
-                      ? "border-[var(--color-ink-strong)] bg-[var(--color-surface-1)]"
-                      : "border-[var(--color-surface-2)] hover:border-[var(--color-surface-3)]",
+                      ? "border-[var(--color-brand-primary)] bg-[rgba(232,198,16,0.08)]"
+                      : "border-black/6 bg-white/75 hover:border-[var(--color-surface-3)]",
                   )}
                 >
                   <span className="shrink-0 font-medium capitalize text-[var(--color-ink-strong)]">
@@ -337,7 +364,7 @@ export function ElementsPanel({ project, screenshot }: Props) {
             </PanelSection>
           )}
 
-          <PanelSection title="Tehlikeli alan">
+          <PanelSection title="Tehlikeli alan" accent="danger">
             <Button
               type="button"
               variant="destructive"

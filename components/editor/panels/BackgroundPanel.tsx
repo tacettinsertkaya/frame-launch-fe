@@ -9,7 +9,7 @@ import { Segment } from "@/components/ui/segment";
 import { Slider } from "@/components/ui/slider";
 import { ColorInput } from "@/components/ui/color-input";
 import { Button } from "@/components/ui/button";
-import { PanelSection } from "./PanelSection";
+import { PanelBadge, PanelSection, PanelToggle } from "./PanelSection";
 import { GradientBar } from "./GradientBar";
 
 const GRADIENT_PRESETS: { name: string; stops: { color: string; position: number }[]; direction?: number }[] = [
@@ -46,6 +46,22 @@ export function BackgroundPanel({ project, screenshot }: Props) {
 
   return (
     <div className="h-full overflow-y-auto pb-4">
+      <div className="mx-3 mt-3 overflow-hidden rounded-[22px] border border-[rgba(232,198,16,0.22)] bg-[linear-gradient(135deg,rgba(255,247,207,0.92)_0%,rgba(255,255,255,0.82)_100%)] px-4 py-4 shadow-[0_16px_40px_rgba(232,198,16,0.14)]">
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--color-ink-muted)]">
+              Background Direction
+            </p>
+            <h3 className="mt-1 text-sm font-semibold text-[var(--color-ink-strong)]">
+              Sahnenin ilk izlenimini burada kurun
+            </h3>
+            <p className="mt-1 text-xs leading-5 text-[var(--color-ink-muted)]">
+              Kontrastı, derinliği ve ritmi arka plan belirliyor. Önce zemini oturtun, sonra cihaz ve metni şekillendirin.
+            </p>
+          </div>
+          <PanelBadge tone="highlight">{bg.type}</PanelBadge>
+        </div>
+      </div>
       <PanelSection title="Tip" description="Arka plan stilini seç.">
         <Segment
           value={bg.type}
@@ -64,7 +80,11 @@ export function BackgroundPanel({ project, screenshot }: Props) {
 
       {bg.type === "gradient" && (
         <>
-          <PanelSection title="Hazır gradient'lar">
+          <PanelSection
+            title="Hazır gradient'lar"
+            description="Daha sinematik başlangıçlar için hızlı preset seçin."
+            accent="highlight"
+          >
             <div className="grid grid-cols-3 gap-2">
               {GRADIENT_PRESETS.map((p) => (
                 <button
@@ -76,7 +96,7 @@ export function BackgroundPanel({ project, screenshot }: Props) {
                       if (p.direction !== undefined) s.background.gradient.direction = p.direction;
                     })
                   }
-                  className="group relative aspect-[4/3] overflow-hidden rounded-[var(--radius-md)] border border-[var(--color-surface-2)] transition-transform hover:-translate-y-0.5 hover:shadow-[var(--shadow-md)] focus:outline-none focus-visible:border-[var(--color-brand-primary)] focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-1"
+                  className="group relative aspect-[4/3] overflow-hidden rounded-[18px] border border-black/6 transition-transform hover:-translate-y-0.5 hover:shadow-[0_12px_28px_rgba(0,0,0,0.12)] focus:outline-none focus-visible:border-[var(--color-brand-primary)] focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-1"
                   title={p.name}
                   aria-label={`Gradient ön ayarı: ${p.name}`}
                   style={{
@@ -85,7 +105,7 @@ export function BackgroundPanel({ project, screenshot }: Props) {
                       .join(", ")})`,
                   }}
                 >
-                  <span className="absolute inset-x-1 bottom-1 truncate rounded-[4px] bg-black/40 px-1.5 py-0.5 text-[10px] font-medium text-white opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">
+                  <span className="absolute inset-x-1 bottom-1 truncate rounded-full bg-black/55 px-2 py-1 text-[10px] font-medium text-white opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">
                     {p.name}
                   </span>
                 </button>
@@ -123,8 +143,8 @@ export function BackgroundPanel({ project, screenshot }: Props) {
               <div
                 key={idx}
                 className={[
-                  "flex items-center gap-2 rounded-[var(--radius-sm)] px-1 py-0.5 transition-colors",
-                  selectedStopIndex === idx ? "bg-[var(--color-surface-2)]" : "",
+                  "flex items-center gap-2 rounded-[18px] border border-black/6 bg-white/70 px-2 py-2 transition-colors",
+                  selectedStopIndex === idx ? "border-[var(--color-brand-primary)] bg-[rgba(232,198,16,0.08)]" : "",
                 ].join(" ")}
               >
                 <ColorInput
@@ -148,7 +168,7 @@ export function BackgroundPanel({ project, screenshot }: Props) {
                       s.background.gradient.stops[idx].position = Number(e.target.value);
                     })
                   }
-                  className="fl-no-focus w-14 rounded-[var(--radius-sm)] border border-[var(--color-surface-2)] px-1.5 py-1 text-right text-[11px] tabular-nums transition-colors focus:border-[var(--color-brand-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--color-brand-primary)]"
+                  className="fl-no-focus w-16 rounded-full border border-black/6 bg-white px-2 py-1.5 text-right text-[11px] tabular-nums transition-colors focus:border-[var(--color-brand-primary)] focus:outline-none focus:ring-2 focus:ring-[rgba(232,198,16,0.22)]"
                 />
                 {bg.gradient.stops.length > 2 && (
                   <button
@@ -266,7 +286,7 @@ export function BackgroundPanel({ project, screenshot }: Props) {
         </PanelSection>
       )}
 
-      <PanelSection title="Overlay">
+      <PanelSection title="Overlay" description="Metin ve cihazı zeminden ayırmak için ince bir perde ekleyin.">
         <ColorInput
           label="Renk"
           value={bg.overlay.color}
@@ -290,20 +310,17 @@ export function BackgroundPanel({ project, screenshot }: Props) {
         />
       </PanelSection>
 
-      <PanelSection title="Noise">
-        <label className="flex cursor-pointer items-center justify-between gap-2 text-xs">
-          <span className="font-medium text-[var(--color-ink-body)]">Etkin</span>
-          <input
-            type="checkbox"
-            checked={bg.noise.enabled}
-            onChange={(e) =>
-              update((s) => {
-                s.background.noise.enabled = e.target.checked;
-              })
-            }
-            className="h-4 w-4 shrink-0 cursor-pointer accent-[var(--color-brand-primary)]"
-          />
-        </label>
+      <PanelSection title="Noise" description="Dijital pürüz, düz zeminleri daha canlı hissettirir.">
+        <PanelToggle
+          label="Noise etkin"
+          description="Özellikle gradient ve tek renk arka planlarda banding etkisini yumuşatır."
+          checked={bg.noise.enabled}
+          onChange={(checked) =>
+            update((s) => {
+              s.background.noise.enabled = checked;
+            })
+          }
+        />
         {bg.noise.enabled && (
           <Slider
             label="Yoğunluk"

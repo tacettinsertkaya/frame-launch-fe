@@ -149,10 +149,10 @@ export function ScreenshotsSidebar({ project }: Props) {
               Storyboard
             </p>
             <h2 className="mt-1 text-sm font-semibold tracking-[-0.02em] text-[var(--color-ink-strong)]">
-              Prompt akisini yonetin
+              Ekran akışını yönetin
             </h2>
             <p className="mt-1 text-xs leading-5 text-[var(--color-ink-muted)]">
-              Siralayin, varyasyon cikarın ve ceviri akislarini tek yerden kontrol edin.
+              Sıralayın, varyasyon çıkarın ve çeviri akışlarını tek yerden kontrol edin.
             </p>
           </div>
           <div className="flex shrink-0 items-center gap-2">
@@ -171,7 +171,7 @@ export function ScreenshotsSidebar({ project }: Props) {
         </div>
         <div className="mt-3 grid grid-cols-2 gap-2">
           <SidebarStat label="Aktif diller" value={String(project.activeLocales.length)} />
-          <SidebarStat label="Son islem" value={transferTarget ? "Stil secimi" : "Hazir"} />
+          <SidebarStat label="Son işlem" value={transferTarget ? "Stil seçimi" : "Hazır"} />
         </div>
       </div>
       {transferTarget && (
@@ -179,15 +179,15 @@ export function ScreenshotsSidebar({ project }: Props) {
           type="button"
           onClick={() => {
             setTransferTarget(null);
-            toast.info("Stil aktarimi iptal edildi");
+            toast.info("Stil aktarımı iptal edildi");
           }}
           className="mx-3 mt-3 flex shrink-0 items-center justify-between gap-2 rounded-[20px] border border-amber-200 bg-[linear-gradient(135deg,rgba(255,243,176,0.8)_0%,rgba(255,255,255,0.88)_100%)] px-3 py-2 text-left text-[11px] leading-tight text-amber-950 shadow-[0_12px_28px_rgba(232,198,16,0.16)]"
         >
           <span className="min-w-0 flex-1">
-            Hedef ekran secildi. Simdi gorunum stilini kopyalamak icin kaynak ekrana dokunun.
+            Hedef ekran seçildi. Şimdi görünüm stilini kopyalamak için kaynak ekrana dokunun.
           </span>
           <span className="shrink-0 rounded-full bg-amber-950 px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-amber-50">
-            Iptal
+            İptal
           </span>
         </button>
       )}
@@ -323,7 +323,7 @@ function SortableRow({
         )}
       >
         <div className="pointer-events-none">
-          <Canvas screenshot={screenshot} locale={locale} scale={thumbScale} selectedElementId={null} />
+          <Canvas screenshot={screenshot} locale={locale} scale={thumbScale} selectedElementId={null} preview />
         </div>
       </button>
       <div className="mt-2 rounded-[20px] border border-black/6 bg-white/80 px-3 py-2 shadow-[0_8px_20px_rgba(0,0,0,0.04)]">

@@ -202,12 +202,17 @@ export function TranslateModal() {
       maxWidth="560px"
     >
       <div className="space-y-4 text-sm text-[var(--color-ink-body)]">
-        <p className="text-xs text-[var(--color-ink-muted)]">
-          Kaynak metni seçin; hedef dilleri düzenleyin veya AI ile doldurun. Kaydet deyince bu ekranın{" "}
-          {fieldLabel.toLowerCase()} alanı güncellenir.
-        </p>
+        <div className="rounded-[22px] border border-[rgba(232,198,16,0.22)] bg-[linear-gradient(135deg,rgba(255,247,207,0.88)_0%,rgba(255,255,255,0.82)_100%)] p-4 shadow-[0_14px_36px_rgba(232,198,16,0.16)]">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--color-ink-muted)]">
+            Translation Board
+          </p>
+          <p className="mt-2 text-sm leading-6 text-[var(--color-ink-body)]">
+            Kaynak metni seçin; hedef dilleri düzenleyin veya AI ile doldurun. Kaydet deyince bu ekranın{" "}
+            {fieldLabel.toLowerCase()} alanı güncellenir.
+          </p>
+        </div>
 
-        <div>
+        <div className="rounded-[22px] border border-black/6 bg-white/75 p-4 shadow-[0_12px_28px_rgba(0,0,0,0.05)]">
           <label className="mb-1 block text-[10px] font-medium uppercase tracking-wide text-[var(--color-ink-muted)]">
             Kaynak dil
           </label>
@@ -215,7 +220,7 @@ export function TranslateModal() {
             value={sourceLang}
             onChange={(e) => setSourceLang(e.target.value as Locale)}
             disabled={busy}
-            className="w-full rounded-[var(--radius-md)] border border-[var(--color-surface-2)] bg-[var(--color-surface-0)] px-2 py-2 text-xs"
+            className="w-full rounded-[18px] border border-black/6 bg-white px-3 py-2 text-xs shadow-[0_8px_20px_rgba(0,0,0,0.03)]"
           >
             {project.activeLocales.map((l) => (
               <option key={l} value={l}>
@@ -225,7 +230,7 @@ export function TranslateModal() {
           </select>
         </div>
 
-        <div>
+        <div className="rounded-[22px] border border-black/6 bg-white/75 p-4 shadow-[0_12px_28px_rgba(0,0,0,0.05)]">
           <label className="mb-1 block text-[10px] font-medium uppercase tracking-wide text-[var(--color-ink-muted)]">
             Kaynak metin
           </label>
@@ -234,11 +239,11 @@ export function TranslateModal() {
             onChange={(e) => setDrafts((d) => ({ ...d, [sourceLang]: e.target.value }))}
             disabled={busy}
             rows={3}
-            className="w-full rounded-[var(--radius-md)] border border-[var(--color-surface-2)] bg-[var(--color-surface-0)] px-3 py-2 text-xs text-[var(--color-ink-strong)]"
+            className="w-full rounded-[18px] border border-black/6 bg-white px-3 py-2 text-xs text-[var(--color-ink-strong)] shadow-[0_8px_20px_rgba(0,0,0,0.03)]"
           />
         </div>
 
-        <div className="space-y-2">
+        <div className="space-y-2 rounded-[22px] border border-black/6 bg-white/75 p-4 shadow-[0_12px_28px_rgba(0,0,0,0.05)]">
           <p className="text-[10px] font-medium uppercase tracking-wide text-[var(--color-ink-muted)]">
             Hedef diller
           </p>
@@ -252,7 +257,7 @@ export function TranslateModal() {
                 onChange={(e) => setDrafts((d) => ({ ...d, [loc]: e.target.value }))}
                 disabled={busy}
                 rows={2}
-                className="w-full rounded-[var(--radius-md)] border border-[var(--color-surface-2)] bg-[var(--color-surface-0)] px-3 py-2 text-xs text-[var(--color-ink-strong)]"
+                className="w-full rounded-[18px] border border-black/6 bg-white px-3 py-2 text-xs text-[var(--color-ink-strong)] shadow-[0_8px_20px_rgba(0,0,0,0.03)]"
               />
             </div>
           ))}
@@ -260,7 +265,7 @@ export function TranslateModal() {
 
         {status && <p className="text-xs text-[var(--color-ink-muted)]">{status}</p>}
 
-        <div className="flex flex-wrap items-center justify-between gap-2 border-t border-[var(--color-surface-2)] pt-4">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-t border-black/6 pt-4">
           <Button
             type="button"
             variant="ghost"

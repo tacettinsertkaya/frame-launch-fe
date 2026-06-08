@@ -4,6 +4,13 @@ import { useEffect, useState } from "react";
 import type { DeviceConfig, Locale } from "@/lib/types/project";
 import type { DeviceSize } from "@/lib/devices/registry";
 import { getBlobUrl } from "@/lib/persistence/blobStore";
+import { DeviceFrameSvg, getScreenBackground } from "./DeviceFrame";
+import dynamic from "next/dynamic";
+
+const Device3DLayer = dynamic(
+  () => import("./Device3DLayer").then((m) => m.Device3DLayer),
+  { ssr: false },
+);
 
 interface Props {
   device: DeviceConfig;
@@ -12,6 +19,8 @@ interface Props {
   locale: Locale;
   canvasWidth: number;
   canvasHeight: number;
+  /** Skip heavy 3D rendering (for sidebar thumbnails). */
+  preview?: boolean;
 }
 
 export function DeviceLayer({
@@ -21,6 +30,7 @@ export function DeviceLayer({
   locale,
   canvasWidth,
   canvasHeight,
+  preview = false,
 }: Props) {
   const blobId = uploads[locale];
   const [imageUrl, setImageUrl] = useState<string | undefined>(undefined);
@@ -41,12 +51,9 @@ export function DeviceLayer({
 
   if (device.scale <= 0) return null;
 
-  // Cihazın canvas üzerindeki en geniş kenarı
   const aspect = size.width / size.height;
   const isMarketing = !size.bezel;
 
-  // Telefon/tablet için: yüksekliği canvas'a göre ölçekle, genişliği aspect'e göre türet
-  // Marketing için: genişliği canvas'a göre ölçekle (yatay format)
   let deviceHeight: number;
   let deviceWidth: number;
   if (isMarketing) {
@@ -57,11 +64,12 @@ export function DeviceLayer({
     deviceWidth = deviceHeight * aspect;
   }
 
-  // Pozisyonlama (yüzde) — kapsayıcının sol-üstüne göre
   const left = (canvasWidth * device.horizontalPos) / 100 - deviceWidth / 2;
   const top = (canvasHeight * device.verticalPos) / 100 - deviceHeight / 2;
 
-  const cornerRadius = isMarketing ? 0 : (deviceWidth * device.cornerRadius) / 100;
+  const cornerRadius = isMarketing
+    ? 0
+    : (deviceWidth * device.cornerRadius) / 100;
 
   const shadowFilter = device.shadow.enabled
     ? `drop-shadow(${device.shadow.offsetX}px ${device.shadow.offsetY}px ${device.shadow.blur}px ${hexAlpha(
@@ -70,14 +78,132 @@ export function DeviceLayer({
       )})`
     : "none";
 
-  // Perspektif: değer 0 ise sade rotate. >0 ise CSS perspective + rotateY uygulanır.
-  // Daha kapsamlı 3D projection alt-proje 13'te ele alınacak (kompromis: spec #02 §3.2).
   const persp = Math.max(0, device.perspective ?? 0);
   const transform =
     persp > 0
       ? `perspective(1200px) rotateY(${(persp * 0.6).toFixed(2)}deg) rotate(${device.tiltRotation}deg)`
       : `rotate(${device.tiltRotation}deg)`;
 
+  const bezelPx = size.bezel
+    ? {
+        top: (deviceHeight * size.bezel.top) / 100,
+        right: (deviceWidth * size.bezel.right) / 100,
+        bottom: (deviceHeight * size.bezel.bottom) / 100,
+        left: (deviceWidth * size.bezel.left) / 100,
+      }
+    : null;
+
+  const screenWidth = bezelPx
+    ? deviceWidth - bezelPx.left - bezelPx.right
+    : deviceWidth;
+  const screenHeight = bezelPx
+    ? deviceHeight - bezelPx.top - bezelPx.bottom
+    : deviceHeight;
+
+  const innerRadius = Math.max(
+    0,
+    cornerRadius - (bezelPx?.left ?? 0),
+  );
+
+  /* ── Marketing / no-bezel layout: same as before ── */
+  if (isMarketing) {
+    return (
+      <div
+        style={{
+          position: "absolute",
+          left,
+          top,
+          width: deviceWidth,
+          height: deviceHeight,
+          transform,
+          transformStyle: persp > 0 ? "preserve-3d" : undefined,
+          filter: shadowFilter,
+          pointerEvents: "none",
+          zIndex: 3,
+        }}
+      >
+        <div
+          style={{
+            position: "relative",
+            width: "100%",
+            height: "100%",
+            background: device.frameColor,
+            borderRadius: cornerRadius,
+            overflow: "hidden",
+            border: device.border.enabled
+              ? `${device.border.width}px solid ${hexAlpha(device.border.color, device.border.opacity / 100)}`
+              : undefined,
+          }}
+        >
+          <div
+            style={{
+              width: "100%",
+              height: "100%",
+              overflow: "hidden",
+              background: imageUrl ? "transparent" : "#0a0a14",
+            }}
+          >
+            {imageUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={imageUrl}
+                alt="Screenshot"
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  display: "block",
+                }}
+                crossOrigin="anonymous"
+              />
+            ) : (
+              <div
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  display: "grid",
+                  placeItems: "center",
+                  color: "rgba(255,255,255,0.4)",
+                  fontSize: 14,
+                  fontFamily: "var(--font-sans)",
+                  background: getScreenBackground(),
+                }}
+              >
+                Upload a screenshot from the Device panel
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  /* ── 3D mode: Three.js GLB model (skip for preview thumbnails to conserve WebGL contexts) ── */
+  if (device.mode === "3d" && !isMarketing && !preview) {
+    return (
+      <div
+        style={{
+          position: "absolute",
+          left,
+          top,
+          width: deviceWidth,
+          height: deviceHeight,
+          filter: shadowFilter,
+          pointerEvents: "none",
+          zIndex: 3,
+        }}
+      >
+        <Device3DLayer
+          device={device}
+          imageUrl={imageUrl}
+          width={deviceWidth}
+          height={deviceHeight}
+        />
+      </div>
+    );
+  }
+
+  /* ── 2D mode: SVG frame overlay ── */
   return (
     <div
       style={{
@@ -93,76 +219,86 @@ export function DeviceLayer({
         zIndex: 3,
       }}
     >
+      {/* Layer 1: Screenshot image positioned at screen area */}
       <div
         style={{
-          position: "relative",
-          width: "100%",
-          height: "100%",
-          background: device.frameColor,
-          borderRadius: cornerRadius,
-          padding: size.bezel
-            ? `${(deviceHeight * size.bezel.top) / 100}px ${(deviceWidth * size.bezel.right) / 100}px ${(deviceHeight * size.bezel.bottom) / 100}px ${(deviceWidth * size.bezel.left) / 100}px`
-            : 0,
-          boxSizing: "border-box",
+          position: "absolute",
+          left: bezelPx!.left,
+          top: bezelPx!.top,
+          width: screenWidth,
+          height: screenHeight,
+          borderRadius: innerRadius,
           overflow: "hidden",
-          border: device.border.enabled
-            ? `${device.border.width}px solid ${hexAlpha(
-                device.border.color,
-                device.border.opacity / 100,
-              )}`
-            : undefined,
+          zIndex: 2,
         }}
       >
+        {imageUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={imageUrl}
+            alt="Screenshot"
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              display: "block",
+            }}
+            crossOrigin="anonymous"
+          />
+        ) : (
+          <div
+            style={{
+              width: "100%",
+              height: "100%",
+              display: "grid",
+              placeItems: "center",
+              color: "rgba(255,255,255,0.4)",
+              fontSize: 14,
+              fontFamily: "var(--font-sans)",
+              background: getScreenBackground(),
+            }}
+          >
+            Upload a screenshot from the Device panel
+          </div>
+        )}
+      </div>
+
+      {/* Layer 2: SVG device frame overlay (screen area is transparent via mask) */}
+      <DeviceFrameSvg
+        size={size}
+        deviceWidth={deviceWidth}
+        deviceHeight={deviceHeight}
+        frameColor={device.frameColor}
+        cornerRadiusPct={device.cornerRadius}
+      />
+
+      {/* Layer 3: User-configurable border (on top of everything) */}
+      {device.border.enabled && (
         <div
           style={{
-            position: "relative",
-            width: "100%",
-            height: "100%",
-            borderRadius: Math.max(0, cornerRadius - (deviceWidth * (size.bezel?.left ?? 0)) / 100),
-            overflow: "hidden",
-            background: imageUrl ? "transparent" : "#1a173a",
+            position: "absolute",
+            inset: 0,
+            borderRadius: cornerRadius,
+            border: `${device.border.width}px solid ${hexAlpha(
+              device.border.color,
+              device.border.opacity / 100,
+            )}`,
+            pointerEvents: "none",
+            zIndex: 5,
           }}
-        >
-          {imageUrl ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={imageUrl}
-              alt="Screenshot"
-              style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-                display: "block",
-              }}
-              crossOrigin="anonymous"
-            />
-          ) : (
-            <div
-              style={{
-                width: "100%",
-                height: "100%",
-                display: "grid",
-                placeItems: "center",
-                color: "rgba(255,255,255,0.5)",
-                fontSize: 14,
-                fontFamily: "var(--font-sans)",
-                background:
-                  "repeating-linear-gradient(45deg, #2a2748 0 12px, #1f1c3d 12px 24px)",
-              }}
-            >
-              Görsel yüklemek için sağdaki Cihaz panelini kullanın
-            </div>
-          )}
-        </div>
-      </div>
+        />
+      )}
     </div>
   );
 }
 
 function hexAlpha(hex: string, alpha: number): string {
-  // hex `#rrggbb` veya `#rgb` olabilir
   let h = hex.replace("#", "");
-  if (h.length === 3) h = h.split("").map((c) => c + c).join("");
+  if (h.length === 3)
+    h = h
+      .split("")
+      .map((c) => c + c)
+      .join("");
   const r = parseInt(h.slice(0, 2), 16);
   const g = parseInt(h.slice(2, 4), 16);
   const b = parseInt(h.slice(4, 6), 16);

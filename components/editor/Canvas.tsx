@@ -14,10 +14,12 @@ interface CanvasProps {
   /** preview için ölçek (1 = piksel-piksel). */
   scale?: number;
   selectedElementId?: string | null;
+  /** When true, skips heavy 3D rendering (used for sidebar thumbnails). */
+  preview?: boolean;
 }
 
 export const Canvas = forwardRef<HTMLDivElement, CanvasProps>(function Canvas(
-  { screenshot, locale, scale = 1, selectedElementId = null },
+  { screenshot, locale, scale = 1, selectedElementId = null, preview = false },
   ref,
 ) {
   const dims = getEffectiveDimensions(screenshot.deviceSizeId, screenshot.customDimensions);
@@ -68,6 +70,7 @@ export const Canvas = forwardRef<HTMLDivElement, CanvasProps>(function Canvas(
           locale={locale}
           canvasWidth={dims.width}
           canvasHeight={dims.height}
+          preview={preview}
         />
         <ElementsLayer
           elements={screenshot.elements}

@@ -210,10 +210,15 @@ export function ExportModal({ project }: Props) {
             <ArrowLeft size={14} aria-hidden />
             Geri
           </button>
-          <p className="text-sm text-[var(--color-ink-body)]">
-            Projede birden fazla dil var. ZIP içeriğini seçin (metin ve görseller seçilen dile göre
-            üretilir).
-          </p>
+          <div className="rounded-[22px] border border-black/6 bg-white/70 p-4 shadow-[0_12px_28px_rgba(0,0,0,0.05)]">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--color-ink-muted)]">
+              Export Scope
+            </p>
+            <p className="mt-2 text-sm leading-6 text-[var(--color-ink-body)]">
+              Projede birden fazla dil var. ZIP içeriğini seçin; metin ve görseller seçilen dile göre
+              yeniden üretilir.
+            </p>
+          </div>
           <div className="grid gap-3">
             <button
               type="button"
@@ -222,7 +227,7 @@ export function ExportModal({ project }: Props) {
                 setFlow("menu");
                 void runZipSingleLanguage(activeLocale);
               }}
-              className="flex flex-col items-start gap-1 rounded-[var(--radius-lg)] border border-[var(--color-surface-2)] bg-[var(--color-surface-0)] p-4 text-left text-[var(--color-ink-body)] transition-all hover:border-[var(--color-brand-primary)] hover:shadow-[var(--shadow-md)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-[var(--color-surface-2)] disabled:hover:shadow-none"
+              className="flex flex-col items-start gap-1 rounded-[22px] border border-black/6 bg-white/80 p-4 text-left text-[var(--color-ink-body)] shadow-[0_14px_36px_rgba(0,0,0,0.06)] transition-all hover:-translate-y-0.5 hover:border-[var(--color-brand-primary)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-black/6"
             >
               <Languages size={18} aria-hidden className="text-[var(--color-brand-primary)]" />
               <span className="text-sm font-semibold text-[var(--color-ink-strong)]">
@@ -240,7 +245,7 @@ export function ExportModal({ project }: Props) {
                 setFlow("menu");
                 void runZipAllLanguages();
               }}
-              className="flex flex-col items-start gap-1 rounded-[var(--radius-lg)] border-2 border-black bg-[var(--color-brand-primary)] p-4 text-left text-black shadow-[0_4px_16px_rgba(232,198,16,0.35)] transition-transform hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0"
+              className="flex flex-col items-start gap-1 rounded-[22px] border-2 border-black bg-[var(--color-brand-primary)] p-4 text-left text-black shadow-[0_14px_36px_rgba(232,198,16,0.32)] transition-transform hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0"
             >
               <Package size={18} aria-hidden />
               <span className="text-sm font-semibold">Tüm diller</span>
@@ -252,17 +257,22 @@ export function ExportModal({ project }: Props) {
         </div>
       ) : (
         <div className="space-y-5">
-          <p className="text-sm text-[var(--color-ink-body)]">
-            Görseller doğrudan piksel-piksel marketler için doğru çözünürlükte üretilir. Watermark
-            yoktur; veri sunucuya gitmez. Toplu indirme bir ZIP arşividir.
-          </p>
+          <div className="rounded-[22px] border border-[rgba(232,198,16,0.22)] bg-[linear-gradient(135deg,rgba(255,247,207,0.88)_0%,rgba(255,255,255,0.82)_100%)] p-4 shadow-[0_14px_36px_rgba(232,198,16,0.16)]">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--color-ink-muted)]">
+              Export Ready
+            </p>
+            <p className="mt-2 text-sm leading-6 text-[var(--color-ink-body)]">
+              Görseller doğrudan marketler için doğru çözünürlükte üretilir. Watermark yoktur; veri
+              sunucuya gitmez. Toplu indirme ZIP arşividir.
+            </p>
+          </div>
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <button
               type="button"
               disabled={busy || !activeScreenshotId}
               onClick={exportActive}
-              className="group flex flex-col items-start gap-1.5 rounded-[var(--radius-lg)] border border-[var(--color-surface-2)] bg-[var(--color-surface-0)] p-4 text-left text-[var(--color-ink-body)] transition-all hover:-translate-y-0.5 hover:border-[var(--color-brand-primary)] hover:shadow-[var(--shadow-md)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0 disabled:hover:border-[var(--color-surface-2)] disabled:hover:shadow-none"
+              className="group flex flex-col items-start gap-1.5 rounded-[22px] border border-black/6 bg-white/80 p-4 text-left text-[var(--color-ink-body)] shadow-[0_14px_36px_rgba(0,0,0,0.06)] transition-all hover:-translate-y-0.5 hover:border-[var(--color-brand-primary)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0"
             >
               <Download size={18} aria-hidden className="text-[var(--color-brand-primary)]" />
               <span className="text-sm font-semibold text-[var(--color-ink-strong)]">
@@ -277,7 +287,7 @@ export function ExportModal({ project }: Props) {
               type="button"
               disabled={busy || project.screenshots.length === 0}
               onClick={onExportAllClick}
-              className="group flex flex-col items-start gap-1.5 rounded-[var(--radius-lg)] border-2 border-black bg-[var(--color-brand-primary)] p-4 text-left text-black shadow-[0_4px_16px_rgba(232,198,16,0.35)] transition-transform hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0"
+              className="group flex flex-col items-start gap-1.5 rounded-[22px] border-2 border-black bg-[var(--color-brand-primary)] p-4 text-left text-black shadow-[0_14px_36px_rgba(232,198,16,0.32)] transition-transform hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0"
             >
               <Package size={18} aria-hidden />
               <span className="text-sm font-semibold">Tüm ekranları ZIP indir</span>
@@ -294,7 +304,7 @@ export function ExportModal({ project }: Props) {
 
       {progress && (
         <div
-          className="mt-4 rounded-[var(--radius-md)] bg-[var(--color-surface-1)] px-3 py-2 text-xs text-[var(--color-ink-body)]"
+          className="mt-4 rounded-[20px] border border-black/6 bg-white/70 px-3 py-3 text-xs text-[var(--color-ink-body)] shadow-[0_12px_28px_rgba(0,0,0,0.05)]"
           role="status"
           aria-live="polite"
         >
@@ -312,7 +322,7 @@ export function ExportModal({ project }: Props) {
             aria-valuemax={progress.total}
             aria-valuenow={progress.done}
             aria-label="Dışa aktarım ilerlemesi"
-            className="h-1.5 overflow-hidden rounded-full bg-[var(--color-surface-2)]"
+            className="h-2 overflow-hidden rounded-full bg-[var(--color-surface-2)]"
           >
             <div
               className="h-full bg-[var(--color-brand-primary)] transition-[width] duration-150"
@@ -324,7 +334,7 @@ export function ExportModal({ project }: Props) {
         </div>
       )}
 
-      <div className="mt-5 flex flex-wrap items-center justify-end gap-2">
+      <div className="mt-5 flex flex-wrap items-center justify-end gap-2 border-t border-black/6 pt-4">
         {busy && (
           <span className="mr-auto inline-flex items-center gap-1.5 text-xs text-[var(--color-ink-muted)]">
             <Loader2 size={14} aria-hidden className="animate-spin" />

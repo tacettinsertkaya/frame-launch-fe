@@ -81,7 +81,7 @@ export function FontPicker({ id, value, onChange, weightsToLoad = [400, 600, 700
         aria-haspopup="listbox"
         aria-expanded={open}
         aria-label={value ? `Font: ${value}` : "Font seç"}
-        className="flex w-full items-center justify-between gap-2 rounded-[var(--radius-md)] border border-[var(--color-surface-2)] bg-[var(--color-surface-0)] px-2 py-1.5 text-left text-xs text-[var(--color-ink-strong)] transition-colors hover:border-[var(--color-surface-3)] focus:outline-none focus-visible:border-[var(--color-brand-primary)] focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)]/30"
+        className="flex w-full items-center justify-between gap-2 rounded-[18px] border border-black/6 bg-[rgba(255,255,255,0.78)] px-3 py-2 text-left text-xs text-[var(--color-ink-strong)] shadow-[0_8px_20px_rgba(0,0,0,0.03)] transition-colors hover:bg-white focus:outline-none focus-visible:border-[var(--color-brand-primary)] focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)]/30"
       >
         <span className="min-w-0 truncate">{value || "Font"}</span>
         <ChevronDown
@@ -93,22 +93,22 @@ export function FontPicker({ id, value, onChange, weightsToLoad = [400, 600, 700
         />
       </button>
       {open && (
-        <div className="absolute left-0 right-0 top-full z-50 mt-1 max-h-72 overflow-hidden rounded-[var(--radius-md)] border border-[var(--color-surface-2)] bg-[var(--color-surface-0)] text-[var(--color-ink-body)] shadow-[var(--shadow-lg)]">
-          <div className="border-b border-[var(--color-surface-2)] p-2">
+        <div className="absolute left-0 right-0 top-full z-50 mt-2 max-h-72 overflow-hidden rounded-[22px] border border-black/6 bg-[rgba(255,255,255,0.96)] text-[var(--color-ink-body)] shadow-[0_24px_60px_rgba(0,0,0,0.12)] backdrop-blur-xl">
+          <div className="border-b border-black/6 p-2">
             <input
               type="search"
               placeholder="Ara…"
               aria-label="Font ara"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full rounded-[var(--radius-sm)] border border-[var(--color-surface-2)] px-2 py-1 text-xs outline-none transition-colors focus:border-[var(--color-brand-primary)] focus:ring-1 focus:ring-[var(--color-brand-primary)]"
+              className="w-full rounded-[14px] border border-black/6 bg-white px-3 py-2 text-xs outline-none transition-colors focus:border-[var(--color-brand-primary)] focus:ring-2 focus:ring-[rgba(232,198,16,0.22)]"
               autoComplete="off"
             />
           </div>
           <div
             role="tablist"
             aria-label="Font kategorisi"
-            className="flex gap-1 border-b border-[var(--color-surface-2)] px-2 py-1.5"
+            className="flex gap-1 border-b border-black/6 px-2 py-1.5"
           >
             {(
               [
@@ -127,11 +127,11 @@ export function FontPicker({ id, value, onChange, weightsToLoad = [400, 600, 700
                   setSearch("");
                 }}
                 className={cn(
-                  "rounded-[var(--radius-sm)] px-2 py-0.5 text-[10px] font-medium transition-colors",
+                  "rounded-full px-2.5 py-1 text-[10px] font-medium transition-colors",
                   "focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)]",
                   category === key
                     ? "bg-[var(--color-ink-strong)] text-white"
-                    : "text-[var(--color-ink-muted)] hover:bg-[var(--color-surface-1)]",
+                    : "text-[var(--color-ink-muted)] hover:bg-white",
                 )}
               >
                 {label}
@@ -159,10 +159,10 @@ export function FontPicker({ id, value, onChange, weightsToLoad = [400, 600, 700
                     setSearch("");
                   }}
                   className={cn(
-                    "flex w-full items-center justify-between px-3 py-1.5 text-left text-xs transition-colors",
+                    "flex w-full items-center justify-between px-3 py-2 text-left text-xs transition-colors",
                     "focus:outline-none focus-visible:bg-[var(--color-surface-1)] focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--color-brand-primary)]",
                     opt.name === value
-                      ? "bg-[var(--color-surface-1)] font-medium text-[var(--color-ink-strong)]"
+                      ? "bg-[rgba(232,198,16,0.12)] font-medium text-[var(--color-ink-strong)]"
                       : "text-[var(--color-ink-body)] hover:bg-[var(--color-surface-1)]",
                   )}
                 >

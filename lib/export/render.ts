@@ -26,6 +26,12 @@ export async function renderNodeToPng(
     }
   }
 
+  // Ensure WebGL canvases (Three.js) are fully rendered before capture
+  const webglCanvases = node.querySelectorAll("canvas");
+  if (webglCanvases.length > 0) {
+    await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+  }
+
   const dataUrl = await toPng(node, {
     width,
     height,

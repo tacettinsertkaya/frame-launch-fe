@@ -5,7 +5,7 @@ import { Italic, Languages, Strikethrough, Underline } from "lucide-react";
 import type { Project, Screenshot, TextConfig, TextWeight } from "@/lib/types/project";
 import { useProjectsStore } from "@/store/projectsStore";
 import { useEditorStore } from "@/store/editorStore";
-import { PanelSection } from "./PanelSection";
+import { PanelBadge, PanelSection, PanelToggle } from "./PanelSection";
 import { Slider } from "@/components/ui/slider";
 import { ColorInput } from "@/components/ui/color-input";
 import { Segment } from "@/components/ui/segment";
@@ -46,25 +46,31 @@ export function TextPanel({ project, screenshot }: Props) {
     config: TextConfig,
     apply: (mutate: (cfg: TextConfig) => void) => void,
   ) => (
-    <PanelSection title={label} description={`Aktif dil: ${activeLocale.toUpperCase()}`}>
-      <label className="flex cursor-pointer items-center justify-between gap-2 text-xs">
-        <span className="font-medium text-[var(--color-ink-body)]">Etkin</span>
-        <input
-          type="checkbox"
-          checked={config.enabled}
-          onChange={(e) =>
-            apply((c) => {
-              c.enabled = e.target.checked;
-            })
-          }
-          className="h-4 w-4 shrink-0 cursor-pointer accent-[var(--color-brand-primary)]"
-        />
-      </label>
+    <PanelSection
+      title={label}
+      description={`Aktif dil: ${activeLocale.toUpperCase()}`}
+      accent={field === "headline" ? "highlight" : "default"}
+      toolbar={
+        <PanelBadge tone={config.enabled ? "highlight" : "default"}>
+          {config.enabled ? "Aktif" : "Pasif"}
+        </PanelBadge>
+      }
+    >
+      <PanelToggle
+        label={`${label} etkin`}
+        description="Bu metin katmanını sahnede göster veya gizle."
+        checked={config.enabled}
+        onChange={(checked) =>
+          apply((c) => {
+            c.enabled = checked;
+          })
+        }
+      />
       {project.activeLocales.length > 1 && (
         <button
           type="button"
           onClick={() => openTranslateModal({ field, screenshotId: screenshot.id })}
-          className="mb-2 inline-flex items-center gap-1 rounded-[var(--radius-sm)] text-[10px] font-medium text-[var(--color-brand-primary)] transition-colors hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-1"
+          className="mb-1 inline-flex items-center gap-1 self-start rounded-full border border-[rgba(232,198,16,0.22)] bg-[rgba(232,198,16,0.1)] px-2.5 py-1 text-[10px] font-semibold text-[var(--color-ink-strong)] transition-colors hover:bg-[rgba(232,198,16,0.18)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-1"
         >
           <Languages className="h-3 w-3" aria-hidden />
           Çoklu dil / AI çevirisi…
@@ -115,7 +121,7 @@ export function TextPanel({ project, screenshot }: Props) {
               })
             }
           />
-          <label className="text-[10px] font-medium uppercase tracking-wide text-[var(--color-ink-muted)]">
+          <label className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[var(--color-ink-muted)]">
             Font
           </label>
           <FontPicker
@@ -127,7 +133,7 @@ export function TextPanel({ project, screenshot }: Props) {
             }
             weightsToLoad={[...WEIGHT_NUMS]}
           />
-          <div className="flex gap-1 pt-1" role="group" aria-label="Metin stili">
+          <div className="grid grid-cols-3 gap-2 pt-1" role="group" aria-label="Metin stili">
             {(
               [
                 ["italic", Italic, config.italic, "İtalik"] as const,
@@ -148,9 +154,9 @@ export function TextPanel({ project, screenshot }: Props) {
                   })
                 }
                 className={cn(
-                  "inline-flex h-8 flex-1 items-center justify-center rounded-[var(--radius-sm)] border border-[var(--color-surface-2)] text-[var(--color-ink-body)] transition-colors",
+                  "inline-flex h-10 flex-1 items-center justify-center rounded-[16px] border border-black/6 bg-white/70 text-[var(--color-ink-body)] shadow-[0_8px_20px_rgba(0,0,0,0.03)] transition-colors",
                   "focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)]",
-                  on ? "bg-[var(--color-surface-1)] ring-1 ring-[var(--color-ink-muted)]" : "bg-[var(--color-surface-0)] hover:bg-[var(--color-surface-1)]",
+                  on ? "bg-black text-white ring-1 ring-black" : "hover:bg-white",
                 )}
               >
                 <Icon className="h-3.5 w-3.5" aria-hidden />
@@ -159,7 +165,7 @@ export function TextPanel({ project, screenshot }: Props) {
           </div>
           <label
             htmlFor={`${field}-weight`}
-            className="text-[10px] font-medium uppercase tracking-wide text-[var(--color-ink-muted)]"
+            className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[var(--color-ink-muted)]"
           >
             Kalınlık
           </label>
@@ -172,7 +178,7 @@ export function TextPanel({ project, screenshot }: Props) {
                 c.weight = e.target.value as TextWeight;
               })
             }
-            className="w-full rounded-[var(--radius-md)] border border-[var(--color-surface-2)] bg-[var(--color-surface-0)] px-2 py-1.5 text-xs text-[var(--color-ink-strong)] transition-colors focus:border-[var(--color-brand-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--color-brand-primary)]"
+            className="w-full rounded-[18px] border border-black/6 bg-[rgba(255,255,255,0.8)] px-3 py-2 text-xs text-[var(--color-ink-strong)] shadow-[0_8px_20px_rgba(0,0,0,0.03)] transition-colors focus:border-[var(--color-brand-primary)] focus:outline-none focus:ring-2 focus:ring-[rgba(232,198,16,0.22)]"
           >
             {WEIGHTS.map((w) => (
               <option key={w} value={w}>
@@ -236,6 +242,25 @@ export function TextPanel({ project, screenshot }: Props) {
 
   return (
     <div className="h-full overflow-y-auto pb-4">
+      <div className="mx-3 mt-3 overflow-hidden rounded-[22px] border border-black/6 bg-[linear-gradient(135deg,rgba(255,255,255,0.9)_0%,rgba(255,246,209,0.82)_100%)] px-4 py-4 shadow-[0_16px_40px_rgba(0,0,0,0.06)]">
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--color-ink-muted)]">
+              Copy Rhythm
+            </p>
+            <h3 className="mt-1 text-sm font-semibold text-[var(--color-ink-strong)]">
+              Başlık katmanını daha editorial hissettirin
+            </h3>
+            <p className="mt-1 text-xs leading-5 text-[var(--color-ink-muted)]">
+              Hiyerarşi, hizalama ve satır yüksekliği birlikte ayarlandığında çıktı daha rafine ve daha pahalı görünür.
+            </p>
+          </div>
+          <div className="flex flex-col items-end gap-2">
+            <PanelBadge tone="highlight">{activeLocale.toUpperCase()}</PanelBadge>
+            <PanelBadge>{project.activeLocales.length} dil</PanelBadge>
+          </div>
+        </div>
+      </div>
       {renderTextEditor("Headline", "headline", screenshot.text.headline, (m) =>
         update((s) => m(s.text.headline)),
       )}

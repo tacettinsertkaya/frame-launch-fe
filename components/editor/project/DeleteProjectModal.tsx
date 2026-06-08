@@ -35,11 +35,16 @@ export function DeleteProjectModal({
       maxWidth="440px"
     >
       <div className="space-y-4">
-        <p className="text-sm text-[var(--color-ink-body)]">
-          <strong className="text-[var(--color-ink-strong)]">&quot;{projectName}&quot;</strong>{" "}
-          silinecek. Bu işlem geri alınamaz.
-        </p>
-        <div className="flex flex-col-reverse gap-2 sm:flex-row sm:items-center sm:justify-end">
+        <div className="rounded-[22px] border border-red-100 bg-[linear-gradient(180deg,rgba(255,245,245,0.94)_0%,rgba(255,255,255,0.82)_100%)] p-4 shadow-[0_14px_36px_rgba(239,68,68,0.08)]">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-red-500">
+            Destructive Action
+          </p>
+          <p className="mt-2 text-sm leading-6 text-[var(--color-ink-body)]">
+            <strong className="text-[var(--color-ink-strong)]">&quot;{projectName}&quot;</strong>{" "}
+            silinecek. Bu işlem geri alınamaz.
+          </p>
+        </div>
+        <div className="flex flex-col-reverse gap-2 border-t border-black/6 pt-4 sm:flex-row sm:items-center sm:justify-end">
           <Button
             variant="ghost"
             size="sm"

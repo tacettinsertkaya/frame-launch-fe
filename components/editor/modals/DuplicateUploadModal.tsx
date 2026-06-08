@@ -66,17 +66,22 @@ export function DuplicateUploadModal() {
       description="Yüklenen dosya mevcut bir ekranla çakışıyor."
       maxWidth="520px"
     >
-      <p className="text-sm text-[var(--color-ink-body)]">
-        Bu dosya, projede zaten yüklenmiş bir ekranın (
-        <strong className="break-words">{d.baseFilename}</strong>){" "}
-        <strong>{d.locale.toUpperCase()}</strong> sürümüyle çakışıyor.
-      </p>
+      <div className="rounded-[22px] border border-[rgba(232,198,16,0.22)] bg-[linear-gradient(135deg,rgba(255,247,207,0.88)_0%,rgba(255,255,255,0.82)_100%)] p-4 shadow-[0_14px_36px_rgba(232,198,16,0.16)]">
+        <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--color-ink-muted)]">
+          Duplicate Check
+        </p>
+        <p className="mt-2 text-sm leading-6 text-[var(--color-ink-body)]">
+          Bu dosya, projede zaten yüklenmiş bir ekranın (
+          <strong className="break-words">{d.baseFilename}</strong>){" "}
+          <strong>{d.locale.toUpperCase()}</strong> sürümüyle çakışıyor.
+        </p>
+      </div>
       <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div>
           <p className="mb-2 text-xs font-medium text-[var(--color-ink-muted)]">
             Mevcut
           </p>
-          <div className="flex h-40 items-center justify-center overflow-hidden rounded-lg border border-[var(--color-surface-2)] bg-[var(--color-surface-1)]">
+          <div className="flex h-40 items-center justify-center overflow-hidden rounded-[22px] border border-black/6 bg-white/75 shadow-[0_12px_28px_rgba(0,0,0,0.05)]">
             {existingUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
@@ -91,7 +96,7 @@ export function DuplicateUploadModal() {
         </div>
         <div>
           <p className="mb-2 text-xs font-medium text-[var(--color-ink-muted)]">Yeni</p>
-          <div className="flex h-40 items-center justify-center overflow-hidden rounded-lg border border-[var(--color-surface-2)] bg-[var(--color-surface-1)]">
+          <div className="flex h-40 items-center justify-center overflow-hidden rounded-[22px] border border-black/6 bg-white/75 shadow-[0_12px_28px_rgba(0,0,0,0.05)]">
             {newUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
@@ -103,7 +108,7 @@ export function DuplicateUploadModal() {
           </div>
         </div>
       </div>
-      <div className="mt-6 flex flex-col-reverse flex-wrap justify-end gap-2 sm:flex-row">
+      <div className="mt-6 flex flex-col-reverse flex-wrap justify-end gap-2 border-t border-black/6 pt-4 sm:flex-row">
         <Button type="button" variant="outline" onClick={() => finish("ignore")}>
           Yoksay
         </Button>

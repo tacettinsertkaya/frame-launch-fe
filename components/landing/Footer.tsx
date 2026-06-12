@@ -24,9 +24,14 @@ export function Footer() {
         <p className="text-xs text-[var(--color-ink-muted)]">
           © {new Date().getFullYear()} Framelaunch · Tarayıcıda %100 ücretsiz
         </p>
-        <div className="flex items-center gap-6 text-xs text-[var(--color-ink-body)]">
+        <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs text-[var(--color-ink-body)]">
           <FooterLink href="/editor">Editör</FooterLink>
-          <FooterLink href="#features">Özellikler</FooterLink>
+          <FooterLink href="/guides">Guides</FooterLink>
+          <FooterLink href="/templates">Templates</FooterLink>
+          <FooterLink href="/alternatives">Alternatives</FooterLink>
+          <FooterLink href="/privacy">Privacy</FooterLink>
+          <FooterLink href="/terms">Terms</FooterLink>
+          <FooterLink href="/contact">Contact</FooterLink>
         </div>
       </div>
     </motion.footer>

@@ -14,6 +14,9 @@ export const metadata: Metadata = {
     "play store mockup",
   ],
   metadataBase: new URL("https://framelaunch.store"),
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
     title: "Framelaunch — App Store ekran görüntüleri",
     description:
@@ -24,23 +27,19 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/logo.png",
-        width: 768,
-        height: 1024,
-        alt: "Framelaunch",
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Framelaunch — App Store ekran görüntüleri",
       },
     ],
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: "Framelaunch — App Store ekran görüntüleri",
     description:
       "Tarayıcıda saniyeler içinde App Store / Play Store görselleri. %100 ücretsiz, hesap yok, watermark yok.",
-    images: ["/logo.png"],
-  },
-  icons: {
-    icon: [{ url: "/logo.png", type: "image/png" }],
-    apple: "/logo.png",
+    images: ["/og-image.png"],
   },
 };
 
@@ -50,10 +49,31 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "Framelaunch",
+  url: "https://framelaunch.store",
+  description:
+    "Tarayıcıda %100 ücretsiz, kayıt olmadan App Store ve Play Store görselleri oluşturun.",
+  applicationCategory: "DesignApplication",
+  operatingSystem: "Web",
+  browserRequirements: "Requires JavaScript. Requires HTML5.",
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "USD",
+  },
+};
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="tr" suppressHydrationWarning>
       <body>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
         <ThemeSync />
         {children}
         <AppToaster />
